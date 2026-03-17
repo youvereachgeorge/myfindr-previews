@@ -75,6 +75,7 @@
 
   @media (max-width: 768px) {
     .bw { display: none; }
+    .col-select { display: block !important; }
     .col-select { display: none; margin-top: 8px; width: 100%; background: #1a1a1a; border: 1px solid #2a2a2a; color: #888; font-size: 11px; padding: 6px 8px; border-radius: 6px; cursor: pointer; font-family: Inter, sans-serif; }
     .cb { padding-bottom: 80px; }
     .moon { display: none; }
@@ -279,37 +280,53 @@ function moveCardTo(cardId, newCol, selectEl) {
 }
 
 
-// Stall detection — check every 5 mins if George tasks are overdue
+// ── STALL DETECTION ──
+// Cards in "George Working On" that are overdue get assessed:
+// LOW risk (< 30m over): George auto-recovers silently
+// HIGH risk (30m+ over, or BW 8-10): Alert Jay via visual badge
+
+const STALL_PLAYBOOK = {
+  c8:  { risk:'high', recovery:'Framer blocked by browser access — George will build HTML mockup first and push to Framer manually. Jay action: none needed yet.' },
+  c9:  { risk:'low',  recovery:'Klaviyo campaign setup — George can complete this autonomously. Re-queuing.' },
+  c10: { risk:'high', recovery:'Zapier blocked — needs Newie webhook. Cannot unblock without Jay.' },
+  c11: { risk:'high', recovery:'Framer screenshots blocked — needs Databox ICP metrics first (overnight task).' },
+  c12: { risk:'low',  recovery:'Databox ICP metrics — overnight task, will run tonight.' },
+};
+
 function checkStalls() {
-  const alerts = [];
   document.querySelectorAll('#col-george .card').forEach(card => {
     const finishEl = card.querySelector('[data-finish]');
     if (!finishEl) return;
     const finish = new Date(finishEl.dataset.finish);
     const now = new Date();
-    const minsOverdue = Math.round((now - finish) / 60000);
-    if (minsOverdue > 15) { // Flag if 15+ mins overdue
-      const title = card.querySelector('.card-title')?.textContent || card.id;
-      alerts.push({ id: card.id, title, minsOverdue });
-      // Visual flag on the card
-      card.style.borderColor = '#ef4444';
-      card.style.borderWidth = '2px';
-      // Add stall badge if not already there
-      if (!card.querySelector('.stall-badge')) {
-        const badge = document.createElement('div');
-        badge.className = 'stall-badge';
-        badge.style.cssText = 'margin-top:8px;padding:8px 10px;background:#1a0000;border:1px solid #3a0000;border-radius:8px;font-size:11px;color:#ef4444;font-weight:600;line-height:1.4';
-        badge.innerHTML = '⚠️ <strong>Stalled ' + minsOverdue + 'm</strong> — May need attention. Check if blocked or needs reprioritising.';
-        card.appendChild(badge);
-      }
+    const minsOver = Math.round((now - finish) / 60000);
+    if (minsOver <= 15) return; // Grace period
+
+    const id = card.id;
+    const title = card.querySelector('.card-title')?.textContent || id;
+    const playbook = STALL_PLAYBOOK[id] || { risk: minsOver > 30 ? 'high' : 'low', recovery: 'George reassessing task — will reprioritise or request help.' };
+    const isHigh = playbook.risk === 'high' || minsOver > 30;
+
+    // Visual border
+    card.style.borderColor = isHigh ? '#ef4444' : '#eab308';
+    card.style.borderWidth = '2px';
+
+    // Add/update stall badge
+    let badge = card.querySelector('.stall-badge');
+    if (!badge) {
+      badge = document.createElement('div');
+      badge.className = 'stall-badge';
+      card.appendChild(badge);
     }
+    badge.style.cssText = 'margin-top:8px;padding:9px 11px;background:' + (isHigh?'#1a0000':'#1a1000') + ';border:1px solid ' + (isHigh?'#3a0000':'#3a2500') + ';border-radius:8px;font-size:11px;line-height:1.5';
+    badge.innerHTML = (isHigh
+      ? '<span style="color:#ef4444;font-weight:700">⚠️ STALLED ' + minsOver + 'm — Jay action needed</span><br>'
+      : '<span style="color:#eab308;font-weight:700">🔄 Overdue ' + minsOver + 'm — George recovering</span><br>')
+      + '<span style="color:#666;font-size:10px">' + playbook.recovery + '</span>';
   });
-  if (alerts.length > 0) {
-    console.warn('Stalled tasks:', alerts);
-  }
 }
-setInterval(checkStalls, 300000); // Every 5 mins
-setTimeout(checkStalls, 5000); // Also run 5s after load
+setInterval(checkStalls, 300000);
+setTimeout(checkStalls, 5000);
 
 async function loadState() {
   setSS('ssaving','Loading...');
