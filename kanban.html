@@ -155,12 +155,9 @@
 <div class="toast" id="toast"></div>
 
 <script>
-const GH_TOKEN = localStorage.getItem('gh_token') || '';
-if (!GH_TOKEN) {
-  const t = prompt('Enter GitHub token to enable sync (paste once, stored locally):');
-  if (t) localStorage.setItem('gh_token', t);
-  location.reload();
-}
+let GH_TOKEN = localStorage.getItem('gh_token') || '';
+// If no token, show a banner but don't block
+const READ_ONLY = !GH_TOKEN;
 const REPO = 'youvereachgeorge/myfindr-previews';
 const FILE = 'board-state.json';
 let fileSHA = '';
@@ -358,6 +355,14 @@ setInterval(checkStalls, 300000);
 setTimeout(checkStalls, 5000);
 
 async function loadState() {
+  if (READ_ONLY) {
+    document.getElementById('sync').textContent = '👆 Tap to enable sync';
+    document.getElementById('sync').className = 'sync ssaving';
+    document.getElementById('sync').onclick = () => {
+      const t = prompt('Paste GitHub token to enable saving:');
+      if (t) { localStorage.setItem('gh_token', t); location.reload(); }
+    };
+  }
   setSS('ssaving','Loading...');
   try {
     const r = await fetch(`https://api.github.com/repos/${REPO}/contents/${FILE}`, {
@@ -383,6 +388,7 @@ async function loadState() {
 }
 
 async function saveMove(cardId, newCol, movedBy) {
+  if (!GH_TOKEN) { showToast('Tap "Tap to enable sync" in header to save moves'); return; }
   setSS('ssaving','● Saving...');
   try {
     // Get current state first
