@@ -3,104 +3,105 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>myFindr Intelligence Report — March 2026</title>
+<title>myFindr — Market Intelligence Report</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:Inter,sans-serif;background:#f8f8f6;color:#121212;font-size:14px;line-height:1.6}
-.page{max-width:860px;margin:0 auto;background:#fff}
+body{font-family:Inter,sans-serif;background:#f8f8f6;color:#121212;font-size:14px;line-height:1.6;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.page{max-width:720px;margin:0 auto;background:#fff}
 
 /* Header */
-.header{background:#121212;padding:24px 36px;display:flex;justify-content:space-between;align-items:center}
-.logo{font-size:22px;font-weight:900;color:#fff;letter-spacing:-.5px}
+.header{background:#121212;padding:22px 32px;display:flex;justify-content:space-between;align-items:center}
+.logo{font-size:20px;font-weight:900;color:#fff;letter-spacing:-.3px}
 .logo span{color:#E64500}
 .header-right{text-align:right}
-.header-right strong{color:#fff;font-size:13px;display:block;margin-bottom:2px}
+.header-right strong{color:#fff;font-size:12px;display:block}
 .header-right small{color:#555;font-size:11px}
 
 /* Hero */
-.hero{background:linear-gradient(135deg,#E64500,#c93a00);padding:44px 36px;color:#fff}
-.eyebrow{font-size:10px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;opacity:.7;margin-bottom:12px}
-.hero h1{font-size:32px;font-weight:900;letter-spacing:-1px;line-height:1.1;margin-bottom:14px}
-.hero p{font-size:14px;opacity:.85;max-width:560px;margin-bottom:32px;line-height:1.7}
-.stats{display:flex;gap:12px;flex-wrap:wrap}
-.stat{background:rgba(255,255,255,.14);border-radius:10px;padding:14px 18px;min-width:110px}
-.stat-n{font-size:28px;font-weight:900;letter-spacing:-1px;line-height:1}
-.stat-l{font-size:10px;font-weight:600;opacity:.7;letter-spacing:.06em;text-transform:uppercase;margin-top:4px}
+.hero{background:linear-gradient(135deg,#E64500,#c93a00);padding:40px 32px;color:#fff}
+.eyebrow{font-size:10px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;opacity:.7;margin-bottom:10px}
+.hero h1{font-size:26px;font-weight:900;letter-spacing:-.8px;line-height:1.1;margin-bottom:12px}
+.hero p{font-size:13px;opacity:.85;margin-bottom:0;line-height:1.7;max-width:560px}
 
 /* Sections */
-.sec{padding:36px;border-bottom:1px solid #efefed}
+.sec{padding:32px;border-bottom:1px solid #efefed;background:#fff}
 .sec.alt{background:#fafaf8}
-.sec-label{font-size:10px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:#E64500;margin-bottom:8px}
-.sec-title{font-size:22px;font-weight:900;letter-spacing:-.6px;margin-bottom:4px}
-.sec-sub{font-size:13px;color:#888;margin-bottom:24px}
+.sec-label{font-size:10px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:#E64500;margin-bottom:6px}
+.sec-title{font-size:20px;font-weight:900;letter-spacing:-.5px;margin-bottom:4px}
+.sec-sub{font-size:12px;color:#888;margin-bottom:20px}
 
 /* Insight boxes */
-.insight{background:#fff8f6;border-left:4px solid #E64500;border-radius:0 10px 10px 0;padding:18px 20px;margin-bottom:16px}
-.insight h3{font-size:14px;font-weight:700;margin-bottom:6px}
-.insight p{font-size:13px;color:#555;line-height:1.7}
+.insight{background:#fff8f6;border-left:4px solid #E64500;padding:16px 18px;margin-bottom:12px;border-radius:0 8px 8px 0}
+.insight h3{font-size:13px;font-weight:700;margin-bottom:6px}
+.insight p{font-size:12px;color:#555;line-height:1.7}
 
-/* Project cards */
-.card{border:1px solid #e8e8e5;border-radius:14px;padding:22px;margin-bottom:14px;background:#fff;page-break-inside:avoid}
-.card-top{margin-bottom:14px}
-.card-address{font-size:16px;font-weight:800;letter-spacing:-.4px;margin-bottom:6px}
-.card-meta{font-size:12px;color:#888;display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:10px}
-.tag{display:inline-block;font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;background:#f0f0f0;color:#555}
+/* Project cards — STACKED layout */
+.card{border:1px solid #e8e8e5;border-radius:12px;margin-bottom:16px;background:#fff;overflow:hidden;page-break-inside:avoid}
+.card-header{padding:16px 18px 12px;border-bottom:1px solid #f0f0ee}
+.card-address{font-size:15px;font-weight:800;letter-spacing:-.3px;margin-bottom:6px}
+.card-meta{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.tag{display:inline-block;font-size:10px;font-weight:600;padding:3px 9px;border-radius:20px;background:#f0f0f0;color:#555}
 .stage-fresh{background:#e8f5e9;color:#2e7d32}
-.stage-active{background:#fff3e0;color:#e65100}
+.stage-active{background:#fff3e0;color:#bf360c}
 .stage-paused{background:#f3e5f5;color:#6a1b9a}
 .stage-hot{background:#ffe0b2;color:#bf360c}
-.stage-approved{background:#e8f5e9;color:#1b5e20}
-.type-plain{background:#f5f5f5;color:#444}
 
-/* ICP angles grid */
-.angles{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px}
-.angle{border-radius:10px;padding:14px;font-size:12px;line-height:1.65;overflow:hidden}
-.angle-id{background:#fff8f6;border:1px solid #fdddd6}
-.angle-b{background:#f0f4ff;border:1px solid #d8e3ff}
-.angle-re{background:#f0fff6;border:1px solid #c8f0da}
-.angle-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
-.angle-role{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase}
-.angle-id .angle-role{color:#c0392b}
-.angle-b .angle-role{color:#2c4fbb}
-.angle-re .angle-role{color:#1a7a4a}
-.badge{font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px}
+/* ICP angle rows — STACKED not grid */
+.angle{padding:14px 18px;border-top:1px solid #f5f5f3}
+.angle:first-child{border-top:none}
+.angle-id{background:#fff8f6}
+.angle-b{background:#f5f8ff}
+.angle-re{background:#f5fff8}
+.angle-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;gap:8px}
+.angle-who{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase}
+.angle-id .angle-who{color:#c0392b}
+.angle-b .angle-who{color:#2c4fbb}
+.angle-re .angle-who{color:#1a7a4a}
+.angle-title{font-size:12px;font-weight:700;color:#121212;flex:1}
+.badge{font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;white-space:nowrap;flex-shrink:0}
 .hot{background:#ffe0db;color:#c0392b}
 .warm{background:#fff3cd;color:#b8860b}
 .cold{background:#f0f0f0;color:#888}
-.angle-title{font-weight:700;font-size:12px;color:#121212;margin-bottom:6px;line-height:1.4}
-.angle-body{font-size:11px;color:#555;line-height:1.65;word-wrap:break-word;overflow-wrap:break-word}
+.angle-body{font-size:12px;color:#555;line-height:1.65}
 
-/* Suburb grid */
-.suburb-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+/* Suburb grid — 2 col for mobile safety */
+.suburb-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
 .suburb-card{background:#f8f8f6;border-radius:10px;padding:14px;border-top:3px solid #E64500}
 .suburb-card.w{border-top-color:#f59e0b}
-.sc-name{font-size:12px;font-weight:700}
+.sc-name{font-size:12px;font-weight:700;margin-bottom:2px}
 .sc-council{font-size:10px;color:#999;margin-bottom:6px}
-.sc-n{font-size:26px;font-weight:900;color:#E64500;line-height:1}
+.sc-n{font-size:24px;font-weight:900;color:#E64500;line-height:1}
 .sc-l{font-size:10px;color:#999}
 
 /* Velocity table */
 .vtable{width:100%;border-collapse:collapse;font-size:12px}
-.vtable th{text-align:left;font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#999;padding:7px 10px;border-bottom:2px solid #f0f0ee}
+.vtable th{text-align:left;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#999;padding:7px 10px;border-bottom:2px solid #f0f0ee}
 .vtable td{padding:10px;border-bottom:1px solid #f5f5f3;vertical-align:middle}
-.vbar{height:6px;background:#f0f0f0;border-radius:3px;width:80px;display:inline-block;vertical-align:middle;margin-right:8px;overflow:hidden}
+.vbar-wrap{display:flex;align-items:center;gap:8px}
+.vbar{height:6px;background:#f0f0f0;border-radius:3px;width:60px;overflow:hidden;flex-shrink:0}
 .vfill{height:100%;border-radius:3px;background:linear-gradient(90deg,#E64500,#FA5914)}
 
-/* Timing note */
-.timing{background:#f8f8f6;border-radius:10px;padding:16px 18px;margin-top:16px;font-size:12px;color:#555;line-height:1.8}
+/* Timing */
+.timing{background:#f8f8f6;border-radius:10px;padding:14px 16px;margin-top:14px;font-size:12px;color:#555;line-height:1.8}
 .timing strong{color:#121212}
 
 /* CTA */
-.cta{background:#121212;padding:44px 36px;text-align:center;color:#fff}
-.cta h2{font-size:26px;font-weight:900;letter-spacing:-.7px;margin-bottom:12px}
-.cta p{color:#666;font-size:13px;max-width:440px;margin:0 auto 28px;line-height:1.7}
-.cta-btn{display:inline-block;background:linear-gradient(135deg,#E64500,#FA5914);color:#fff;font-weight:700;font-size:13px;padding:14px 32px;border-radius:10px;text-decoration:none}
-.cta-fine{font-size:11px;color:#444;margin-top:16px}
+.cta{background:#121212;padding:40px 32px;text-align:center;color:#fff}
+.cta h2{font-size:22px;font-weight:900;letter-spacing:-.5px;margin-bottom:10px}
+.cta p{color:#666;font-size:12px;max-width:420px;margin:0 auto 24px;line-height:1.7}
+.cta-btn{display:inline-block;background:linear-gradient(135deg,#E64500,#FA5914);color:#fff;font-weight:700;font-size:13px;padding:13px 28px;border-radius:10px;text-decoration:none}
+.cta-fine{font-size:11px;color:#444;margin-top:14px}
 
 /* Footer */
-.footer{background:#0a0a0a;padding:20px 36px;display:flex;justify-content:space-between}
+.footer{background:#0a0a0a;padding:18px 32px;display:flex;justify-content:space-between;align-items:center}
 .footer p{font-size:11px;color:#333;line-height:1.7}
+
+@media print{
+  body{background:#fff}
+  .page{max-width:100%;box-shadow:none}
+  .card{page-break-inside:avoid}
+}
 </style>
 </head>
 <body>
@@ -109,364 +110,340 @@ body{font-family:Inter,sans-serif;background:#f8f8f6;color:#121212;font-size:14p
 <div class="header">
   <div class="logo">my<span>Findr</span><span style="color:#E64500;font-size:7px;vertical-align:super">●</span></div>
   <div class="header-right">
-    <strong>Intelligence Report — March 2026</strong>
-    <small>Brisbane + Sunshine Coast &nbsp;|&nbsp; Daily 5am data refresh</small>
+    <strong>Market Intelligence — March 2026</strong>
+    <small>Brisbane + Sunshine Coast</small>
   </div>
 </div>
 
 <div class="hero">
-  <div class="eyebrow">myFindr Market Intelligence</div>
-  <h1>What's being built in your suburbs right now</h1>
-  <p>Every council planning application across Brisbane and Sunshine Coast — ranked, timed, and translated into plain English so you know exactly which ones are worth your time.</p>
-  <div class="stats">
-    <div class="stat"><div class="stat-n">636</div><div class="stat-l">Total Projects</div></div>
-    <div class="stat"><div class="stat-n">72</div><div class="stat-l">Reno Leads</div></div>
-    <div class="stat"><div class="stat-n">255</div><div class="stat-l">Build Leads</div></div>
-    <div class="stat"><div class="stat-n">140</div><div class="stat-l">RE Leads</div></div>
-    <div class="stat"><div class="stat-n">283</div><div class="stat-l">March DAs (4×)</div></div>
-  </div>
+  <div class="eyebrow">myFindr Intelligence Brief</div>
+  <h1>What's happening in your market right now</h1>
+  <p>Every planning application lodged across Brisbane and Sunshine Coast — translated into plain English so you know exactly which projects are worth your time, and when to make your move.</p>
 </div>
 
 <div class="sec">
-  <div class="sec-label">What the data is telling us</div>
+  <div class="sec-label">What the data tells us</div>
   <div class="sec-title">Key Insights — March 2026</div>
-  <div class="sec-sub">Plain English summary of what's happening across both regions</div>
-  
+  <div class="sec-sub">What's happening across both regions this month</div>
+
   <div class="insight">
-    <h3>🔥 March is the biggest month we've ever recorded — and it's not over yet</h3>
-    <p>We've tracked 283 new planning applications in Brisbane and the Sunshine Coast this month — that's four times the normal volume from November/December. What this means practically: there are more property projects starting right now than at any point in the last year. For anyone in the property industry, this is the best possible time to be in front of new clients.</p>
+    <h3>🔥 This is the most active month for new projects we've seen</h3>
+    <p>Planning applications have surged across Brisbane and the Sunshine Coast this month — significantly above what we saw in November and December. More projects are starting right now than at any other point in recent months. For property professionals, the window to get in front of new clients early is wide open.</p>
   </div>
-  
+
   <div class="insight">
-    <h3>📍 Camp Hill, Hendra, and Ascot are this month's hottest Brisbane suburbs</h3>
-    <p>These three suburbs have each had 5 or more new planning applications in the last 30 days — and Camp Hill's application rate tripled week on week. This isn't a random spike; it's a connected cluster of inner-city suburbs where homeowners and developers are clearly on the move. If you work in any of these areas, now is the time to be visible and proactive.</p>
+    <h3>📍 Camp Hill, Hendra, and Ascot are Brisbane's hottest suburbs</h3>
+    <p>These three suburbs each had multiple new planning applications land in the last 30 days — and Camp Hill's activity tripled week on week. They form a connected renovation and development corridor in inner Brisbane. If you work anywhere in this cluster, now is the time to be visible and proactive.</p>
   </div>
-  
+
   <div class="insight">
-    <h3>🌊 Maroochydore has been in the top 3 for 6 months straight</h3>
-    <p>The Sunshine Coast isn't spiking — it's consistently producing. Maroochydore alone has had 17 planning applications in the last few months, with 10 of them being commercial projects. This is a market that rewards long-term relationships, not one-off deals. If you're not actively building your network there, someone else is.</p>
+    <h3>🌊 Maroochydore has been consistently busy for 6 months straight</h3>
+    <p>The Sunshine Coast isn't spiking — it's consistently producing. Maroochydore in particular has been in the top tier of activity for half a year, with a strong lean toward commercial projects. This is a market that rewards long-term relationships over one-off deals.</p>
   </div>
-  
+
   <div class="insight">
-    <h3>🔗 We can now track a project from first application to completion</h3>
-    <p>myFindr now links every application at the same address together — so when a property goes through subdivision, then operational works, then building work, you can see the whole journey. This means you'll know exactly where a project is in its life cycle and exactly when it's the right time for you to get involved — not too early, not too late.</p>
+    <h3>🔗 We now track projects from first application right through to construction</h3>
+    <p>When a property lodges a subdivision, then operational works, then a building permit — we now connect all of those applications together. That means we can show you exactly where a project is in its lifecycle and flag precisely when it becomes the right opportunity for you to get involved.</p>
   </div>
 </div>
 
 <div class="sec alt">
-  <div class="sec-label">Act on these now</div>
-  <div class="sec-title">This Week's Top Projects — With Timing Intelligence</div>
-  <div class="sec-sub">Each project shows you how far along it is, who it's best for, and what to say when you call</div>
+  <div class="sec-label">Projects to act on now</div>
+  <div class="sec-title">This Week's High-Value Applications</div>
+  <div class="sec-sub">Sorted by urgency — with a plain English breakdown of what each means for your trade</div>
 
   <div class="card">
-    <div class="card-top">
+    <div class="card-header">
       <div class="card-address">SPINE ST SUMNER</div>
       <div class="card-meta">
         <span class="tag">Brisbane</span>
-        <span class="tag type-plain">Build + Change of Use</span>
-        <span class="tag stage-active">Council Reviewing</span>
-        <span style="font-size:11px;color:#aaa">Lodged: 2026-03-16 &nbsp;|&nbsp; Owner: Heritage Tree Services</span>
+        <span class="tag">Build + Change of Use</span>
+        <span class="tag stage-active">🟡 Council Reviewing</span>
+        <span style="font-size:11px;color:#aaa">Lodged 2026-03-16 &nbsp;·&nbsp; Heritage Tree Services</span>
       </div>
     </div>
-    <div class="angles">
-
-      <div class="angle angle-id">
-        <div class="angle-header">
-          <span class="angle-role">🎨 Interior Designer</span>
-          <span class="badge warm">WARM</span>
-        </div>
-        <div class="angle-title">Still a window — but move quickly</div>
-        <div class="angle-body">This building permit in SPINE ST SUMNER is about 4–8 weeks into the approval process. Interior designers can still get involved — the final fitout decisions (fixtures, finishes, layout tweaks) are often made after approval. Reach out now and position yourself for when construction starts. Don't wait until you see a skip bin out front.</div>
+    <div class="angle angle-id">
+      <div class="angle-top">
+        <span class="angle-who">🎨 Interior Designer</span>
+        <span class="badge warm">WARM</span>
       </div>
-      <div class="angle angle-b">
-        <div class="angle-header">
-          <span class="angle-role">🔨 Builder / Trades</span>
-          <span class="badge hot">HOT</span>
-        </div>
-        <div class="angle-title">Good timing — quote conversations may be starting</div>
-        <div class="angle-body">This permit in SPINE ST SUMNER is a few weeks into the approval process. The applicant may be starting to think about builders now to line up quotes ahead of approval. This is actually a great time to reach out — you're early enough that you're not competing on a crowded tender, but late enough that they're thinking about it. Contact Heritage directly.</div>
+      <div class="angle-title" style="margin-bottom:5px">Still time — but move quickly</div>
+      <div class="angle-body">This permit in SPINE ST SUMNER is a few weeks in. Structural decisions aren't locked yet. Reach out now to position yourself for the fitout. Don't wait until you see a skip bin.</div>
+    </div>
+    <div class="angle angle-b">
+      <div class="angle-top">
+        <span class="angle-who">🔨 Builder / Trades</span>
+        <span class="badge hot">HOT</span>
       </div>
-      <div class="angle angle-re">
-        <div class="angle-header">
-          <span class="angle-role">🏠 Real Estate</span>
-          <span class="badge warm">WARM</span>
-        </div>
-        <div class="angle-title">Property changing its use — watch for a transaction</div>
-        <div class="angle-body">A change-of-use application in SPINE ST SUMNER often leads to a property being sold — either because the owner has maximised value and wants to cash out, or because the new use attracts a different buyer. Commercial agents especially should monitor this. If the change gets approved, the property's value likely just went up.</div>
+      <div class="angle-title" style="margin-bottom:5px">Quote conversations may be starting</div>
+      <div class="angle-body">This permit in SPINE ST SUMNER is a few weeks in. The owner may be starting to think about quotes. You're early enough to avoid a crowded tender — reach out now.</div>
+    </div>
+    <div class="angle angle-re">
+      <div class="angle-top">
+        <span class="angle-who">🏠 Real Estate</span>
+        <span class="badge warm">WARM</span>
       </div>
+      <div class="angle-title" style="margin-bottom:5px">Property changing use — watch for a sale</div>
+      <div class="angle-body">A change-of-use application in SPINE ST SUMNER often ends in a sale — either because the owner cashes out after adding value, or because the new use attracts different buyers. Commercial agents especially should monitor this.</div>
     </div>
   </div>
+
   <div class="card">
-    <div class="card-top">
+    <div class="card-header">
       <div class="card-address">CLAYFIELD</div>
       <div class="card-meta">
         <span class="tag">Brisbane</span>
-        <span class="tag type-plain">Build + Subdivision</span>
-        <span class="tag stage-active">Council Reviewing</span>
-        <span style="font-size:11px;color:#aaa">Lodged: 2026-03-09 &nbsp;|&nbsp; Owner: MACJ Developments Pty Ltd</span>
+        <span class="tag">Build + Subdivision</span>
+        <span class="tag stage-active">🟡 Council Reviewing</span>
+        <span style="font-size:11px;color:#aaa">Lodged 2026-03-09 &nbsp;·&nbsp; MACJ Developments Pty Ltd</span>
       </div>
     </div>
-    <div class="angles">
-
-      <div class="angle angle-id">
-        <div class="angle-header">
-          <span class="angle-role">🎨 Interior Designer</span>
-          <span class="badge warm">WARM</span>
-        </div>
-        <div class="angle-title">Still a window — but move quickly</div>
-        <div class="angle-body">This building permit in CLAYFIELD is about 4–8 weeks into the approval process. Interior designers can still get involved — the final fitout decisions (fixtures, finishes, layout tweaks) are often made after approval. Reach out now and position yourself for when construction starts. Don't wait until you see a skip bin out front.</div>
+    <div class="angle angle-id">
+      <div class="angle-top">
+        <span class="angle-who">🎨 Interior Designer</span>
+        <span class="badge warm">WARM</span>
       </div>
-      <div class="angle angle-b">
-        <div class="angle-header">
-          <span class="angle-role">🔨 Builder / Trades</span>
-          <span class="badge hot">HOT</span>
-        </div>
-        <div class="angle-title">Good timing — quote conversations may be starting</div>
-        <div class="angle-body">This permit in CLAYFIELD is a few weeks into the approval process. The applicant may be starting to think about builders now to line up quotes ahead of approval. This is actually a great time to reach out — you're early enough that you're not competing on a crowded tender, but late enough that they're thinking about it. Contact MACJ directly.</div>
+      <div class="angle-title" style="margin-bottom:5px">Still time — but move quickly</div>
+      <div class="angle-body">This permit in CLAYFIELD is a few weeks in. Structural decisions aren't locked yet. Reach out now to position yourself for the fitout. Don't wait until you see a skip bin.</div>
+    </div>
+    <div class="angle angle-b">
+      <div class="angle-top">
+        <span class="angle-who">🔨 Builder / Trades</span>
+        <span class="badge hot">HOT</span>
       </div>
-      <div class="angle angle-re">
-        <div class="angle-header">
-          <span class="angle-role">🏠 Real Estate</span>
-          <span class="badge warm">WARM</span>
-        </div>
-        <div class="angle-title">Subdivision in progress — position yourself now</div>
-        <div class="angle-body">This subdivision in CLAYFIELD is working through approvals. Get your name in front of the applicant now so you're top of mind when lots are ready to sell. It's much easier to win the listing before the sign goes up than after.</div>
+      <div class="angle-title" style="margin-bottom:5px">Quote conversations may be starting</div>
+      <div class="angle-body">This permit in CLAYFIELD is a few weeks in. The owner may be starting to think about quotes. You're early enough to avoid a crowded tender — reach out now.</div>
+    </div>
+    <div class="angle angle-re">
+      <div class="angle-top">
+        <span class="angle-who">🏠 Real Estate</span>
+        <span class="badge warm">WARM</span>
       </div>
+      <div class="angle-title" style="margin-bottom:5px">Subdivision progressing — position now</div>
+      <div class="angle-body">This subdivision in CLAYFIELD is working through approvals. Get your name in front of MACJ now so you're top of mind when lots are ready to sell.</div>
     </div>
   </div>
+
   <div class="card">
-    <div class="card-top">
+    <div class="card-header">
       <div class="card-address">HAWTHORNE</div>
       <div class="card-meta">
         <span class="tag">Brisbane</span>
-        <span class="tag type-plain">Build + Change of Use</span>
-        <span class="tag stage-active">Council Reviewing</span>
-        <span style="font-size:11px;color:#aaa">Lodged: 2026-03-06 &nbsp;|&nbsp; Owner: Aujla</span>
+        <span class="tag">Build + Change of Use</span>
+        <span class="tag stage-active">🟡 Council Reviewing</span>
+        <span style="font-size:11px;color:#aaa">Lodged 2026-03-06 &nbsp;·&nbsp; Aujla</span>
       </div>
     </div>
-    <div class="angles">
-
-      <div class="angle angle-id">
-        <div class="angle-header">
-          <span class="angle-role">🎨 Interior Designer</span>
-          <span class="badge warm">WARM</span>
-        </div>
-        <div class="angle-title">Still a window — but move quickly</div>
-        <div class="angle-body">This building permit in HAWTHORNE is about 4–8 weeks into the approval process. Interior designers can still get involved — the final fitout decisions (fixtures, finishes, layout tweaks) are often made after approval. Reach out now and position yourself for when construction starts. Don't wait until you see a skip bin out front.</div>
+    <div class="angle angle-id">
+      <div class="angle-top">
+        <span class="angle-who">🎨 Interior Designer</span>
+        <span class="badge warm">WARM</span>
       </div>
-      <div class="angle angle-b">
-        <div class="angle-header">
-          <span class="angle-role">🔨 Builder / Trades</span>
-          <span class="badge hot">HOT</span>
-        </div>
-        <div class="angle-title">Good timing — quote conversations may be starting</div>
-        <div class="angle-body">This permit in HAWTHORNE is a few weeks into the approval process. The applicant may be starting to think about builders now to line up quotes ahead of approval. This is actually a great time to reach out — you're early enough that you're not competing on a crowded tender, but late enough that they're thinking about it. Contact Aujla directly.</div>
+      <div class="angle-title" style="margin-bottom:5px">Still time — but move quickly</div>
+      <div class="angle-body">This permit in HAWTHORNE is a few weeks in. Structural decisions aren't locked yet. Reach out now to position yourself for the fitout. Don't wait until you see a skip bin.</div>
+    </div>
+    <div class="angle angle-b">
+      <div class="angle-top">
+        <span class="angle-who">🔨 Builder / Trades</span>
+        <span class="badge hot">HOT</span>
       </div>
-      <div class="angle angle-re">
-        <div class="angle-header">
-          <span class="angle-role">🏠 Real Estate</span>
-          <span class="badge warm">WARM</span>
-        </div>
-        <div class="angle-title">Property changing its use — watch for a transaction</div>
-        <div class="angle-body">A change-of-use application in HAWTHORNE often leads to a property being sold — either because the owner has maximised value and wants to cash out, or because the new use attracts a different buyer. Commercial agents especially should monitor this. If the change gets approved, the property's value likely just went up.</div>
+      <div class="angle-title" style="margin-bottom:5px">Quote conversations may be starting</div>
+      <div class="angle-body">This permit in HAWTHORNE is a few weeks in. The owner may be starting to think about quotes. You're early enough to avoid a crowded tender — reach out now.</div>
+    </div>
+    <div class="angle angle-re">
+      <div class="angle-top">
+        <span class="angle-who">🏠 Real Estate</span>
+        <span class="badge warm">WARM</span>
       </div>
+      <div class="angle-title" style="margin-bottom:5px">Property changing use — watch for a sale</div>
+      <div class="angle-body">A change-of-use application in HAWTHORNE often ends in a sale — either because the owner cashes out after adding value, or because the new use attracts different buyers. Commercial agents especially should monitor this.</div>
     </div>
   </div>
+
   <div class="card">
-    <div class="card-top">
+    <div class="card-header">
       <div class="card-address">TOOWONG</div>
       <div class="card-meta">
         <span class="tag">Brisbane</span>
-        <span class="tag type-plain">Build + Change of Use</span>
-        <span class="tag stage-active">Council Reviewing</span>
-        <span style="font-size:11px;color:#aaa">Lodged: 2026-03-06 &nbsp;|&nbsp; Owner: Dusk Group</span>
+        <span class="tag">Build + Change of Use</span>
+        <span class="tag stage-active">🟡 Council Reviewing</span>
+        <span style="font-size:11px;color:#aaa">Lodged 2026-03-06 &nbsp;·&nbsp; Dusk Group</span>
       </div>
     </div>
-    <div class="angles">
-
-      <div class="angle angle-id">
-        <div class="angle-header">
-          <span class="angle-role">🎨 Interior Designer</span>
-          <span class="badge warm">WARM</span>
-        </div>
-        <div class="angle-title">Still a window — but move quickly</div>
-        <div class="angle-body">This building permit in TOOWONG is about 4–8 weeks into the approval process. Interior designers can still get involved — the final fitout decisions (fixtures, finishes, layout tweaks) are often made after approval. Reach out now and position yourself for when construction starts. Don't wait until you see a skip bin out front.</div>
+    <div class="angle angle-id">
+      <div class="angle-top">
+        <span class="angle-who">🎨 Interior Designer</span>
+        <span class="badge warm">WARM</span>
       </div>
-      <div class="angle angle-b">
-        <div class="angle-header">
-          <span class="angle-role">🔨 Builder / Trades</span>
-          <span class="badge hot">HOT</span>
-        </div>
-        <div class="angle-title">Good timing — quote conversations may be starting</div>
-        <div class="angle-body">This permit in TOOWONG is a few weeks into the approval process. The applicant may be starting to think about builders now to line up quotes ahead of approval. This is actually a great time to reach out — you're early enough that you're not competing on a crowded tender, but late enough that they're thinking about it. Contact Dusk directly.</div>
+      <div class="angle-title" style="margin-bottom:5px">Still time — but move quickly</div>
+      <div class="angle-body">This permit in TOOWONG is a few weeks in. Structural decisions aren't locked yet. Reach out now to position yourself for the fitout. Don't wait until you see a skip bin.</div>
+    </div>
+    <div class="angle angle-b">
+      <div class="angle-top">
+        <span class="angle-who">🔨 Builder / Trades</span>
+        <span class="badge hot">HOT</span>
       </div>
-      <div class="angle angle-re">
-        <div class="angle-header">
-          <span class="angle-role">🏠 Real Estate</span>
-          <span class="badge warm">WARM</span>
-        </div>
-        <div class="angle-title">Property changing its use — watch for a transaction</div>
-        <div class="angle-body">A change-of-use application in TOOWONG often leads to a property being sold — either because the owner has maximised value and wants to cash out, or because the new use attracts a different buyer. Commercial agents especially should monitor this. If the change gets approved, the property's value likely just went up.</div>
+      <div class="angle-title" style="margin-bottom:5px">Quote conversations may be starting</div>
+      <div class="angle-body">This permit in TOOWONG is a few weeks in. The owner may be starting to think about quotes. You're early enough to avoid a crowded tender — reach out now.</div>
+    </div>
+    <div class="angle angle-re">
+      <div class="angle-top">
+        <span class="angle-who">🏠 Real Estate</span>
+        <span class="badge warm">WARM</span>
       </div>
+      <div class="angle-title" style="margin-bottom:5px">Property changing use — watch for a sale</div>
+      <div class="angle-body">A change-of-use application in TOOWONG often ends in a sale — either because the owner cashes out after adding value, or because the new use attracts different buyers. Commercial agents especially should monitor this.</div>
     </div>
   </div>
+
   <div class="card">
-    <div class="card-top">
+    <div class="card-header">
       <div class="card-address">ASCOT</div>
       <div class="card-meta">
         <span class="tag">Brisbane</span>
-        <span class="tag type-plain">Build + Change of Use</span>
-        <span class="tag stage-active">Council Reviewing</span>
-        <span style="font-size:11px;color:#aaa">Lodged: 2026-03-06 &nbsp;|&nbsp; Owner: Koennecke</span>
+        <span class="tag">Build + Change of Use</span>
+        <span class="tag stage-active">🟡 Council Reviewing</span>
+        <span style="font-size:11px;color:#aaa">Lodged 2026-03-06 &nbsp;·&nbsp; Koennecke</span>
       </div>
     </div>
-    <div class="angles">
-
-      <div class="angle angle-id">
-        <div class="angle-header">
-          <span class="angle-role">🎨 Interior Designer</span>
-          <span class="badge warm">WARM</span>
-        </div>
-        <div class="angle-title">Still a window — but move quickly</div>
-        <div class="angle-body">This building permit in ASCOT is about 4–8 weeks into the approval process. Interior designers can still get involved — the final fitout decisions (fixtures, finishes, layout tweaks) are often made after approval. Reach out now and position yourself for when construction starts. Don't wait until you see a skip bin out front.</div>
+    <div class="angle angle-id">
+      <div class="angle-top">
+        <span class="angle-who">🎨 Interior Designer</span>
+        <span class="badge warm">WARM</span>
       </div>
-      <div class="angle angle-b">
-        <div class="angle-header">
-          <span class="angle-role">🔨 Builder / Trades</span>
-          <span class="badge hot">HOT</span>
-        </div>
-        <div class="angle-title">Good timing — quote conversations may be starting</div>
-        <div class="angle-body">This permit in ASCOT is a few weeks into the approval process. The applicant may be starting to think about builders now to line up quotes ahead of approval. This is actually a great time to reach out — you're early enough that you're not competing on a crowded tender, but late enough that they're thinking about it. Contact Koennecke directly.</div>
+      <div class="angle-title" style="margin-bottom:5px">Still time — but move quickly</div>
+      <div class="angle-body">This permit in ASCOT is a few weeks in. Structural decisions aren't locked yet. Reach out now to position yourself for the fitout. Don't wait until you see a skip bin.</div>
+    </div>
+    <div class="angle angle-b">
+      <div class="angle-top">
+        <span class="angle-who">🔨 Builder / Trades</span>
+        <span class="badge hot">HOT</span>
       </div>
-      <div class="angle angle-re">
-        <div class="angle-header">
-          <span class="angle-role">🏠 Real Estate</span>
-          <span class="badge warm">WARM</span>
-        </div>
-        <div class="angle-title">Property changing its use — watch for a transaction</div>
-        <div class="angle-body">A change-of-use application in ASCOT often leads to a property being sold — either because the owner has maximised value and wants to cash out, or because the new use attracts a different buyer. Commercial agents especially should monitor this. If the change gets approved, the property's value likely just went up.</div>
+      <div class="angle-title" style="margin-bottom:5px">Quote conversations may be starting</div>
+      <div class="angle-body">This permit in ASCOT is a few weeks in. The owner may be starting to think about quotes. You're early enough to avoid a crowded tender — reach out now.</div>
+    </div>
+    <div class="angle angle-re">
+      <div class="angle-top">
+        <span class="angle-who">🏠 Real Estate</span>
+        <span class="badge warm">WARM</span>
       </div>
+      <div class="angle-title" style="margin-bottom:5px">Property changing use — watch for a sale</div>
+      <div class="angle-body">A change-of-use application in ASCOT often ends in a sale — either because the owner cashes out after adding value, or because the new use attracts different buyers. Commercial agents especially should monitor this.</div>
     </div>
   </div>
+
   <div class="card">
-    <div class="card-top">
+    <div class="card-header">
       <div class="card-address">HEMMANT</div>
       <div class="card-meta">
         <span class="tag">Brisbane</span>
-        <span class="tag type-plain">Build + Change of Use</span>
-        <span class="tag stage-active">Council Reviewing</span>
-        <span style="font-size:11px;color:#aaa">Lodged: 2026-03-06 &nbsp;|&nbsp; Owner: Holm</span>
+        <span class="tag">Build + Change of Use</span>
+        <span class="tag stage-active">🟡 Council Reviewing</span>
+        <span style="font-size:11px;color:#aaa">Lodged 2026-03-06 &nbsp;·&nbsp; Holm</span>
       </div>
     </div>
-    <div class="angles">
-
-      <div class="angle angle-id">
-        <div class="angle-header">
-          <span class="angle-role">🎨 Interior Designer</span>
-          <span class="badge warm">WARM</span>
-        </div>
-        <div class="angle-title">Still a window — but move quickly</div>
-        <div class="angle-body">This building permit in HEMMANT is about 4–8 weeks into the approval process. Interior designers can still get involved — the final fitout decisions (fixtures, finishes, layout tweaks) are often made after approval. Reach out now and position yourself for when construction starts. Don't wait until you see a skip bin out front.</div>
+    <div class="angle angle-id">
+      <div class="angle-top">
+        <span class="angle-who">🎨 Interior Designer</span>
+        <span class="badge warm">WARM</span>
       </div>
-      <div class="angle angle-b">
-        <div class="angle-header">
-          <span class="angle-role">🔨 Builder / Trades</span>
-          <span class="badge hot">HOT</span>
-        </div>
-        <div class="angle-title">Good timing — quote conversations may be starting</div>
-        <div class="angle-body">This permit in HEMMANT is a few weeks into the approval process. The applicant may be starting to think about builders now to line up quotes ahead of approval. This is actually a great time to reach out — you're early enough that you're not competing on a crowded tender, but late enough that they're thinking about it. Contact Holm directly.</div>
+      <div class="angle-title" style="margin-bottom:5px">Still time — but move quickly</div>
+      <div class="angle-body">This permit in HEMMANT is a few weeks in. Structural decisions aren't locked yet. Reach out now to position yourself for the fitout. Don't wait until you see a skip bin.</div>
+    </div>
+    <div class="angle angle-b">
+      <div class="angle-top">
+        <span class="angle-who">🔨 Builder / Trades</span>
+        <span class="badge hot">HOT</span>
       </div>
-      <div class="angle angle-re">
-        <div class="angle-header">
-          <span class="angle-role">🏠 Real Estate</span>
-          <span class="badge warm">WARM</span>
-        </div>
-        <div class="angle-title">Property changing its use — watch for a transaction</div>
-        <div class="angle-body">A change-of-use application in HEMMANT often leads to a property being sold — either because the owner has maximised value and wants to cash out, or because the new use attracts a different buyer. Commercial agents especially should monitor this. If the change gets approved, the property's value likely just went up.</div>
+      <div class="angle-title" style="margin-bottom:5px">Quote conversations may be starting</div>
+      <div class="angle-body">This permit in HEMMANT is a few weeks in. The owner may be starting to think about quotes. You're early enough to avoid a crowded tender — reach out now.</div>
+    </div>
+    <div class="angle angle-re">
+      <div class="angle-top">
+        <span class="angle-who">🏠 Real Estate</span>
+        <span class="badge warm">WARM</span>
       </div>
+      <div class="angle-title" style="margin-bottom:5px">Property changing use — watch for a sale</div>
+      <div class="angle-body">A change-of-use application in HEMMANT often ends in a sale — either because the owner cashes out after adding value, or because the new use attracts different buyers. Commercial agents especially should monitor this.</div>
     </div>
   </div>
+
   <div class="card">
-    <div class="card-top">
+    <div class="card-header">
       <div class="card-address">U 1 ROSEWOOD COURT 36 ROSEWOOD ST BARDON</div>
       <div class="card-meta">
         <span class="tag">Brisbane</span>
-        <span class="tag type-plain">Build + Change of Use</span>
-        <span class="tag stage-active">Council Reviewing</span>
-        <span style="font-size:11px;color:#aaa">Lodged: 2026-03-05 &nbsp;|&nbsp; Owner: Geldard</span>
+        <span class="tag">Build + Change of Use</span>
+        <span class="tag stage-active">🟡 Council Reviewing</span>
+        <span style="font-size:11px;color:#aaa">Lodged 2026-03-05 &nbsp;·&nbsp; Geldard</span>
       </div>
     </div>
-    <div class="angles">
-
-      <div class="angle angle-id">
-        <div class="angle-header">
-          <span class="angle-role">🎨 Interior Designer</span>
-          <span class="badge warm">WARM</span>
-        </div>
-        <div class="angle-title">Still a window — but move quickly</div>
-        <div class="angle-body">This building permit in U 1 ROSEWOOD COURT 36 ROSEWOOD ST BARDON is about 4–8 weeks into the approval process. Interior designers can still get involved — the final fitout decisions (fixtures, finishes, layout tweaks) are often made after approval. Reach out now and position yourself for when construction starts. Don't wait until you see a skip bin out front.</div>
+    <div class="angle angle-id">
+      <div class="angle-top">
+        <span class="angle-who">🎨 Interior Designer</span>
+        <span class="badge warm">WARM</span>
       </div>
-      <div class="angle angle-b">
-        <div class="angle-header">
-          <span class="angle-role">🔨 Builder / Trades</span>
-          <span class="badge hot">HOT</span>
-        </div>
-        <div class="angle-title">Good timing — quote conversations may be starting</div>
-        <div class="angle-body">This permit in U 1 ROSEWOOD COURT 36 ROSEWOOD ST BARDON is a few weeks into the approval process. The applicant may be starting to think about builders now to line up quotes ahead of approval. This is actually a great time to reach out — you're early enough that you're not competing on a crowded tender, but late enough that they're thinking about it. Contact Geldard directly.</div>
+      <div class="angle-title" style="margin-bottom:5px">Still time — but move quickly</div>
+      <div class="angle-body">This permit in U 1 ROSEWOOD COURT 36 ROSEWOOD ST BARDON is a few weeks in. Structural decisions aren't locked yet. Reach out now to position yourself for the fitout. Don't wait until you see a skip bin.</div>
+    </div>
+    <div class="angle angle-b">
+      <div class="angle-top">
+        <span class="angle-who">🔨 Builder / Trades</span>
+        <span class="badge hot">HOT</span>
       </div>
-      <div class="angle angle-re">
-        <div class="angle-header">
-          <span class="angle-role">🏠 Real Estate</span>
-          <span class="badge warm">WARM</span>
-        </div>
-        <div class="angle-title">Property changing its use — watch for a transaction</div>
-        <div class="angle-body">A change-of-use application in U 1 ROSEWOOD COURT 36 ROSEWOOD ST BARDON often leads to a property being sold — either because the owner has maximised value and wants to cash out, or because the new use attracts a different buyer. Commercial agents especially should monitor this. If the change gets approved, the property's value likely just went up.</div>
+      <div class="angle-title" style="margin-bottom:5px">Quote conversations may be starting</div>
+      <div class="angle-body">This permit in U 1 ROSEWOOD COURT 36 ROSEWOOD ST BARDON is a few weeks in. The owner may be starting to think about quotes. You're early enough to avoid a crowded tender — reach out now.</div>
+    </div>
+    <div class="angle angle-re">
+      <div class="angle-top">
+        <span class="angle-who">🏠 Real Estate</span>
+        <span class="badge warm">WARM</span>
       </div>
+      <div class="angle-title" style="margin-bottom:5px">Property changing use — watch for a sale</div>
+      <div class="angle-body">A change-of-use application in U 1 ROSEWOOD COURT 36 ROSEWOOD ST BARDON often ends in a sale — either because the owner cashes out after adding value, or because the new use attracts different buyers. Commercial agents especially should monitor this.</div>
     </div>
   </div>
+
   <div class="card">
-    <div class="card-top">
+    <div class="card-header">
       <div class="card-address">NUNDAH</div>
       <div class="card-meta">
         <span class="tag">Brisbane</span>
-        <span class="tag type-plain">Build + Change of Use</span>
-        <span class="tag stage-active">Council Reviewing</span>
-        <span style="font-size:11px;color:#aaa">Lodged: 2026-03-05 &nbsp;|&nbsp; Owner: Tolbush Pty Ltd</span>
+        <span class="tag">Build + Change of Use</span>
+        <span class="tag stage-active">🟡 Council Reviewing</span>
+        <span style="font-size:11px;color:#aaa">Lodged 2026-03-05 &nbsp;·&nbsp; Tolbush Pty Ltd</span>
       </div>
     </div>
-    <div class="angles">
-
-      <div class="angle angle-id">
-        <div class="angle-header">
-          <span class="angle-role">🎨 Interior Designer</span>
-          <span class="badge warm">WARM</span>
-        </div>
-        <div class="angle-title">Still a window — but move quickly</div>
-        <div class="angle-body">This building permit in NUNDAH is about 4–8 weeks into the approval process. Interior designers can still get involved — the final fitout decisions (fixtures, finishes, layout tweaks) are often made after approval. Reach out now and position yourself for when construction starts. Don't wait until you see a skip bin out front.</div>
+    <div class="angle angle-id">
+      <div class="angle-top">
+        <span class="angle-who">🎨 Interior Designer</span>
+        <span class="badge warm">WARM</span>
       </div>
-      <div class="angle angle-b">
-        <div class="angle-header">
-          <span class="angle-role">🔨 Builder / Trades</span>
-          <span class="badge hot">HOT</span>
-        </div>
-        <div class="angle-title">Good timing — quote conversations may be starting</div>
-        <div class="angle-body">This permit in NUNDAH is a few weeks into the approval process. The applicant may be starting to think about builders now to line up quotes ahead of approval. This is actually a great time to reach out — you're early enough that you're not competing on a crowded tender, but late enough that they're thinking about it. Contact Tolbush directly.</div>
+      <div class="angle-title" style="margin-bottom:5px">Still time — but move quickly</div>
+      <div class="angle-body">This permit in NUNDAH is a few weeks in. Structural decisions aren't locked yet. Reach out now to position yourself for the fitout. Don't wait until you see a skip bin.</div>
+    </div>
+    <div class="angle angle-b">
+      <div class="angle-top">
+        <span class="angle-who">🔨 Builder / Trades</span>
+        <span class="badge hot">HOT</span>
       </div>
-      <div class="angle angle-re">
-        <div class="angle-header">
-          <span class="angle-role">🏠 Real Estate</span>
-          <span class="badge warm">WARM</span>
-        </div>
-        <div class="angle-title">Property changing its use — watch for a transaction</div>
-        <div class="angle-body">A change-of-use application in NUNDAH often leads to a property being sold — either because the owner has maximised value and wants to cash out, or because the new use attracts a different buyer. Commercial agents especially should monitor this. If the change gets approved, the property's value likely just went up.</div>
+      <div class="angle-title" style="margin-bottom:5px">Quote conversations may be starting</div>
+      <div class="angle-body">This permit in NUNDAH is a few weeks in. The owner may be starting to think about quotes. You're early enough to avoid a crowded tender — reach out now.</div>
+    </div>
+    <div class="angle angle-re">
+      <div class="angle-top">
+        <span class="angle-who">🏠 Real Estate</span>
+        <span class="badge warm">WARM</span>
       </div>
+      <div class="angle-title" style="margin-bottom:5px">Property changing use — watch for a sale</div>
+      <div class="angle-body">A change-of-use application in NUNDAH often ends in a sale — either because the owner cashes out after adding value, or because the new use attracts different buyers. Commercial agents especially should monitor this.</div>
     </div>
   </div>
 </div>
 
 <div class="sec">
-  <div class="sec-label">Where the action is</div>
-  <div class="sec-title">Hottest Suburbs for Renovation Work</div>
+  <div class="sec-label">Where activity is concentrated</div>
+  <div class="sec-title">Hottest Suburbs This Month</div>
   <div class="sec-sub">Number of residential renovation permits lodged in the last 30 days</div>
   <div class="suburb-grid">
     <div class="suburb-card">
@@ -487,7 +464,7 @@ body{font-family:Inter,sans-serif;background:#f8f8f6;color:#121212;font-size:14p
       <div class="sc-n">3</div>
       <div class="sc-l">new permits this month</div>
     </div>
-    <div class="suburb-card">
+    <div class="suburb-card w">
       <div class="sc-name">ANNERLEY</div>
       <div class="sc-council">Brisbane</div>
       <div class="sc-n">3</div>
@@ -505,98 +482,72 @@ body{font-family:Inter,sans-serif;background:#f8f8f6;color:#121212;font-size:14p
       <div class="sc-n">2</div>
       <div class="sc-l">new permits this month</div>
     </div>
-    <div class="suburb-card w">
-      <div class="sc-name">ASCOT</div>
-      <div class="sc-council">Brisbane</div>
-      <div class="sc-n">2</div>
-      <div class="sc-l">new permits this month</div>
-    </div>
-    <div class="suburb-card w">
-      <div class="sc-name">ALDERLEY</div>
-      <div class="sc-council">Brisbane</div>
-      <div class="sc-n">2</div>
-      <div class="sc-l">new permits this month</div>
-    </div>
   </div>
 </div>
 
 <div class="sec alt">
   <div class="sec-label">For builders & trades</div>
   <div class="sec-title">Suburbs Where Construction Demand Is Growing</div>
-  <div class="sec-sub">Weekly velocity shows how fast activity is increasing — a surge means new work is accelerating right now</div>
+  <div class="sec-sub">Growth rate shows how fast weekly activity is increasing — a surge means now is the time to be there</div>
   <table class="vtable">
-    <thead><tr><th>Suburb</th><th>Region</th><th>This Month</th><th>This Week</th><th>Growth Rate</th><th>Signal</th></tr></thead>
+    <thead><tr><th>Suburb</th><th>Region</th><th>This Month</th><th>Growth Rate</th><th>Signal</th></tr></thead>
     <tbody>
       <tr>
         <td><strong>CAMP HILL</strong></td>
         <td><span class="tag" style="font-size:10px">Brisbane</span></td>
         <td><strong>5</strong> permits</td>
-        <td>4 permits</td>
-        <td><span class="vbar"><span class="vfill" style="width:86%"></span></span><strong>344%</strong></td>
+        <td><div class="vbar-wrap"><div class="vbar"><div class="vfill" style="width:86%"></div></div><strong>344%</strong></div></td>
         <td><span class="badge hot">🔥 Surging</span></td>
       </tr>
       <tr>
         <td><strong>HENDRA</strong></td>
         <td><span class="tag" style="font-size:10px">Brisbane</span></td>
         <td><strong>5</strong> permits</td>
-        <td>3 permits</td>
-        <td><span class="vbar"><span class="vfill" style="width:64%"></span></span><strong>258%</strong></td>
+        <td><div class="vbar-wrap"><div class="vbar"><div class="vfill" style="width:64%"></div></div><strong>258%</strong></div></td>
         <td><span class="badge hot">🔥 Surging</span></td>
       </tr>
       <tr>
         <td><strong>ANNERLEY</strong></td>
         <td><span class="tag" style="font-size:10px">Brisbane</span></td>
         <td><strong>5</strong> permits</td>
-        <td>2 permits</td>
-        <td><span class="vbar"><span class="vfill" style="width:43%"></span></span><strong>172%</strong></td>
+        <td><div class="vbar-wrap"><div class="vbar"><div class="vfill" style="width:43%"></div></div><strong>172%</strong></div></td>
         <td><span class="badge warm">📈 Growing</span></td>
       </tr>
       <tr>
         <td><strong>ROCHEDALE</strong></td>
         <td><span class="tag" style="font-size:10px">Brisbane</span></td>
         <td><strong>5</strong> permits</td>
-        <td>2 permits</td>
-        <td><span class="vbar"><span class="vfill" style="width:43%"></span></span><strong>172%</strong></td>
+        <td><div class="vbar-wrap"><div class="vbar"><div class="vfill" style="width:43%"></div></div><strong>172%</strong></div></td>
         <td><span class="badge warm">📈 Growing</span></td>
       </tr>
       <tr>
         <td><strong>ASCOT</strong></td>
         <td><span class="tag" style="font-size:10px">Brisbane</span></td>
         <td><strong>5</strong> permits</td>
-        <td>2 permits</td>
-        <td><span class="vbar"><span class="vfill" style="width:43%"></span></span><strong>172%</strong></td>
+        <td><div class="vbar-wrap"><div class="vbar"><div class="vfill" style="width:43%"></div></div><strong>172%</strong></div></td>
         <td><span class="badge warm">📈 Growing</span></td>
-      </tr>
-      <tr>
-        <td><strong>MORNINGSIDE</strong></td>
-        <td><span class="tag" style="font-size:10px">Brisbane</span></td>
-        <td><strong>5</strong> permits</td>
-        <td>1 permits</td>
-        <td><span class="vbar"><span class="vfill" style="width:21%"></span></span><strong>86%</strong></td>
-        <td><span class="badge cold">➡ Steady</span></td>
       </tr>
     </tbody>
   </table>
   <div class="timing">
     <strong>How long does approval actually take?</strong><br>
-    Building works: roughly <strong>4 months</strong> &nbsp;|&nbsp;
-    Civil / Operational works: roughly <strong>5 months</strong> &nbsp;|&nbsp;
-    Subdivisions: roughly <strong>6 months</strong> &nbsp;|&nbsp;
-    Major use changes: <strong>12–14 months</strong><br>
-    <span style="color:#888">The golden rule: reach out when the permit is lodged, not when it's approved. By then, someone else has already had the conversation.</span>
+    Building permits: roughly <strong>4 months</strong> &nbsp;·&nbsp;
+    Civil works: roughly <strong>5 months</strong> &nbsp;·&nbsp;
+    Subdivisions: roughly <strong>6 months</strong><br>
+    <span style="color:#888;font-size:11px">The golden rule: reach out when the permit is lodged, not when it's approved. By then, someone else has already had the conversation.</span>
   </div>
 </div>
 
 <div class="cta">
-  <h2>Your Own Live Dashboard — Updated Every Morning</h2>
-  <p>Get access to a personalised dashboard showing every permit in your suburbs, filtered to your trade. You'll see new applications the morning after they're lodged — before anyone else.</p>
+  <h2>Get Your Own Live Dashboard</h2>
+  <p>See every new planning application in your suburbs — updated each morning. Filtered to your trade so you only see what's relevant to you.</p>
   <a href="https://www.myfindr.com.au" class="cta-btn">Claim Your Spot →</a>
-  <div class="cta-fine">Early bird rate: $100/week until end of March &nbsp;|&nbsp; Normal: $200/week &nbsp;|&nbsp; Cancel anytime</div>
+  <div class="cta-fine">Early bird: $100/week until end of March &nbsp;·&nbsp; Normal rate: $200/week &nbsp;·&nbsp; Cancel anytime</div>
 </div>
 
 <div class="footer">
-  <p>© 2026 myFindr. Data sourced daily from Brisbane City Council and Sunshine Coast Council.<br>Updated at 5am AEST. Auto-generated from live planning application data.</p>
-  <p style="text-align:right">myfindr.com.au<br>Brisbane + Sunshine Coast</p>
+  <p>© 2026 myFindr<br>Data sourced from Brisbane City Council and Sunshine Coast Council</p>
+  <p style="text-align:right">myfindr.com.au<br>Updated daily at 5am AEST</p>
 </div>
 
 </div>
