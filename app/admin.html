@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>myFindr — Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --orange: #E64500;
+      --black: #121212;
+      --white: #ffffff;
+      --gray-100: #f5f5f5;
+      --gray-200: #e9e9e9;
+      --gray-400: #999;
+      --gray-600: #666;
+    }
+    body { font-family: 'Inter', sans-serif; background: var(--gray-100); color: var(--black); min-height: 100vh; }
+
+    /* AUTH GATE */
+    #auth-gate {
+      display: flex; align-items: center; justify-content: center;
+      min-height: 100vh; background: var(--black); padding: 1rem;
+    }
+    .auth-card {
+      background: #1e1e1e; border: 1px solid #2a2a2a;
+      border-radius: 16px; padding: 2rem; width: 100%; max-width: 380px;
+    }
+    .auth-card h2 { color: var(--white); font-size: 1.2rem; font-weight: 700; margin-bottom: 1.5rem; text-align: center; }
+    .auth-card .brand { color: var(--orange); }
+    .form-group { margin-bottom: 1rem; }
+    .form-group label { display: block; font-size: 0.78rem; font-weight: 600; color: var(--gray-400); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+    .form-group input, .form-group select, .form-group textarea {
+      width: 100%; background: #2a2a2a; border: 1px solid #3a3a3a;
+      border-radius: 8px; padding: 0.7rem 1rem; font-size: 0.9rem;
+      color: var(--white); font-family: inherit; transition: border-color 0.2s;
+    }
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+      outline: none; border-color: var(--orange);
+    }
+    .form-group select option { background: #2a2a2a; }
+    .form-group textarea { resize: vertical; min-height: 80px; }
+    .btn {
+      width: 100%; background: var(--orange); color: var(--white);
+      border: none; border-radius: 8px; padding: 0.8rem; font-size: 0.9rem;
+      font-weight: 600; font-family: inherit; cursor: pointer; transition: opacity 0.2s;
+    }
+    .btn:hover { opacity: 0.9; }
+    .btn:disabled { opacity: 0.6; cursor: not-allowed; }
+    .msg { border-radius: 8px; padding: 0.75rem 1rem; font-size: 0.85rem; margin-top: 1rem; display: none; }
+    .msg.error { background: rgba(239,68,68,0.15); border: 1px solid rgba(239,68,68,0.3); color: #fca5a5; }
+    .msg.success { background: rgba(34,197,94,0.15); border: 1px solid rgba(34,197,94,0.3); color: #86efac; }
+
+    /* ADMIN PANEL */
+    #admin-panel { display: none; }
+    header { background: var(--black); height: 60px; display: flex; align-items: center; justify-content: space-between; padding: 0 1.5rem; }
+    .header-logo { font-size: 1.3rem; font-weight: 800; color: var(--white); }
+    .header-logo span { color: var(--orange); }
+    .admin-badge { background: var(--orange); color: var(--white); font-size: 0.7rem; font-weight: 700; padding: 2px 8px; border-radius: 4px; margin-left: 8px; letter-spacing: 0.5px; }
+    .btn-sm { background: transparent; border: 1px solid #3a3a3a; color: var(--gray-400); border-radius: 6px; padding: 6px 12px; font-size: 0.8rem; font-family: inherit; cursor: pointer; }
+    .btn-sm:hover { border-color: var(--orange); color: var(--orange); }
+
+    .admin-content { max-width: 900px; margin: 0 auto; padding: 1.5rem 1rem 3rem; }
+
+    .page-title { font-size: 1.4rem; font-weight: 800; margin-bottom: 0.4rem; }
+    .page-sub { font-size: 0.85rem; color: var(--gray-600); margin-bottom: 1.5rem; }
+
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+    @media (max-width: 640px) { .grid-2 { grid-template-columns: 1fr; } }
+
+    .card { background: var(--white); border: 1px solid var(--gray-200); border-radius: 12px; padding: 1.5rem; }
+    .card h3 { font-size: 1rem; font-weight: 700; margin-bottom: 1.2rem; padding-bottom: 0.8rem; border-bottom: 1px solid var(--gray-200); }
+
+    /* clients table */
+    .client-table { width: 100%; border-collapse: collapse; font-size: 0.83rem; margin-top: 0.5rem; }
+    .client-table th { text-align: left; font-size: 0.72rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--gray-600); padding: 0.6rem 0.5rem; border-bottom: 2px solid var(--gray-200); }
+    .client-table td { padding: 0.7rem 0.5rem; border-bottom: 1px solid var(--gray-100); }
+    .client-table tr:last-child td { border-bottom: none; }
+    .icp-badge { font-size: 0.7rem; padding: 2px 7px; border-radius: 10px; background: var(--gray-100); color: var(--gray-600); font-weight: 600; }
+    .active-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #22c55e; }
+
+    .full-btn { width: 100%; }
+  </style>
+</head>
+<body>
+
+<!-- AUTH GATE -->
+<div id="auth-gate">
+  <div class="auth-card">
+    <h2><span class="brand">myFindr</span> Admin</h2>
+    <div class="form-group">
+      <label>Service Key</label>
+      <input type="password" id="admin-key" placeholder="Paste Supabase service key…" autocomplete="off">
+    </div>
+    <button class="btn" onclick="checkAdminKey()">Enter Admin</button>
+    <div class="msg error" id="auth-error">Invalid service key.</div>
+  </div>
+</div>
+
+<!-- ADMIN PANEL -->
+<div id="admin-panel">
+  <header>
+    <div class="header-logo">my<span>Findr</span> <span class="admin-badge">ADMIN</span></div>
+    <button class="btn-sm" onclick="doAdminLogout()">Sign Out</button>
+  </header>
+
+  <div class="admin-content">
+    <div class="page-title">Client Management</div>
+    <div class="page-sub">Add and manage myFindr client accounts</div>
+
+    <div class="grid-2">
+      <!-- Add Client Form -->
+      <div class="card">
+        <h3>➕ Add New Client</h3>
+        <div class="form-group">
+          <label>Full Name</label>
+          <input type="text" id="new-name" placeholder="Jane Smith">
+        </div>
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" id="new-email" placeholder="jane@example.com">
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" id="new-password" placeholder="Min 8 characters">
+        </div>
+        <div class="form-group">
+          <label>ICP Type</label>
+          <select id="new-icp">
+            <option value="interior_designer">Interior Designer</option>
+            <option value="builder">Builder</option>
+            <option value="real_estate">Real Estate</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Target Suburbs (comma-separated)</label>
+          <textarea id="new-suburbs" placeholder="Paddington, Red Hill, Kelvin Grove"></textarea>
+        </div>
+        <div class="form-group">
+          <label>Council</label>
+          <select id="new-council">
+            <option value="brisbane">Brisbane</option>
+            <option value="sunshine_coast">Sunshine Coast</option>
+          </select>
+        </div>
+        <button class="btn full-btn" onclick="addClient()">Create Client Account</button>
+        <div class="msg error" id="add-error"></div>
+        <div class="msg success" id="add-success"></div>
+      </div>
+
+      <!-- Client List -->
+      <div class="card">
+        <h3>👥 Current Clients</h3>
+        <div id="clients-loading" style="color:var(--gray-400);font-size:0.85rem;">Loading…</div>
+        <table class="client-table" id="client-table" style="display:none">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>ICP</th>
+              <th>Suburbs</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="client-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const SUPABASE_URL = 'https://ieqbavwzydlxiaclzcjl.supabase.co';
+let serviceKey = '';
+
+function checkAdminKey() {
+  const key = document.getElementById('admin-key').value.trim();
+  // Validate: must be a Supabase JWT with service_role
+  try {
+    const payload = JSON.parse(atob(key.split('.')[1]));
+    if (payload.role !== 'service_role') throw new Error('not service_role');
+    serviceKey = key;
+    document.getElementById('auth-gate').style.display = 'none';
+    document.getElementById('admin-panel').style.display = 'block';
+    sessionStorage.setItem('mf_admin_key', key);
+    loadClients();
+  } catch(e) {
+    document.getElementById('auth-error').style.display = 'block';
+  }
+}
+
+function doAdminLogout() {
+  serviceKey = '';
+  sessionStorage.removeItem('mf_admin_key');
+  document.getElementById('admin-panel').style.display = 'none';
+  document.getElementById('auth-gate').style.display = 'flex';
+  document.getElementById('admin-key').value = '';
+}
+
+async function supabaseReq(method, path, body) {
+  const res = await fetch(`${SUPABASE_URL}${path}`, {
+    method,
+    headers: {
+      'apikey': serviceKey,
+      'Authorization': `Bearer ${serviceKey}`,
+      'Content-Type': 'application/json',
+      'Prefer': 'return=representation'
+    },
+    body: body ? JSON.stringify(body) : undefined
+  });
+  const text = await res.text();
+  if (!res.ok) throw new Error(text);
+  return text ? JSON.parse(text) : null;
+}
+
+async function loadClients() {
+  try {
+    const data = await supabaseReq('GET', '/rest/v1/client_profiles?order=created_at.desc&select=*');
+    const tbody = document.getElementById('client-tbody');
+    tbody.innerHTML = data.map(c => `
+      <tr>
+        <td><strong>${escHtml(c.full_name)}</strong><br><small style="color:var(--gray-600)">${escHtml(c.email)}</small></td>
+        <td><span class="icp-badge">${escHtml(c.icp_type)}</span></td>
+        <td style="font-size:0.75rem;color:var(--gray-600)">${(c.target_suburbs||[]).join(', ')}</td>
+        <td><span class="active-dot" title="Active"></span></td>
+      </tr>
+    `).join('');
+    document.getElementById('clients-loading').style.display = 'none';
+    document.getElementById('client-table').style.display = 'table';
+  } catch(e) {
+    document.getElementById('clients-loading').textContent = 'Failed to load clients.';
+  }
+}
+
+async function addClient() {
+  const name = document.getElementById('new-name').value.trim();
+  const email = document.getElementById('new-email').value.trim();
+  const password = document.getElementById('new-password').value;
+  const icp = document.getElementById('new-icp').value;
+  const suburbsRaw = document.getElementById('new-suburbs').value.trim();
+  const council = document.getElementById('new-council').value;
+
+  const errEl = document.getElementById('add-error');
+  const successEl = document.getElementById('add-success');
+  errEl.style.display = 'none';
+  successEl.style.display = 'none';
+
+  if (!name || !email || !password || !suburbsRaw) {
+    errEl.textContent = 'Please fill in all fields.';
+    errEl.style.display = 'block';
+    return;
+  }
+
+  if (password.length < 8) {
+    errEl.textContent = 'Password must be at least 8 characters.';
+    errEl.style.display = 'block';
+    return;
+  }
+
+  const suburbs = suburbsRaw.split(',').map(s => s.trim()).filter(Boolean);
+
+  try {
+    // 1. Insert client profile
+    const [profile] = await supabaseReq('POST', '/rest/v1/client_profiles', {
+      email: email.toLowerCase(),
+      full_name: name,
+      icp_type: icp,
+      target_suburbs: suburbs,
+      target_council: council
+    });
+
+    // 2. Hash password via RPC then insert
+    await supabaseReq('POST', '/rest/v1/rpc/create_client_password', {
+      p_email: email.toLowerCase(),
+      p_password: password,
+      p_client_id: profile.id
+    });
+
+    successEl.textContent = `✓ Client ${name} created successfully!`;
+    successEl.style.display = 'block';
+
+    // Clear form
+    ['new-name','new-email','new-password','new-suburbs'].forEach(id => {
+      document.getElementById(id).value = '';
+    });
+
+    // Reload list
+    loadClients();
+  } catch(e) {
+    errEl.textContent = 'Error: ' + e.message;
+    errEl.style.display = 'block';
+  }
+}
+
+function escHtml(str) {
+  if (!str) return '';
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// Check session on load
+window.addEventListener('DOMContentLoaded', () => {
+  const saved = sessionStorage.getItem('mf_admin_key');
+  if (saved) {
+    document.getElementById('admin-key').value = saved;
+    checkAdminKey();
+  }
+});
+</script>
+</body>
+</html>
