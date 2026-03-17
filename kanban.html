@@ -111,6 +111,11 @@
     -webkit-appearance: none; appearance: none;
     letter-spacing: -0.2px;
   }
+
+  /* FINAL OVERRIDE: desktop no dropdown, mobile yes */
+  @media (hover: hover) and (pointer: fine) {
+    .col-select { display: none !important; visibility: hidden !important; }
+  }
 </style>
 </head>
 <body>
