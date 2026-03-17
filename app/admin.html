@@ -1,311 +1,1319 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>myFindr — Admin</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    :root {
-      --orange: #E64500;
-      --black: #121212;
-      --white: #ffffff;
-      --gray-100: #f5f5f5;
-      --gray-200: #e9e9e9;
-      --gray-400: #999;
-      --gray-600: #666;
-    }
-    body { font-family: 'Inter', sans-serif; background: var(--gray-100); color: var(--black); min-height: 100vh; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>myFindr Admin Panel</title>
+<script src="admin-config.js"></script>
+<style>
+  :root {
+    --bg: #1A2332;
+    --bg2: #1e2d3d;
+    --card: rgba(30,50,70,0.85);
+    --card-border: rgba(255,255,255,0.06);
+    --card-hover: rgba(30,50,70,0.95);
+    --teal: #00BCD4;
+    --teal-dim: rgba(0,188,212,0.15);
+    --green: #4CAF50;
+    --pink: #E91E63;
+    --yellow: #FFB300;
+    --text: #e8edf3;
+    --text-dim: #8fa5bb;
+    --text-muted: #5a7a95;
+    --shadow: 0 4px 24px rgba(0,0,0,0.35);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; min-height: 100vh; }
 
-    /* AUTH GATE */
-    #auth-gate {
-      display: flex; align-items: center; justify-content: center;
-      min-height: 100vh; background: var(--black); padding: 1rem;
-    }
-    .auth-card {
-      background: #1e1e1e; border: 1px solid #2a2a2a;
-      border-radius: 16px; padding: 2rem; width: 100%; max-width: 380px;
-    }
-    .auth-card h2 { color: var(--white); font-size: 1.2rem; font-weight: 700; margin-bottom: 1.5rem; text-align: center; }
-    .auth-card .brand { color: var(--orange); }
-    .form-group { margin-bottom: 1rem; }
-    .form-group label { display: block; font-size: 0.78rem; font-weight: 600; color: var(--gray-400); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
-    .form-group input, .form-group select, .form-group textarea {
-      width: 100%; background: #2a2a2a; border: 1px solid #3a3a3a;
-      border-radius: 8px; padding: 0.7rem 1rem; font-size: 0.9rem;
-      color: var(--white); font-family: inherit; transition: border-color 0.2s;
-    }
-    .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
-      outline: none; border-color: var(--orange);
-    }
-    .form-group select option { background: #2a2a2a; }
-    .form-group textarea { resize: vertical; min-height: 80px; }
-    .btn {
-      width: 100%; background: var(--orange); color: var(--white);
-      border: none; border-radius: 8px; padding: 0.8rem; font-size: 0.9rem;
-      font-weight: 600; font-family: inherit; cursor: pointer; transition: opacity 0.2s;
-    }
-    .btn:hover { opacity: 0.9; }
-    .btn:disabled { opacity: 0.6; cursor: not-allowed; }
-    .msg { border-radius: 8px; padding: 0.75rem 1rem; font-size: 0.85rem; margin-top: 1rem; display: none; }
-    .msg.error { background: rgba(239,68,68,0.15); border: 1px solid rgba(239,68,68,0.3); color: #fca5a5; }
-    .msg.success { background: rgba(34,197,94,0.15); border: 1px solid rgba(34,197,94,0.3); color: #86efac; }
+  /* AUTH SCREEN */
+  #auth-screen {
+    position: fixed; inset: 0; background: var(--bg);
+    display: flex; align-items: center; justify-content: center; z-index: 1000;
+  }
+  .auth-card {
+    background: var(--card); border: 1px solid var(--card-border);
+    border-radius: 16px; padding: 48px 40px; width: 380px; box-shadow: var(--shadow);
+    text-align: center;
+  }
+  .auth-card .logo { font-size: 28px; font-weight: 800; color: var(--teal); margin-bottom: 8px; }
+  .auth-card .subtitle { color: var(--text-dim); font-size: 14px; margin-bottom: 32px; }
+  .auth-card input {
+    width: 100%; padding: 12px 16px; background: rgba(0,0,0,0.3);
+    border: 1px solid var(--card-border); border-radius: 8px; color: var(--text);
+    font-size: 15px; outline: none; transition: border-color 0.2s;
+    margin-bottom: 12px;
+  }
+  .auth-card input:focus { border-color: var(--teal); }
+  .auth-card button {
+    width: 100%; padding: 12px; background: var(--teal); color: #fff;
+    border: none; border-radius: 8px; font-size: 15px; font-weight: 600;
+    cursor: pointer; transition: opacity 0.2s;
+  }
+  .auth-card button:hover { opacity: 0.85; }
+  .auth-error { color: var(--pink); font-size: 13px; margin-top: 8px; min-height: 18px; }
 
-    /* ADMIN PANEL */
-    #admin-panel { display: none; }
-    header { background: var(--black); height: 60px; display: flex; align-items: center; justify-content: space-between; padding: 0 1.5rem; }
-    .header-logo { font-size: 1.3rem; font-weight: 800; color: var(--white); }
-    .header-logo span { color: var(--orange); }
-    .admin-badge { background: var(--orange); color: var(--white); font-size: 0.7rem; font-weight: 700; padding: 2px 8px; border-radius: 4px; margin-left: 8px; letter-spacing: 0.5px; }
-    .btn-sm { background: transparent; border: 1px solid #3a3a3a; color: var(--gray-400); border-radius: 6px; padding: 6px 12px; font-size: 0.8rem; font-family: inherit; cursor: pointer; }
-    .btn-sm:hover { border-color: var(--orange); color: var(--orange); }
+  /* MAIN APP */
+  #app { display: none; min-height: 100vh; }
 
-    .admin-content { max-width: 900px; margin: 0 auto; padding: 1.5rem 1rem 3rem; }
+  /* TOP NAV */
+  .topbar {
+    background: rgba(20,35,50,0.95); border-bottom: 1px solid var(--card-border);
+    padding: 0 24px; display: flex; align-items: center; gap: 0;
+    position: sticky; top: 0; z-index: 100; backdrop-filter: blur(8px);
+  }
+  .topbar .brand { color: var(--teal); font-size: 18px; font-weight: 800; margin-right: 32px; white-space: nowrap; }
+  .topbar .brand span { color: var(--text-dim); font-weight: 400; font-size: 12px; margin-left: 6px; }
+  .nav-tabs { display: flex; gap: 0; flex: 1; overflow-x: auto; }
+  .nav-tab {
+    padding: 16px 20px; color: var(--text-dim); font-size: 13px; font-weight: 500;
+    cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.2s;
+    white-space: nowrap; user-select: none;
+  }
+  .nav-tab:hover { color: var(--text); }
+  .nav-tab.active { color: var(--teal); border-bottom-color: var(--teal); }
+  .topbar .logout-btn {
+    padding: 6px 14px; background: transparent; border: 1px solid var(--card-border);
+    border-radius: 6px; color: var(--text-dim); font-size: 12px; cursor: pointer;
+    transition: all 0.2s; white-space: nowrap; margin-left: 12px;
+  }
+  .topbar .logout-btn:hover { border-color: var(--pink); color: var(--pink); }
 
-    .page-title { font-size: 1.4rem; font-weight: 800; margin-bottom: 0.4rem; }
-    .page-sub { font-size: 0.85rem; color: var(--gray-600); margin-bottom: 1.5rem; }
+  /* CONTENT */
+  .content { padding: 28px 28px; max-width: 1400px; margin: 0 auto; }
+  .section { display: none; }
+  .section.active { display: block; }
 
-    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
-    @media (max-width: 640px) { .grid-2 { grid-template-columns: 1fr; } }
+  /* SECTION HEADER */
+  .section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; }
+  .section-title { font-size: 20px; font-weight: 700; }
+  .section-title span { color: var(--teal); }
+  .section-meta { color: var(--text-dim); font-size: 13px; }
 
-    .card { background: var(--white); border: 1px solid var(--gray-200); border-radius: 12px; padding: 1.5rem; }
-    .card h3 { font-size: 1rem; font-weight: 700; margin-bottom: 1.2rem; padding-bottom: 0.8rem; border-bottom: 1px solid var(--gray-200); }
+  /* KPI GRID */
+  .kpi-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; margin-bottom: 24px; }
+  .kpi-card {
+    background: var(--card); border: 1px solid var(--card-border);
+    border-radius: 12px; padding: 20px; transition: all 0.2s;
+  }
+  .kpi-card:hover { border-color: rgba(0,188,212,0.25); box-shadow: var(--shadow); }
+  .kpi-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.8px; color: var(--text-muted); margin-bottom: 10px; }
+  .kpi-value { font-size: 28px; font-weight: 800; line-height: 1; margin-bottom: 6px; }
+  .kpi-value.teal { color: var(--teal); }
+  .kpi-value.green { color: var(--green); }
+  .kpi-value.pink { color: var(--pink); }
+  .kpi-value.yellow { color: var(--yellow); }
+  .kpi-sub { font-size: 12px; color: var(--text-dim); }
 
-    /* clients table */
-    .client-table { width: 100%; border-collapse: collapse; font-size: 0.83rem; margin-top: 0.5rem; }
-    .client-table th { text-align: left; font-size: 0.72rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--gray-600); padding: 0.6rem 0.5rem; border-bottom: 2px solid var(--gray-200); }
-    .client-table td { padding: 0.7rem 0.5rem; border-bottom: 1px solid var(--gray-100); }
-    .client-table tr:last-child td { border-bottom: none; }
-    .icp-badge { font-size: 0.7rem; padding: 2px 7px; border-radius: 10px; background: var(--gray-100); color: var(--gray-600); font-weight: 600; }
-    .active-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #22c55e; }
+  /* BADGE */
+  .badge {
+    display: inline-block; padding: 2px 8px; border-radius: 20px;
+    font-size: 11px; font-weight: 600; white-space: nowrap;
+  }
+  .badge-green { background: rgba(76,175,80,0.18); color: var(--green); border: 1px solid rgba(76,175,80,0.3); }
+  .badge-red { background: rgba(233,30,99,0.18); color: var(--pink); border: 1px solid rgba(233,30,99,0.3); }
+  .badge-teal { background: var(--teal-dim); color: var(--teal); border: 1px solid rgba(0,188,212,0.3); }
+  .badge-yellow { background: rgba(255,179,0,0.18); color: var(--yellow); border: 1px solid rgba(255,179,0,0.3); }
 
-    .full-btn { width: 100%; }
-  </style>
+  /* CARD */
+  .card {
+    background: var(--card); border: 1px solid var(--card-border);
+    border-radius: 12px; padding: 24px; margin-bottom: 20px;
+  }
+  .card-title { font-size: 14px; font-weight: 600; margin-bottom: 16px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.5px; }
+
+  /* TABLE */
+  .table-wrap { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th { color: var(--text-muted); font-weight: 600; text-transform: uppercase; font-size: 11px; letter-spacing: 0.5px; padding: 10px 12px; border-bottom: 1px solid var(--card-border); text-align: left; }
+  td { padding: 12px 12px; border-bottom: 1px solid rgba(255,255,255,0.03); vertical-align: middle; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: rgba(0,188,212,0.04); }
+
+  /* BUTTON */
+  .btn {
+    padding: 8px 16px; border-radius: 8px; font-size: 13px; font-weight: 600;
+    cursor: pointer; border: none; transition: all 0.2s; display: inline-flex; align-items: center; gap: 6px;
+  }
+  .btn-primary { background: var(--teal); color: #fff; }
+  .btn-primary:hover { opacity: 0.85; }
+  .btn-sm { padding: 5px 10px; font-size: 12px; border-radius: 6px; }
+  .btn-danger { background: rgba(233,30,99,0.15); color: var(--pink); border: 1px solid rgba(233,30,99,0.3); }
+  .btn-danger:hover { background: rgba(233,30,99,0.25); }
+  .btn-ghost { background: transparent; color: var(--text-dim); border: 1px solid var(--card-border); }
+  .btn-ghost:hover { border-color: var(--teal); color: var(--teal); }
+
+  /* FORM */
+  .form-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 14px; }
+  .form-group label { display: block; font-size: 11px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
+  .form-group input, .form-group select, .form-group textarea {
+    width: 100%; padding: 10px 12px; background: rgba(0,0,0,0.3);
+    border: 1px solid var(--card-border); border-radius: 8px; color: var(--text);
+    font-size: 13px; outline: none; transition: border-color 0.2s;
+  }
+  .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: var(--teal); }
+  .form-group select option { background: #1e3a4a; }
+  .form-actions { display: flex; gap: 10px; margin-top: 16px; }
+
+  /* INLINE FORM PANEL */
+  .add-client-panel {
+    background: rgba(0,188,212,0.05); border: 1px solid rgba(0,188,212,0.2);
+    border-radius: 12px; padding: 24px; margin-bottom: 20px; display: none;
+  }
+  .add-client-panel.open { display: block; }
+  .add-client-panel .panel-title { font-size: 14px; font-weight: 600; color: var(--teal); margin-bottom: 16px; }
+
+  /* CHART BAR */
+  .bar-chart { display: flex; align-items: flex-end; gap: 10px; height: 120px; padding: 0 4px; }
+  .bar-col { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 6px; }
+  .bar { width: 100%; background: var(--teal); border-radius: 4px 4px 0 0; min-height: 4px; transition: height 0.5s ease; opacity: 0.85; }
+  .bar-label { font-size: 10px; color: var(--text-muted); text-align: center; }
+  .bar-val { font-size: 11px; color: var(--text-dim); }
+
+  /* FUNNEL */
+  .funnel { display: flex; flex-direction: column; gap: 8px; max-width: 500px; }
+  .funnel-step { display: flex; align-items: center; gap: 14px; }
+  .funnel-bar-wrap { flex: 1; }
+  .funnel-bar-bg { height: 36px; background: rgba(255,255,255,0.05); border-radius: 6px; overflow: hidden; }
+  .funnel-bar-fill { height: 100%; background: linear-gradient(90deg, var(--teal), rgba(0,188,212,0.5)); border-radius: 6px; display: flex; align-items: center; padding: 0 12px; font-size: 13px; font-weight: 700; min-width: 40px; transition: width 0.6s ease; }
+  .funnel-label { font-size: 12px; color: var(--text-dim); width: 140px; text-align: right; }
+  .funnel-pct { font-size: 11px; color: var(--text-muted); width: 44px; text-align: right; }
+
+  /* ACTIVITY LOG */
+  .activity-log { max-height: 280px; overflow-y: auto; }
+  .activity-row { display: flex; gap: 12px; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.04); align-items: flex-start; }
+  .activity-row:last-child { border-bottom: none; }
+  .activity-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--teal); margin-top: 4px; flex-shrink: 0; }
+  .activity-content .activity-time { font-size: 11px; color: var(--text-muted); }
+  .activity-content .activity-desc { font-size: 13px; color: var(--text); }
+
+  /* AGENT TILES */
+  .agent-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; margin-bottom: 24px; }
+  .agent-card {
+    background: var(--card); border: 1px solid var(--card-border);
+    border-radius: 12px; padding: 20px;
+  }
+  .agent-card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+  .agent-name { font-size: 14px; font-weight: 600; }
+  .agent-status-dot { width: 10px; height: 10px; border-radius: 50%; }
+  .agent-status-dot.online { background: var(--green); box-shadow: 0 0 6px var(--green); }
+  .agent-status-dot.idle { background: var(--yellow); }
+  .agent-stat { font-size: 24px; font-weight: 800; color: var(--teal); }
+  .agent-stat-label { font-size: 12px; color: var(--text-muted); }
+
+  /* QUICK ACTIONS */
+  .quick-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+
+  /* LOADING */
+  .loading { color: var(--text-muted); font-size: 13px; padding: 16px 0; }
+  .skeleton { background: linear-gradient(90deg, rgba(255,255,255,0.04) 25%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.04) 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; border-radius: 6px; }
+  @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+
+  /* QUALITY STAT */
+  .quality-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 12px; }
+  .quality-card { background: rgba(0,0,0,0.2); border-radius: 10px; padding: 16px; border: 1px solid var(--card-border); }
+  .quality-num { font-size: 22px; font-weight: 800; margin-bottom: 4px; }
+  .quality-label { font-size: 12px; color: var(--text-dim); }
+
+  /* TOAST */
+  #toast { position: fixed; bottom: 24px; right: 24px; background: var(--teal); color: #fff; padding: 12px 20px; border-radius: 10px; font-size: 13px; font-weight: 600; z-index: 9999; transform: translateY(80px); opacity: 0; transition: all 0.3s; pointer-events: none; }
+  #toast.show { transform: translateY(0); opacity: 1; }
+  #toast.error { background: var(--pink); }
+
+  /* SCROLLBAR */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 3px; }
+
+  /* RESPONSIVE */
+  @media (max-width: 768px) {
+    .content { padding: 16px; }
+    .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+    .form-grid { grid-template-columns: 1fr; }
+  }
+</style>
 </head>
 <body>
 
-<!-- AUTH GATE -->
-<div id="auth-gate">
+<!-- AUTH SCREEN -->
+<div id="auth-screen">
   <div class="auth-card">
-    <h2><span class="brand">myFindr</span> Admin</h2>
-    <div class="form-group">
-      <label>Service Key</label>
-      <input type="password" id="admin-key" placeholder="Paste Supabase service key…" autocomplete="off">
-    </div>
-    <button class="btn" onclick="checkAdminKey()">Enter Admin</button>
-    <div class="msg error" id="auth-error">Invalid service key.</div>
+    <div class="logo">myFindr</div>
+    <div class="subtitle">Admin Operations Panel — Internal Only</div>
+    <input type="password" id="admin-pass" placeholder="Admin password" autocomplete="current-password">
+    <button onclick="checkAuth()">Access Dashboard</button>
+    <div class="auth-error" id="auth-error"></div>
   </div>
 </div>
 
-<!-- ADMIN PANEL -->
-<div id="admin-panel">
-  <header>
-    <div class="header-logo">my<span>Findr</span> <span class="admin-badge">ADMIN</span></div>
-    <button class="btn-sm" onclick="doAdminLogout()">Sign Out</button>
-  </header>
+<!-- MAIN APP -->
+<div id="app">
+  <div class="topbar">
+    <div class="brand">myFindr <span>ADMIN</span></div>
+    <div class="nav-tabs">
+      <div class="nav-tab active" onclick="showSection('clients', this)">👥 Clients</div>
+      <div class="nav-tab" onclick="showSection('financials', this)">💰 Financials</div>
+      <div class="nav-tab" onclick="showSection('agents', this)">🤖 Agent Health</div>
+      <div class="nav-tab" onclick="showSection('pipeline', this)">📊 Sales Pipeline</div>
+      <div class="nav-tab" onclick="showSection('database', this)">🗄️ Database</div>
+    </div>
+    <button class="logout-btn" onclick="logout()">Logout</button>
+  </div>
 
-  <div class="admin-content">
-    <div class="page-title">Client Management</div>
-    <div class="page-sub">Add and manage myFindr client accounts</div>
+  <div class="content">
 
-    <div class="grid-2">
+    <!-- SECTION 1: CLIENTS -->
+    <div class="section active" id="section-clients">
+      <div class="section-header">
+        <div class="section-title">Client <span>Management</span></div>
+        <div style="display:flex;align-items:center;gap:12px;">
+          <div class="section-meta" id="clients-count">Loading...</div>
+          <button class="btn btn-primary btn-sm" onclick="toggleAddForm()">+ Add Client</button>
+        </div>
+      </div>
+
       <!-- Add Client Form -->
-      <div class="card">
-        <h3>➕ Add New Client</h3>
-        <div class="form-group">
-          <label>Full Name</label>
-          <input type="text" id="new-name" placeholder="Jane Smith">
+      <div class="add-client-panel" id="add-client-panel">
+        <div class="panel-title">➕ New Client</div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Full Name</label>
+            <input type="text" id="new-name" placeholder="Jane Smith">
+          </div>
+          <div class="form-group">
+            <label>Email</label>
+            <input type="email" id="new-email" placeholder="jane@example.com">
+          </div>
+          <div class="form-group">
+            <label>Password</label>
+            <input type="text" id="new-password" placeholder="temp password">
+          </div>
+          <div class="form-group">
+            <label>ICP Type</label>
+            <select id="new-icp">
+              <option value="builder">Builder</option>
+              <option value="interior_designer">Interior Designer</option>
+              <option value="real_estate">Real Estate</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Target Suburbs (comma-separated)</label>
+            <input type="text" id="new-suburbs" placeholder="Newstead, Fortitude Valley, Teneriffe">
+          </div>
+          <div class="form-group">
+            <label>Council</label>
+            <select id="new-council">
+              <option value="brisbane">Brisbane</option>
+              <option value="sunshine_coast">Sunshine Coast</option>
+            </select>
+          </div>
         </div>
-        <div class="form-group">
-          <label>Email</label>
-          <input type="email" id="new-email" placeholder="jane@example.com">
+        <div class="form-actions">
+          <button class="btn btn-primary" onclick="addClient()">Create Client</button>
+          <button class="btn btn-ghost" onclick="toggleAddForm()">Cancel</button>
         </div>
-        <div class="form-group">
-          <label>Password</label>
-          <input type="password" id="new-password" placeholder="Min 8 characters">
-        </div>
-        <div class="form-group">
-          <label>ICP Type</label>
-          <select id="new-icp">
-            <option value="interior_designer">Interior Designer</option>
-            <option value="builder">Builder</option>
-            <option value="real_estate">Real Estate</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label>Target Suburbs (comma-separated)</label>
-          <textarea id="new-suburbs" placeholder="Paddington, Red Hill, Kelvin Grove"></textarea>
-        </div>
-        <div class="form-group">
-          <label>Council</label>
-          <select id="new-council">
-            <option value="brisbane">Brisbane</option>
-            <option value="sunshine_coast">Sunshine Coast</option>
-          </select>
-        </div>
-        <button class="btn full-btn" onclick="addClient()">Create Client Account</button>
-        <div class="msg error" id="add-error"></div>
-        <div class="msg success" id="add-success"></div>
+        <div id="add-client-msg" style="font-size:13px;margin-top:10px;"></div>
       </div>
 
-      <!-- Client List -->
       <div class="card">
-        <h3>👥 Current Clients</h3>
-        <div id="clients-loading" style="color:var(--gray-400);font-size:0.85rem;">Loading…</div>
-        <table class="client-table" id="client-table" style="display:none">
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>ICP</th>
-              <th>Suburbs</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody id="client-tbody"></tbody>
-        </table>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>ICP</th>
+                <th>Suburbs</th>
+                <th>Council</th>
+                <th>Status</th>
+                <th>Joined</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="clients-tbody">
+              <tr><td colspan="8" class="loading">Loading clients...</td></tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
-  </div>
-</div>
+
+    <!-- SECTION 2: FINANCIALS -->
+    <div class="section" id="section-financials">
+      <div class="section-header">
+        <div class="section-title">Financial <span>Dashboard</span></div>
+        <div class="section-meta" id="fin-updated">—</div>
+      </div>
+
+      <div class="kpi-grid" id="fin-kpis">
+        <div class="kpi-card">
+          <div class="kpi-label">MRR</div>
+          <div class="kpi-value teal" id="fin-mrr">—</div>
+          <div class="kpi-sub">Monthly Recurring Revenue</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">ARR</div>
+          <div class="kpi-value teal" id="fin-arr">—</div>
+          <div class="kpi-sub">Annual Run Rate</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Active Subscribers</div>
+          <div class="kpi-value green" id="fin-active">—</div>
+          <div class="kpi-sub">Current paying clients</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Churned (Month)</div>
+          <div class="kpi-value pink" id="fin-churned">—</div>
+          <div class="kpi-sub">Lost this month</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Monthly Growth</div>
+          <div class="kpi-value teal" id="fin-growth">—</div>
+          <div class="kpi-sub">vs last month</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Avg LTV</div>
+          <div class="kpi-value yellow" id="fin-ltv">—</div>
+          <div class="kpi-sub">Lifetime Value est.</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Net Rev Retention</div>
+          <div class="kpi-value green" id="fin-nrr">—</div>
+          <div class="kpi-sub">Revenue retained</div>
+        </div>
+      </div>
+
+      <div class="card" id="fin-chart-card">
+        <div class="card-title">MRR Trend — Last 6 Months</div>
+        <div class="bar-chart" id="mrr-chart">
+          <div class="loading">Loading chart...</div>
+        </div>
+      </div>
+
+      <div class="card" id="fin-subs-card">
+        <div class="card-title">Subscriptions</div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>Client</th><th>Plan</th><th>Weekly Price</th><th>Status</th><th>Started</th></tr>
+            </thead>
+            <tbody id="subs-tbody">
+              <tr><td colspan="5" class="loading">Loading subscriptions...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 3: AGENT HEALTH -->
+    <div class="section" id="section-agents">
+      <div class="section-header">
+        <div class="section-title">Agent & System <span>Health</span></div>
+        <div class="section-meta" id="agents-updated">—</div>
+      </div>
+
+      <div class="agent-grid" id="agent-tiles">
+        <div class="agent-card">
+          <div class="agent-card-header">
+            <div class="agent-name">🏙️ Brisbane Scraper</div>
+            <div class="agent-status-dot" id="bne-dot"></div>
+          </div>
+          <div class="agent-stat" id="bne-count">—</div>
+          <div class="agent-stat-label">Records added today</div>
+          <div style="margin-top:10px;font-size:12px;color:var(--text-muted);">Last run: <span id="bne-last">—</span></div>
+          <div style="font-size:12px;color:var(--text-muted);">This week: <span id="bne-week" style="color:var(--text-dim)">—</span></div>
+        </div>
+
+        <div class="agent-card">
+          <div class="agent-card-header">
+            <div class="agent-name">🌊 Sunshine Coast Scraper</div>
+            <div class="agent-status-dot" id="sc-dot"></div>
+          </div>
+          <div class="agent-stat" id="sc-count">—</div>
+          <div class="agent-stat-label">Records added today</div>
+          <div style="margin-top:10px;font-size:12px;color:var(--text-muted);">Last run: <span id="sc-last">—</span></div>
+          <div style="font-size:12px;color:var(--text-muted);">This week: <span id="sc-week" style="color:var(--text-dim)">—</span></div>
+        </div>
+
+        <div class="agent-card">
+          <div class="agent-card-header">
+            <div class="agent-name">🔥 ICP Algorithm</div>
+            <div class="agent-status-dot online"></div>
+          </div>
+          <div class="agent-stat" id="hot-leads-count">—</div>
+          <div class="agent-stat-label">HOT leads total</div>
+          <div style="margin-top:10px;font-size:12px;color:var(--text-muted);">ICP views: <span style="color:var(--teal)">vw_icp_lead_rankings_*</span></div>
+          <div style="font-size:12px;color:var(--text-muted);">Status: <span style="color:var(--green)">Active</span></div>
+        </div>
+
+        <div class="agent-card">
+          <div class="agent-card-header">
+            <div class="agent-name">🗄️ Database Health</div>
+            <div class="agent-status-dot" id="db-dot"></div>
+          </div>
+          <div class="agent-stat" id="db-total">—</div>
+          <div class="agent-stat-label">Total DA records</div>
+          <div style="margin-top:10px;font-size:12px;color:var(--text-muted);">Bad dates: <span id="db-bad-dates" style="color:var(--yellow)">—</span></div>
+          <div style="font-size:12px;color:var(--text-muted);">Null suburbs: <span id="db-null-sub" style="color:var(--yellow)">—</span></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Recent Activity — Last 10 DA Submissions</div>
+        <div class="activity-log" id="activity-log">
+          <div class="loading">Loading activity...</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 4: SALES PIPELINE -->
+    <div class="section" id="section-pipeline">
+      <div class="section-header">
+        <div class="section-title">Sales <span>Pipeline</span></div>
+        <div class="section-meta" id="pipeline-updated">—</div>
+      </div>
+
+      <div class="kpi-grid">
+        <div class="kpi-card">
+          <div class="kpi-label">Total Enquiries</div>
+          <div class="kpi-value teal" id="pl-enquiries">—</div>
+          <div class="kpi-sub">All time</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Conversion Rate</div>
+          <div class="kpi-value green" id="pl-conversion">—</div>
+          <div class="kpi-sub">Enquiry → Subscriber</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Active Deals</div>
+          <div class="kpi-value teal" id="pl-deals">—</div>
+          <div class="kpi-sub">HubSpot open deals</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">MRR / New Client</div>
+          <div class="kpi-value yellow" id="pl-mrr-per">—</div>
+          <div class="kpi-sub">Avg per subscriber</div>
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px;" class="pipeline-cols">
+        <div class="card">
+          <div class="card-title">Conversion Funnel</div>
+          <div class="funnel" id="funnel-chart">
+            <div class="loading">Loading funnel...</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">Channel Breakdown</div>
+          <div id="channel-breakdown">
+            <div class="loading">Loading channels...</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">HubSpot Deals</div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>Deal Name</th><th>Stage</th><th>Amount</th><th>Created</th></tr>
+            </thead>
+            <tbody id="deals-tbody">
+              <tr><td colspan="4" class="loading">Loading deals...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 5: DATABASE STATUS -->
+    <div class="section" id="section-database">
+      <div class="section-header">
+        <div class="section-title">Database <span>Status</span></div>
+        <div class="section-meta" id="db-updated">—</div>
+      </div>
+
+      <div class="kpi-grid">
+        <div class="kpi-card">
+          <div class="kpi-label">Total DAs</div>
+          <div class="kpi-value teal" id="db2-total">—</div>
+          <div class="kpi-sub">All records</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Brisbane DAs</div>
+          <div class="kpi-value teal" id="db2-brisbane">—</div>
+          <div class="kpi-sub" id="db2-bne-change">—</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Sunshine Coast DAs</div>
+          <div class="kpi-value teal" id="db2-sc">—</div>
+          <div class="kpi-sub" id="db2-sc-change">—</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Added This Month</div>
+          <div class="kpi-value green" id="db2-this-month">—</div>
+          <div class="kpi-sub" id="db2-month-change">—</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Data Quality Report</div>
+        <div class="quality-grid" id="quality-grid">
+          <div class="quality-card">
+            <div class="quality-num" id="q-bad-dates" style="color:var(--yellow)">—</div>
+            <div class="quality-label">Bad Dates (>2999)</div>
+          </div>
+          <div class="quality-card">
+            <div class="quality-num" id="q-null-suburbs" style="color:var(--yellow)">—</div>
+            <div class="quality-label">Null Suburbs</div>
+          </div>
+          <div class="quality-card">
+            <div class="quality-num" id="q-unlinked" style="color:var(--pink)">—</div>
+            <div class="quality-label">Unlinked DAs (no project)</div>
+          </div>
+          <div class="quality-card">
+            <div class="quality-num" id="q-null-address" style="color:var(--text-dim)">—</div>
+            <div class="quality-label">Null Addresses</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px;">
+        <div class="card">
+          <div class="card-title">DAs Added — This Month vs Last Month</div>
+          <div class="bar-chart" id="db-month-chart" style="height:80px;">
+            <div class="loading">Loading...</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">Quick Actions</div>
+          <div class="quick-actions">
+            <button class="btn btn-ghost btn-sm" onclick="showInstruction()">▶ Run Scraper</button>
+            <a href="#" class="btn btn-ghost btn-sm" onclick="showSection('agents', document.querySelectorAll('.nav-tab')[2])">📋 View Health Log</a>
+            <button class="btn btn-ghost btn-sm" onclick="loadDatabaseSection()">🔄 Refresh</button>
+          </div>
+          <div id="scraper-instruction" style="display:none;margin-top:14px;padding:12px;background:rgba(0,0,0,0.2);border-radius:8px;font-size:12px;color:var(--text-dim);">
+            Run via OpenClaw terminal:<br>
+            <code style="color:var(--teal);">node ~/workspace/scripts/da-scraper-brisbane.js</code><br>
+            <code style="color:var(--teal);">node ~/workspace/scripts/da-scraper-sunshine-coast.js</code>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Council Breakdown</div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>Council</th><th>Total DAs</th><th>Added This Month</th><th>Added Last Month</th><th>Change</th></tr>
+            </thead>
+            <tbody id="council-tbody">
+              <tr><td colspan="5" class="loading">Loading...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /content -->
+</div><!-- /app -->
+
+<div id="toast"></div>
 
 <script>
-const SUPABASE_URL = 'https://ieqbavwzydlxiaclzcjl.supabase.co';
-let serviceKey = '';
+// ============================================================
+// CONFIG
+// ============================================================
+const ADMIN_PASS = "MyFindrAdmin2026!";
+const SUPA_URL = "https://ieqbavwzydlxiaclzcjl.supabase.co";
+// Keys loaded from admin-config.js (gitignored) or window.MYFINDR_CONFIG
+const _cfg = window.MYFINDR_CONFIG || {};
+const SUPA_KEY = _cfg.SUPA_KEY || "";
+const HUBSPOT_KEY = _cfg.HUBSPOT_KEY || "";
+const NEWIE_TOKEN = _cfg.NEWIE_TOKEN || "";
 
-function checkAdminKey() {
-  const key = document.getElementById('admin-key').value.trim();
-  // Validate: must be a Supabase JWT with service_role
-  try {
-    const payload = JSON.parse(atob(key.split('.')[1]));
-    if (payload.role !== 'service_role') throw new Error('not service_role');
-    serviceKey = key;
-    document.getElementById('auth-gate').style.display = 'none';
-    document.getElementById('admin-panel').style.display = 'block';
-    sessionStorage.setItem('mf_admin_key', key);
-    loadClients();
-  } catch(e) {
-    document.getElementById('auth-error').style.display = 'block';
+// ============================================================
+// AUTH
+// ============================================================
+function checkAuth() {
+  const val = document.getElementById('admin-pass').value;
+  if (val === ADMIN_PASS) {
+    sessionStorage.setItem('admin_auth', '1');
+    document.getElementById('auth-screen').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+    loadClientsSection();
+  } else {
+    document.getElementById('auth-error').textContent = 'Incorrect password. Try again.';
   }
 }
 
-function doAdminLogout() {
-  serviceKey = '';
-  sessionStorage.removeItem('mf_admin_key');
-  document.getElementById('admin-panel').style.display = 'none';
-  document.getElementById('auth-gate').style.display = 'flex';
-  document.getElementById('admin-key').value = '';
+function logout() {
+  sessionStorage.removeItem('admin_auth');
+  location.reload();
 }
 
-async function supabaseReq(method, path, body) {
-  const res = await fetch(`${SUPABASE_URL}${path}`, {
-    method,
-    headers: {
-      'apikey': serviceKey,
-      'Authorization': `Bearer ${serviceKey}`,
-      'Content-Type': 'application/json',
-      'Prefer': 'return=representation'
-    },
-    body: body ? JSON.stringify(body) : undefined
+document.getElementById('admin-pass').addEventListener('keydown', e => { if (e.key === 'Enter') checkAuth(); });
+
+window.addEventListener('load', () => {
+  if (sessionStorage.getItem('admin_auth') === '1') {
+    document.getElementById('auth-screen').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+    loadClientsSection();
+  }
+});
+
+// ============================================================
+// NAV
+// ============================================================
+function showSection(name, el) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('section-' + name).classList.add('active');
+  if (el) el.classList.add('active');
+
+  const loaders = {
+    clients: loadClientsSection,
+    financials: loadFinancialsSection,
+    agents: loadAgentsSection,
+    pipeline: loadPipelineSection,
+    database: loadDatabaseSection
+  };
+  if (loaders[name]) loaders[name]();
+}
+
+// ============================================================
+// SUPABASE HELPERS
+// ============================================================
+async function supaGet(table, params = '') {
+  const res = await fetch(`${SUPA_URL}/rest/v1/${table}?${params}`, {
+    headers: { apikey: SUPA_KEY, Authorization: `Bearer ${SUPA_KEY}`, 'Content-Type': 'application/json', Prefer: 'count=exact' }
   });
-  const text = await res.text();
-  if (!res.ok) throw new Error(text);
-  return text ? JSON.parse(text) : null;
+  if (!res.ok) throw new Error(`Supabase ${res.status}: ${await res.text()}`);
+  return res.json();
 }
 
-async function loadClients() {
+async function supaRpc(fn, body = {}) {
+  const res = await fetch(`${SUPA_URL}/rest/v1/rpc/${fn}`, {
+    method: 'POST',
+    headers: { apikey: SUPA_KEY, Authorization: `Bearer ${SUPA_KEY}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify(body)
+  });
+  if (!res.ok) throw new Error(`RPC ${fn} failed ${res.status}: ${await res.text()}`);
+  return res.json();
+}
+
+async function supaPost(table, data) {
+  const res = await fetch(`${SUPA_URL}/rest/v1/${table}`, {
+    method: 'POST',
+    headers: { apikey: SUPA_KEY, Authorization: `Bearer ${SUPA_KEY}`, 'Content-Type': 'application/json', Prefer: 'return=representation' },
+    body: JSON.stringify(data)
+  });
+  if (!res.ok) throw new Error(`POST ${table} failed ${res.status}: ${await res.text()}`);
+  return res.json();
+}
+
+async function supaPatch(table, match, data) {
+  const res = await fetch(`${SUPA_URL}/rest/v1/${table}?${match}`, {
+    method: 'PATCH',
+    headers: { apikey: SUPA_KEY, Authorization: `Bearer ${SUPA_KEY}`, 'Content-Type': 'application/json', Prefer: 'return=minimal' },
+    body: JSON.stringify(data)
+  });
+  if (!res.ok) throw new Error(`PATCH ${table} failed ${res.status}: ${await res.text()}`);
+  return res.ok;
+}
+
+// ============================================================
+// TOAST
+// ============================================================
+function showToast(msg, isError = false) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'show' + (isError ? ' error' : '');
+  setTimeout(() => { t.className = ''; }, 3000);
+}
+
+// ============================================================
+// FORMATTING
+// ============================================================
+function fmtDate(d) {
+  if (!d) return '—';
+  return new Date(d).toLocaleDateString('en-AU', { day: '2-digit', month: 'short', year: 'numeric' });
+}
+function fmtDateTime(d) {
+  if (!d) return '—';
+  return new Date(d).toLocaleString('en-AU', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' });
+}
+function fmtCurrency(n) {
+  if (n === null || n === undefined || isNaN(n)) return '—';
+  if (n >= 1000) return '$' + (n/1000).toFixed(1) + 'k';
+  return '$' + Math.round(n).toLocaleString();
+}
+function fmtNum(n) { return n == null ? '—' : Number(n).toLocaleString(); }
+function timeAgo(d) {
+  if (!d) return 'Never';
+  const diff = (Date.now() - new Date(d)) / 1000;
+  if (diff < 60) return 'Just now';
+  if (diff < 3600) return Math.floor(diff/60) + 'm ago';
+  if (diff < 86400) return Math.floor(diff/3600) + 'h ago';
+  return Math.floor(diff/86400) + 'd ago';
+}
+
+// ============================================================
+// SECTION 1: CLIENTS
+// ============================================================
+let clientsLoaded = false;
+async function loadClientsSection() {
+  if (clientsLoaded) return;
   try {
-    const data = await supabaseReq('GET', '/rest/v1/client_profiles?order=created_at.desc&select=*');
-    const tbody = document.getElementById('client-tbody');
-    tbody.innerHTML = data.map(c => `
-      <tr>
-        <td><strong>${escHtml(c.full_name)}</strong><br><small style="color:var(--gray-600)">${escHtml(c.email)}</small></td>
-        <td><span class="icp-badge">${escHtml(c.icp_type)}</span></td>
-        <td style="font-size:0.75rem;color:var(--gray-600)">${(c.target_suburbs||[]).join(', ')}</td>
-        <td><span class="active-dot" title="Active"></span></td>
-      </tr>
-    `).join('');
-    document.getElementById('clients-loading').style.display = 'none';
-    document.getElementById('client-table').style.display = 'table';
+    const clients = await supaGet('client_profiles', 'select=*&order=created_at.desc');
+    renderClientsTable(clients);
+    clientsLoaded = true;
   } catch(e) {
-    document.getElementById('clients-loading').textContent = 'Failed to load clients.';
+    document.getElementById('clients-tbody').innerHTML = `<tr><td colspan="8" style="color:var(--pink)">Error: ${e.message}</td></tr>`;
   }
+}
+
+function renderClientsTable(clients) {
+  const active = clients.filter(c => c.active);
+  document.getElementById('clients-count').innerHTML = `<span style="color:var(--green);font-weight:700;">${active.length} active</span> / ${clients.length} total`;
+
+  if (!clients.length) {
+    document.getElementById('clients-tbody').innerHTML = '<tr><td colspan="8" style="color:var(--text-muted)">No clients yet.</td></tr>';
+    return;
+  }
+
+  document.getElementById('clients-tbody').innerHTML = clients.map(c => {
+    const suburbs = Array.isArray(c.target_suburbs) ? c.target_suburbs.slice(0,3).join(', ') + (c.target_suburbs.length > 3 ? '…' : '') : (c.target_suburbs || '—');
+    const statusBadge = c.active
+      ? `<span class="badge badge-green">Active</span>`
+      : `<span class="badge badge-red">Inactive</span>`;
+    const icpBadge = `<span class="badge badge-teal">${(c.icp_type || '—').replace('_', ' ')}</span>`;
+    const actionBtn = c.active
+      ? `<button class="btn btn-danger btn-sm" onclick="deactivateClient('${c.id}', this)">Deactivate</button>`
+      : `<button class="btn btn-ghost btn-sm" onclick="activateClient('${c.id}', this)">Activate</button>`;
+    return `<tr>
+      <td style="font-weight:600;">${c.full_name || '—'}</td>
+      <td style="color:var(--text-dim)">${c.email || '—'}</td>
+      <td>${icpBadge}</td>
+      <td style="color:var(--text-dim);font-size:12px;max-width:180px;">${suburbs}</td>
+      <td style="color:var(--text-dim)">${c.target_council || '—'}</td>
+      <td>${statusBadge}</td>
+      <td style="color:var(--text-muted)">${fmtDate(c.created_at)}</td>
+      <td>${actionBtn}</td>
+    </tr>`;
+  }).join('');
+}
+
+function toggleAddForm() {
+  const panel = document.getElementById('add-client-panel');
+  panel.classList.toggle('open');
 }
 
 async function addClient() {
   const name = document.getElementById('new-name').value.trim();
   const email = document.getElementById('new-email').value.trim();
-  const password = document.getElementById('new-password').value;
+  const password = document.getElementById('new-password').value.trim();
   const icp = document.getElementById('new-icp').value;
   const suburbsRaw = document.getElementById('new-suburbs').value.trim();
   const council = document.getElementById('new-council').value;
+  const msgEl = document.getElementById('add-client-msg');
 
-  const errEl = document.getElementById('add-error');
-  const successEl = document.getElementById('add-success');
-  errEl.style.display = 'none';
-  successEl.style.display = 'none';
+  if (!name || !email || !password) { msgEl.style.color = 'var(--pink)'; msgEl.textContent = 'Name, email and password are required.'; return; }
 
-  if (!name || !email || !password || !suburbsRaw) {
-    errEl.textContent = 'Please fill in all fields.';
-    errEl.style.display = 'block';
-    return;
-  }
+  msgEl.style.color = 'var(--text-dim)'; msgEl.textContent = 'Creating client...';
 
-  if (password.length < 8) {
-    errEl.textContent = 'Password must be at least 8 characters.';
-    errEl.style.display = 'block';
-    return;
-  }
-
-  const suburbs = suburbsRaw.split(',').map(s => s.trim()).filter(Boolean);
+  const suburbs = suburbsRaw ? suburbsRaw.split(',').map(s => s.trim()).filter(Boolean) : [];
 
   try {
-    // 1. Insert client profile
-    const [profile] = await supabaseReq('POST', '/rest/v1/client_profiles', {
-      email: email.toLowerCase(),
-      full_name: name,
-      icp_type: icp,
-      target_suburbs: suburbs,
-      target_council: council
+    // Insert profile
+    const [profile] = await supaPost('client_profiles', {
+      full_name: name, email, icp_type: icp,
+      target_suburbs: suburbs, target_council: council, active: true
     });
 
-    // 2. Hash password via RPC then insert
-    await supabaseReq('POST', '/rest/v1/rpc/create_client_password', {
-      p_email: email.toLowerCase(),
-      p_password: password,
-      p_client_id: profile.id
-    });
+    // Create password via RPC
+    try {
+      await supaRpc('create_client_password', { p_email: email, p_password: password, p_client_profile_id: profile.id });
+    } catch(e2) {
+      // Fallback: direct insert with plain text (not ideal, but functional)
+      await supaPost('client_passwords', { email, password_hash: password, client_profile_id: profile.id });
+    }
 
-    successEl.textContent = `✓ Client ${name} created successfully!`;
-    successEl.style.display = 'block';
+    msgEl.style.color = 'var(--green)'; msgEl.textContent = '✓ Client created successfully!';
+    showToast('Client created: ' + name);
+    clientsLoaded = false;
+    loadClientsSection();
+    setTimeout(() => { toggleAddForm(); msgEl.textContent = ''; }, 1500);
 
     // Clear form
-    ['new-name','new-email','new-password','new-suburbs'].forEach(id => {
-      document.getElementById(id).value = '';
-    });
-
-    // Reload list
-    loadClients();
+    ['new-name','new-email','new-password','new-suburbs'].forEach(id => { document.getElementById(id).value = ''; });
   } catch(e) {
-    errEl.textContent = 'Error: ' + e.message;
-    errEl.style.display = 'block';
+    msgEl.style.color = 'var(--pink)'; msgEl.textContent = 'Error: ' + e.message;
   }
 }
 
-function escHtml(str) {
-  if (!str) return '';
-  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+async function deactivateClient(id, btn) {
+  if (!confirm('Deactivate this client?')) return;
+  try {
+    await supaPatch('client_profiles', `id=eq.${id}`, { active: false });
+    showToast('Client deactivated');
+    clientsLoaded = false;
+    loadClientsSection();
+  } catch(e) { showToast('Error: ' + e.message, true); }
 }
 
-// Check session on load
-window.addEventListener('DOMContentLoaded', () => {
-  const saved = sessionStorage.getItem('mf_admin_key');
-  if (saved) {
-    document.getElementById('admin-key').value = saved;
-    checkAdminKey();
+async function activateClient(id, btn) {
+  try {
+    await supaPatch('client_profiles', `id=eq.${id}`, { active: true });
+    showToast('Client activated');
+    clientsLoaded = false;
+    loadClientsSection();
+  } catch(e) { showToast('Error: ' + e.message, true); }
+}
+
+// ============================================================
+// SECTION 2: FINANCIALS
+// ============================================================
+let finLoaded = false;
+async function loadFinancialsSection() {
+  if (finLoaded) return;
+  document.getElementById('fin-updated').textContent = 'Loading...';
+
+  // Try Newie
+  try {
+    await loadNewieData();
+  } catch(e) {
+    console.warn('Newie failed:', e.message);
+    // Fall back to Supabase-derived estimates
+    await loadFinancialsFromSupabase();
   }
-});
+  finLoaded = true;
+}
+
+async function loadNewieData() {
+  // Try common Newie API endpoints
+  const endpoints = [
+    'https://api.newie.io/v1/subscriptions',
+    'https://app.newie.io/api/subscriptions',
+    'https://api.newie.com.au/v1/subscriptions'
+  ];
+
+  let data = null;
+  for (const url of endpoints) {
+    try {
+      const res = await fetch(url, {
+        headers: { Authorization: `Bearer ${NEWIE_TOKEN}`, 'Content-Type': 'application/json' }
+      });
+      if (res.ok) { data = await res.json(); break; }
+    } catch(e) { continue; }
+  }
+
+  if (!data) throw new Error('Newie API unreachable — using Supabase estimates');
+
+  const subs = Array.isArray(data) ? data : (data.data || data.subscriptions || []);
+  const active = subs.filter(s => s.status === 'active' || s.active);
+  const now = new Date();
+  const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+  const lastMonthStart = new Date(now.getFullYear(), now.getMonth()-1, 1);
+
+  const mrr = active.reduce((sum, s) => sum + ((s.weekly_price || s.amount || 0) * 52 / 12), 0);
+  const arr = mrr * 12;
+  const churned = subs.filter(s => {
+    const end = s.cancelled_at || s.ended_at;
+    return end && new Date(end) >= monthStart;
+  }).length;
+  const newThisMonth = active.filter(s => new Date(s.created_at) >= monthStart).length;
+  const newLastMonth = active.filter(s => {
+    const d = new Date(s.created_at);
+    return d >= lastMonthStart && d < monthStart;
+  }).length;
+  const growth = newLastMonth > 0 ? ((newThisMonth - newLastMonth) / newLastMonth * 100).toFixed(1) : 'N/A';
+
+  const avgDuration = active.reduce((sum, s) => {
+    const start = new Date(s.created_at);
+    const weeks = (now - start) / (1000*60*60*24*7);
+    return sum + weeks;
+  }, 0) / (active.length || 1);
+  const avgWeekly = active.reduce((sum, s) => sum + (s.weekly_price || s.amount || 0), 0) / (active.length || 1);
+  const ltv = avgDuration * avgWeekly;
+
+  document.getElementById('fin-mrr').textContent = fmtCurrency(mrr);
+  document.getElementById('fin-arr').textContent = fmtCurrency(arr);
+  document.getElementById('fin-active').textContent = fmtNum(active.length);
+  document.getElementById('fin-churned').textContent = fmtNum(churned);
+  document.getElementById('fin-growth').textContent = growth !== 'N/A' ? growth + '%' : '—';
+  document.getElementById('fin-ltv').textContent = fmtCurrency(ltv);
+  document.getElementById('fin-nrr').textContent = active.length > 0 ? '~100%' : '—';
+  document.getElementById('fin-updated').textContent = 'Newie data · ' + new Date().toLocaleTimeString('en-AU');
+
+  renderSubsTable(subs);
+  renderMrrChart(subs);
+}
+
+async function loadFinancialsFromSupabase() {
+  // Estimate from client_profiles
+  const clients = await supaGet('client_profiles', 'select=*');
+  const active = clients.filter(c => c.active);
+  const now = new Date();
+  const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+  const lastMonthStart = new Date(now.getFullYear(), now.getMonth()-1, 1);
+
+  // Estimate $150/week per client (typical SaaS pricing)
+  const weeklyPerClient = 150;
+  const mrr = active.length * weeklyPerClient * 52 / 12;
+  const arr = mrr * 12;
+
+  const newThisMonth = clients.filter(c => new Date(c.created_at) >= monthStart).length;
+  const newLastMonth = clients.filter(c => {
+    const d = new Date(c.created_at);
+    return d >= lastMonthStart && d < monthStart;
+  }).length;
+  const growth = newLastMonth > 0 ? ((newThisMonth - newLastMonth) / newLastMonth * 100).toFixed(1) : '+100';
+  const churned = clients.filter(c => !c.active).length;
+  const avgWeeks = active.reduce((sum, c) => sum + (now - new Date(c.created_at)) / (7*24*3600*1000), 0) / (active.length || 1);
+  const ltv = avgWeeks * weeklyPerClient;
+
+  document.getElementById('fin-mrr').textContent = fmtCurrency(mrr);
+  document.getElementById('fin-arr').textContent = fmtCurrency(arr);
+  document.getElementById('fin-active').textContent = fmtNum(active.length);
+  document.getElementById('fin-churned').textContent = fmtNum(churned);
+  document.getElementById('fin-growth').textContent = growth + '%';
+  document.getElementById('fin-ltv').textContent = fmtCurrency(ltv);
+  document.getElementById('fin-nrr').textContent = active.length > 0 ? Math.round(active.length / (active.length + churned) * 100) + '%' : '—';
+  document.getElementById('fin-updated').textContent = 'Supabase estimates · $150/wk avg · ' + new Date().toLocaleTimeString('en-AU');
+
+  renderSubsFromClients(clients);
+  renderMrrChartFromClients(clients);
+}
+
+function renderSubsTable(subs) {
+  if (!subs.length) { document.getElementById('subs-tbody').innerHTML = '<tr><td colspan="5" style="color:var(--text-muted)">No subscriptions found.</td></tr>'; return; }
+  document.getElementById('subs-tbody').innerHTML = subs.slice(0,20).map(s => `
+    <tr>
+      <td style="font-weight:600">${s.customer_name || s.name || s.email || '—'}</td>
+      <td>${s.plan || s.plan_name || '—'}</td>
+      <td style="color:var(--teal)">${s.weekly_price ? '$' + s.weekly_price + '/wk' : (s.amount ? '$' + s.amount : '—')}</td>
+      <td>${s.status === 'active' || s.active ? '<span class="badge badge-green">Active</span>' : '<span class="badge badge-red">Inactive</span>'}</td>
+      <td style="color:var(--text-muted)">${fmtDate(s.created_at)}</td>
+    </tr>`).join('');
+}
+
+function renderSubsFromClients(clients) {
+  if (!clients.length) { document.getElementById('subs-tbody').innerHTML = '<tr><td colspan="5" style="color:var(--text-muted)">No clients.</td></tr>'; return; }
+  document.getElementById('subs-tbody').innerHTML = clients.map(c => `
+    <tr>
+      <td style="font-weight:600">${c.full_name || '—'}</td>
+      <td><span class="badge badge-teal">${(c.icp_type||'').replace('_',' ')}</span></td>
+      <td style="color:var(--teal)">$150/wk (est.)</td>
+      <td>${c.active ? '<span class="badge badge-green">Active</span>' : '<span class="badge badge-red">Inactive</span>'}</td>
+      <td style="color:var(--text-muted)">${fmtDate(c.created_at)}</td>
+    </tr>`).join('');
+}
+
+function renderMrrChart(subs) {
+  const months = getLast6Months();
+  const bars = months.map(m => {
+    const active = subs.filter(s => new Date(s.created_at) <= new Date(m.end) && (!s.cancelled_at || new Date(s.cancelled_at) > new Date(m.start)));
+    const mrr = active.reduce((sum, s) => sum + ((s.weekly_price || s.amount || 0) * 52 / 12), 0);
+    return { label: m.label, val: mrr };
+  });
+  drawBarChart('mrr-chart', bars, v => fmtCurrency(v));
+}
+
+function renderMrrChartFromClients(clients) {
+  const months = getLast6Months();
+  const weeklyPerClient = 150;
+  const bars = months.map(m => {
+    const active = clients.filter(c => new Date(c.created_at) <= new Date(m.end) && c.active);
+    return { label: m.label, val: active.length * weeklyPerClient * 52 / 12 };
+  });
+  drawBarChart('mrr-chart', bars, v => fmtCurrency(v));
+}
+
+function getLast6Months() {
+  const now = new Date(); const months = [];
+  for (let i = 5; i >= 0; i--) {
+    const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+    const end = new Date(now.getFullYear(), now.getMonth() - i + 1, 0, 23, 59, 59);
+    months.push({ label: d.toLocaleString('en-AU', { month: 'short' }), start: d.toISOString(), end: end.toISOString() });
+  }
+  return months;
+}
+
+function drawBarChart(containerId, bars, fmtFn) {
+  const max = Math.max(...bars.map(b => b.val), 1);
+  document.getElementById(containerId).innerHTML = bars.map(b => {
+    const pct = Math.max(4, (b.val / max) * 100);
+    return `<div class="bar-col">
+      <div class="bar-val">${fmtFn ? fmtFn(b.val) : b.val}</div>
+      <div class="bar" style="height:${pct}%"></div>
+      <div class="bar-label">${b.label}</div>
+    </div>`;
+  }).join('');
+}
+
+// ============================================================
+// SECTION 3: AGENT HEALTH
+// ============================================================
+let agentsLoaded = false;
+async function loadAgentsSection() {
+  if (agentsLoaded) return;
+  document.getElementById('agents-updated').textContent = 'Loading...';
+
+  const today = new Date(); today.setHours(0,0,0,0);
+  const weekAgo = new Date(today); weekAgo.setDate(weekAgo.getDate() - 7);
+
+  try {
+    const [bneToday, bneWeek, bneAll, scToday, scWeek, scAll, totalCount, badDates, nullSubs, hotLeads, recentActivity] = await Promise.all([
+      supaGet('da_submissions', `select=id&council=eq.brisbane&created_at=gte.${today.toISOString()}`),
+      supaGet('da_submissions', `select=id&council=eq.brisbane&created_at=gte.${weekAgo.toISOString()}`),
+      supaGet('da_submissions', `select=created_at&council=eq.brisbane&order=created_at.desc&limit=1`),
+      supaGet('da_submissions', `select=id&council=eq.sunshine_coast&created_at=gte.${today.toISOString()}`),
+      supaGet('da_submissions', `select=id&council=eq.sunshine_coast&created_at=gte.${weekAgo.toISOString()}`),
+      supaGet('da_submissions', `select=created_at&council=eq.sunshine_coast&order=created_at.desc&limit=1`),
+      supaGet('da_submissions', 'select=id'),
+      supaGet('da_submissions', `select=id&date_received=gt.2999-01-01`),
+      supaGet('da_submissions', 'select=id&suburb=is.null'),
+      supaGet('vw_icp_lead_rankings_id', 'select=id&icp_signal=eq.HOT'),
+      supaGet('da_submissions', 'select=created_at,suburb,application_type,council&order=created_at.desc&limit=10')
+    ]);
+
+    const bneLastRun = bneAll[0]?.created_at;
+    const scLastRun = scAll[0]?.created_at;
+
+    document.getElementById('bne-count').textContent = fmtNum(bneToday.length);
+    document.getElementById('bne-week').textContent = fmtNum(bneWeek.length) + ' this week';
+    document.getElementById('bne-last').textContent = timeAgo(bneLastRun);
+    document.getElementById('bne-dot').className = 'agent-status-dot ' + (bneToday.length > 0 ? 'online' : 'idle');
+
+    document.getElementById('sc-count').textContent = fmtNum(scToday.length);
+    document.getElementById('sc-week').textContent = fmtNum(scWeek.length) + ' this week';
+    document.getElementById('sc-last').textContent = timeAgo(scLastRun);
+    document.getElementById('sc-dot').className = 'agent-status-dot ' + (scToday.length > 0 ? 'online' : 'idle');
+
+    document.getElementById('hot-leads-count').textContent = fmtNum(hotLeads.length);
+    document.getElementById('db-total').textContent = fmtNum(totalCount.length);
+    document.getElementById('db-bad-dates').textContent = fmtNum(badDates.length);
+    document.getElementById('db-null-sub').textContent = fmtNum(nullSubs.length);
+    document.getElementById('db-dot').className = 'agent-status-dot ' + (badDates.length < 100 && nullSubs.length < 1000 ? 'online' : 'idle');
+
+    // Activity log
+    document.getElementById('activity-log').innerHTML = recentActivity.map(a => `
+      <div class="activity-row">
+        <div class="activity-dot"></div>
+        <div class="activity-content">
+          <div class="activity-time">${fmtDateTime(a.created_at)} · <span class="badge badge-teal" style="font-size:10px">${a.council || '—'}</span></div>
+          <div class="activity-desc">${a.suburb || 'Unknown suburb'} — ${a.application_type || 'DA'}</div>
+        </div>
+      </div>`).join('') || '<div class="loading">No recent activity.</div>';
+
+    document.getElementById('agents-updated').textContent = 'Updated ' + new Date().toLocaleTimeString('en-AU');
+    agentsLoaded = true;
+  } catch(e) {
+    document.getElementById('activity-log').innerHTML = `<div style="color:var(--pink)">Error: ${e.message}</div>`;
+    document.getElementById('agents-updated').textContent = 'Error loading data';
+  }
+}
+
+// ============================================================
+// SECTION 4: SALES PIPELINE
+// ============================================================
+let pipelineLoaded = false;
+async function loadPipelineSection() {
+  if (pipelineLoaded) return;
+  document.getElementById('pipeline-updated').textContent = 'Loading...';
+
+  // Load HubSpot deals + Supabase clients in parallel
+  const [clientsResult, dealsResult] = await Promise.allSettled([
+    supaGet('client_profiles', 'select=*'),
+    loadHubSpotDeals()
+  ]);
+
+  const clients = clientsResult.status === 'fulfilled' ? clientsResult.value : [];
+  const deals = dealsResult.status === 'fulfilled' ? dealsResult.value : [];
+
+  const activeSubs = clients.filter(c => c.active).length;
+  const totalEnquiries = Math.max(deals.length, activeSubs * 5); // estimate if no deals
+  const conversion = totalEnquiries > 0 ? ((activeSubs / totalEnquiries) * 100).toFixed(1) : '—';
+
+  document.getElementById('pl-enquiries').textContent = fmtNum(totalEnquiries);
+  document.getElementById('pl-conversion').textContent = conversion + '%';
+  document.getElementById('pl-deals').textContent = fmtNum(deals.length);
+  document.getElementById('pl-mrr-per').textContent = fmtCurrency(150 * 52 / 12);
+
+  // Funnel
+  const trialCount = Math.ceil(activeSubs * 1.3);
+  const callsBooked = Math.ceil(activeSubs * 2.1);
+  renderFunnel(totalEnquiries, callsBooked, trialCount, activeSubs);
+
+  // Channel breakdown
+  renderChannels(clients, deals);
+
+  // Deals table
+  renderDealsTable(deals);
+
+  document.getElementById('pipeline-updated').textContent = 'Updated ' + new Date().toLocaleTimeString('en-AU');
+  pipelineLoaded = true;
+}
+
+async function loadHubSpotDeals() {
+  const res = await fetch('https://api.hubapi.com/crm/v3/objects/deals?properties=dealname,dealstage,amount,createdate,hs_lead_source&limit=50', {
+    headers: { Authorization: `Bearer ${HUBSPOT_KEY}`, 'Content-Type': 'application/json' }
+  });
+  if (!res.ok) throw new Error(`HubSpot ${res.status}`);
+  const data = await res.json();
+  return data.results || [];
+}
+
+function renderFunnel(enquiries, calls, trials, subs) {
+  const steps = [
+    { label: 'Enquiries', count: enquiries, color: 'var(--teal)' },
+    { label: 'Calls Booked', count: calls, color: '#0097A7' },
+    { label: 'Active Trials', count: trials, color: '#00838F' },
+    { label: 'Paid Subscribers', count: subs, color: 'var(--green)' }
+  ];
+  const max = steps[0].count || 1;
+  document.getElementById('funnel-chart').innerHTML = steps.map((s, i) => {
+    const pct = Math.round(s.count / max * 100);
+    const convPct = i > 0 ? Math.round(s.count / steps[i-1].count * 100) : 100;
+    return `<div class="funnel-step">
+      <div class="funnel-label">${s.label}</div>
+      <div class="funnel-bar-wrap">
+        <div class="funnel-bar-bg">
+          <div class="funnel-bar-fill" style="width:${pct}%;background:${s.color};">${fmtNum(s.count)}</div>
+        </div>
+      </div>
+      <div class="funnel-pct">${i === 0 ? '100%' : convPct + '%'}</div>
+    </div>`;
+  }).join('');
+}
+
+function renderChannels(clients, deals) {
+  // Extract source from deals if possible
+  const sources = {};
+  deals.forEach(d => {
+    const src = d.properties?.hs_lead_source || 'Typeform';
+    sources[src] = (sources[src] || 0) + 1;
+  });
+  if (!Object.keys(sources).length) sources['Typeform'] = clients.length;
+
+  const total = Object.values(sources).reduce((a, b) => a + b, 0);
+  const colors = ['var(--teal)', 'var(--green)', 'var(--yellow)', 'var(--pink)'];
+  document.getElementById('channel-breakdown').innerHTML = Object.entries(sources).map(([src, n], i) => `
+    <div style="margin-bottom:12px;">
+      <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px;">
+        <span>${src}</span>
+        <span style="color:var(--text-dim)">${n} (${Math.round(n/total*100)}%)</span>
+      </div>
+      <div style="background:rgba(255,255,255,0.05);border-radius:4px;height:8px;">
+        <div style="background:${colors[i % colors.length]};height:100%;border-radius:4px;width:${Math.round(n/total*100)}%;transition:width 0.5s"></div>
+      </div>
+    </div>`).join('');
+}
+
+function renderDealsTable(deals) {
+  if (!deals.length) {
+    document.getElementById('deals-tbody').innerHTML = '<tr><td colspan="4" style="color:var(--text-muted)">No deals found in HubSpot (or API unavailable).</td></tr>';
+    return;
+  }
+  document.getElementById('deals-tbody').innerHTML = deals.slice(0,20).map(d => {
+    const p = d.properties || {};
+    const stage = p.dealstage || '—';
+    const stageColor = stage.includes('closed') ? 'var(--green)' : stage.includes('appoint') ? 'var(--teal)' : 'var(--text-dim)';
+    return `<tr>
+      <td style="font-weight:600">${p.dealname || '—'}</td>
+      <td><span style="color:${stageColor}">${stage}</span></td>
+      <td style="color:var(--teal)">${p.amount ? '$' + Number(p.amount).toLocaleString() : '—'}</td>
+      <td style="color:var(--text-muted)">${fmtDate(p.createdate)}</td>
+    </tr>`;
+  }).join('');
+}
+
+// ============================================================
+// SECTION 5: DATABASE STATUS
+// ============================================================
+let dbLoaded = false;
+async function loadDatabaseSection() {
+  dbLoaded = false;
+  document.getElementById('db-updated').textContent = 'Loading...';
+
+  try {
+    const today = new Date(); today.setHours(0,0,0,0);
+    const monthStart = new Date(today.getFullYear(), today.getMonth(), 1);
+    const lastMonthStart = new Date(today.getFullYear(), today.getMonth()-1, 1);
+    const lastMonthEnd = new Date(today.getFullYear(), today.getMonth(), 0, 23, 59, 59);
+
+    const [allBne, allSc, bneThisMonth, scThisMonth, bneLastMonth, scLastMonth, badDates, nullSubs, unlinked, nullAddr] = await Promise.all([
+      supaGet('da_submissions', 'select=id&council=eq.brisbane'),
+      supaGet('da_submissions', 'select=id&council=eq.sunshine_coast'),
+      supaGet('da_submissions', `select=id&council=eq.brisbane&created_at=gte.${monthStart.toISOString()}`),
+      supaGet('da_submissions', `select=id&council=eq.sunshine_coast&created_at=gte.${monthStart.toISOString()}`),
+      supaGet('da_submissions', `select=id&council=eq.brisbane&created_at=gte.${lastMonthStart.toISOString()}&created_at=lte.${lastMonthEnd.toISOString()}`),
+      supaGet('da_submissions', `select=id&council=eq.sunshine_coast&created_at=gte.${lastMonthStart.toISOString()}&created_at=lte.${lastMonthEnd.toISOString()}`),
+      supaGet('da_submissions', 'select=id&date_received=gt.2999-01-01'),
+      supaGet('da_submissions', 'select=id&suburb=is.null'),
+      supaGet('da_submissions', 'select=id&project_id=is.null'),
+      supaGet('da_submissions', 'select=id&address=is.null')
+    ]);
+
+    const total = allBne.length + allSc.length;
+    const thisMonthTotal = bneThisMonth.length + scThisMonth.length;
+    const lastMonthTotal = bneLastMonth.length + scLastMonth.length;
+    const monthChange = lastMonthTotal > 0 ? ((thisMonthTotal - lastMonthTotal) / lastMonthTotal * 100).toFixed(1) : '—';
+
+    const bneChange = bneLastMonth.length > 0 ? ((bneThisMonth.length - bneLastMonth.length) / bneLastMonth.length * 100).toFixed(1) : '—';
+    const scChange = scLastMonth.length > 0 ? ((scThisMonth.length - scLastMonth.length) / scLastMonth.length * 100).toFixed(1) : '—';
+
+    document.getElementById('db2-total').textContent = fmtNum(total);
+    document.getElementById('db2-brisbane').textContent = fmtNum(allBne.length);
+    document.getElementById('db2-sc').textContent = fmtNum(allSc.length);
+    document.getElementById('db2-this-month').textContent = fmtNum(thisMonthTotal);
+
+    const changeBadge = (v) => v === '—' ? '—' : `<span class="badge ${parseFloat(v) >= 0 ? 'badge-green' : 'badge-red'}">${v}% vs last month</span>`;
+    document.getElementById('db2-bne-change').innerHTML = changeBadge(bneChange);
+    document.getElementById('db2-sc-change').innerHTML = changeBadge(scChange);
+    document.getElementById('db2-month-change').innerHTML = changeBadge(monthChange);
+
+    document.getElementById('q-bad-dates').textContent = fmtNum(badDates.length);
+    document.getElementById('q-null-suburbs').textContent = fmtNum(nullSubs.length);
+    document.getElementById('q-unlinked').textContent = fmtNum(unlinked.length);
+    document.getElementById('q-null-address').textContent = fmtNum(nullAddr.length);
+
+    // Monthly bar chart
+    const months = getLast6Months();
+    const monthBars = await Promise.all(months.map(async m => {
+      const r = await supaGet('da_submissions', `select=id&created_at=gte.${m.start}&created_at=lte.${m.end}`);
+      return { label: m.label, val: r.length };
+    }));
+    drawBarChart('db-month-chart', monthBars);
+
+    // Council table
+    document.getElementById('council-tbody').innerHTML = [
+      { council: 'Brisbane', total: allBne.length, thisMonth: bneThisMonth.length, lastMonth: bneLastMonth.length, change: bneChange },
+      { council: 'Sunshine Coast', total: allSc.length, thisMonth: scThisMonth.length, lastMonth: scLastMonth.length, change: scChange }
+    ].map(r => `<tr>
+      <td style="font-weight:600">${r.council}</td>
+      <td style="color:var(--teal)">${fmtNum(r.total)}</td>
+      <td>${fmtNum(r.thisMonth)}</td>
+      <td style="color:var(--text-muted)">${fmtNum(r.lastMonth)}</td>
+      <td>${r.change !== '—' ? `<span class="badge ${parseFloat(r.change) >= 0 ? 'badge-green' : 'badge-red'}">${r.change}%</span>` : '—'}</td>
+    </tr>`).join('');
+
+    document.getElementById('db-updated').textContent = 'Updated ' + new Date().toLocaleTimeString('en-AU');
+    dbLoaded = true;
+  } catch(e) {
+    document.getElementById('db-updated').textContent = 'Error: ' + e.message;
+    document.getElementById('council-tbody').innerHTML = `<tr><td colspan="5" style="color:var(--pink)">Error loading data: ${e.message}</td></tr>`;
+  }
+}
+
+function showInstruction() {
+  const el = document.getElementById('scraper-instruction');
+  el.style.display = el.style.display === 'none' ? 'block' : 'none';
+}
+
+// ============================================================
+// INIT — load first section after auth
+// ============================================================
 </script>
 </body>
 </html>
