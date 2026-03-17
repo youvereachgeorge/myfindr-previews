@@ -104,11 +104,12 @@
 
   .col-select {
     display: none;
-    margin-top: 10px; width: 100%; background: #0d0d0d;
-    border: 1px solid #2a2a2a; color: #aaa; font-size: 12px;
-    font-weight: 600; padding: 8px 10px; border-radius: 8px;
+    margin-top: 12px; width: 100%; background: #161616;
+    border: 1px solid #333; color: #bbb; font-size: 12px;
+    font-weight: 600; padding: 10px 14px; border-radius: 10px;
     cursor: pointer; font-family: Inter, sans-serif;
     -webkit-appearance: none; appearance: none;
+    letter-spacing: -0.2px;
   }
 </style>
 </head>
@@ -272,6 +273,7 @@ function mkCard(id, col, startedAt) {
   const isTouchDevice = ('ontouchstart' in window) || navigator.maxTouchPoints > 0 || window.innerWidth <= 900;
   if (isTouchDevice) {
     sel.style.display = 'block';
+    sel.style.marginBottom = '4px';
   }
   d.appendChild(sel);
 
