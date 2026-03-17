@@ -3,6 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="manifest" href="manifest.json">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="myFindr Hub">
+  <meta name="theme-color" content="#E64500">
+
 <title>myFindr — Project Kanban</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
@@ -63,6 +70,25 @@
   .toast{position:fixed;bottom:20px;right:20px;background:#1f1f1f;border:1px solid #333;border-radius:10px;padding:12px 18px;font-size:13px;display:none;z-index:999;max-width:300px}
   .toast.show{display:block;animation:su .2s ease}
   @keyframes su{from{transform:translateY(10px);opacity:0}to{transform:none;opacity:1}}
+
+  /* ── MOBILE ── */
+  @media (max-width: 768px) {
+    .board { padding: 10px; gap: 10px; }
+    .col { width: 82vw; flex-shrink: 0; }
+    header { padding: 10px 14px; flex-wrap: wrap; gap: 8px; }
+    header img { height: 22px; }
+    .nav { gap: 3px; }
+    .nav a { padding: 6px 10px; font-size: 11px; }
+    .live { font-size: 10px; padding: 3px 8px; }
+    .card { padding: 10px 11px; }
+    .card-title { font-size: 12px; }
+    .card-body { font-size: 11px; }
+    .tag { font-size: 9px; padding: 1px 5px; }
+    .cf { flex-direction: column; gap: 6px; align-items: flex-start; }
+    .ch { padding: 10px 11px 8px; }
+    .ct { font-size: 10px; }
+  }
+
 </style>
 </head>
 <body>

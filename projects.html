@@ -3,6 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="manifest" href="manifest.json">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="myFindr Hub">
+  <meta name="theme-color" content="#E64500">
+
 <title>myFindr — Projects</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
@@ -51,6 +58,38 @@
   .rc-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
   .dot-jay{background:#3b82f6}.dot-george{background:#E64500}.dot-urgent{background:#f97316}
   .dot-blocked{background:#ef4444}.dot-waiting{background:#555}.dot-night{background:#6366f1}.dot-done{background:#22c55e}
+
+  /* ── MOBILE ── */
+  @media (max-width: 768px) {
+    .board { padding: 10px; gap: 10px; }
+    .col { width: 82vw; flex-shrink: 0; }
+    header { padding: 10px 14px; flex-wrap: wrap; gap: 8px; }
+    header img { height: 22px; }
+    .nav { gap: 3px; }
+    .nav a { padding: 6px 10px; font-size: 11px; }
+    .live { font-size: 10px; padding: 3px 8px; }
+    .card { padding: 10px 11px; }
+    .card-title { font-size: 12px; }
+    .card-body { font-size: 11px; }
+    .tag { font-size: 9px; padding: 1px 5px; }
+    .cf { flex-direction: column; gap: 6px; align-items: flex-start; }
+    .ch { padding: 10px 11px 8px; }
+    .ct { font-size: 10px; }
+  }
+
+
+  @media (max-width: 768px) {
+    .page { padding: 14px; }
+    .ph { flex-direction: column; gap: 12px; }
+    .pmeta { flex-direction: row; flex-wrap: wrap; gap: 8px; }
+    .pname { font-size: 15px; }
+    .pobj { font-size: 11px; }
+    .rc-grid { gap: 6px; }
+    .rc-chip { font-size: 10px; padding: 4px 8px; }
+    .ms-row { gap: 8px; }
+    .ms-t { font-size: 11px; }
+  }
+
 </style>
 </head>
 <body>
