@@ -164,13 +164,13 @@ function mkCard(id, col, startedAt) {
     const remaining = Math.max(0, Math.round((finish - now) / 60000));
     const finishTime = finish.toLocaleString('en-AU', {timeZone:'Australia/Brisbane', hour:'2-digit', minute:'2-digit'});
     if (finish > now) {
-      finishStr = `<div style="margin-top:8px;padding:7px 10px;background:#1a1a00;border:1px solid #2a2a00;border-radius:7px;display:flex;align-items:center;justify-content:space-between">
+      finishStr = `<div data-finish="${finish.toISOString()}" style="margin-top:8px;padding:7px 10px;background:#1a1a00;border:1px solid #2a2a00;border-radius:7px;display:flex;align-items:center;justify-content:space-between">
         <span style="font-size:10px;color:#eab308;font-weight:600">⚡ Est. finish</span>
         <span style="font-size:12px;font-weight:700;color:#fff">${finishTime} AEST</span>
         <span style="font-size:10px;color:#666">${remaining}m left</span>
       </div>`;
     } else {
-      finishStr = `<div style="margin-top:8px;padding:7px 10px;background:#1a0a00;border:1px solid #2a1000;border-radius:7px;display:flex;align-items:center;justify-content:space-between">
+      finishStr = `<div data-finish="${finish.toISOString()}" style="margin-top:8px;padding:7px 10px;background:#1a0a00;border:1px solid #2a1000;border-radius:7px;display:flex;align-items:center;justify-content:space-between">
         <span style="font-size:10px;color:#f97316;font-weight:600">⏰ Overdue</span>
         <span style="font-size:12px;font-weight:700;color:#f97316">Should be done</span>
         <span style="font-size:10px;color:#666">${Math.abs(remaining)}m ago</span>
@@ -181,7 +181,7 @@ function mkCard(id, col, startedAt) {
     const now = new Date();
     const finish = new Date(now.getTime() + eta * 60 * 1000);
     const finishTime = finish.toLocaleString('en-AU', {timeZone:'Australia/Brisbane', hour:'2-digit', minute:'2-digit'});
-    finishStr = `<div style="margin-top:8px;padding:7px 10px;background:#1a1a00;border:1px solid #2a2a00;border-radius:7px;display:flex;align-items:center;justify-content:space-between">
+    finishStr = `<div data-finish="${finish.toISOString()}" style="margin-top:8px;padding:7px 10px;background:#1a1a00;border:1px solid #2a2a00;border-radius:7px;display:flex;align-items:center;justify-content:space-between">
       <span style="font-size:10px;color:#eab308;font-weight:600">⚡ Est. finish</span>
       <span style="font-size:12px;font-weight:700;color:#fff">${finishTime} AEST</span>
       <span style="font-size:10px;color:#666">${eta}m</span>
@@ -322,6 +322,28 @@ let tt; function showToast(m) { const t=document.getElementById('toast'); t.text
 
 loadState();
 setInterval(loadState, 90000);
+
+// Live countdown — refresh finish times every 60s without full reload
+setInterval(() => {
+  document.querySelectorAll('#col-george .card').forEach(card => {
+    const finishEl = card.querySelector('[data-finish]');
+    if (!finishEl) return;
+    const finishTime = new Date(finishEl.dataset.finish);
+    const now = new Date();
+    const remaining = Math.round((finishTime - now) / 60000);
+    const timeStr = finishTime.toLocaleString('en-AU', {timeZone:'Australia/Brisbane', hour:'2-digit', minute:'2-digit'});
+    if (finishTime > now) {
+      finishEl.innerHTML = `<span style="font-size:10px;color:#eab308;font-weight:600">⚡ Est. finish</span><span style="font-size:12px;font-weight:700;color:#fff">${timeStr} AEST</span><span style="font-size:10px;color:#666">${remaining}m left</span>`;
+      finishEl.style.background = '#1a1a00';
+      finishEl.style.borderColor = '#2a2a00';
+    } else {
+      const ago = Math.abs(remaining);
+      finishEl.innerHTML = `<span style="font-size:10px;color:#f97316;font-weight:600">⏰ Overdue</span><span style="font-size:12px;font-weight:700;color:#f97316">Should be done</span><span style="font-size:10px;color:#666">${ago}m ago</span>`;
+      finishEl.style.background = '#1a0a00';
+      finishEl.style.borderColor = '#2a1000';
+    }
+  });
+}, 60000);
 </script>
 </body>
 </html>
