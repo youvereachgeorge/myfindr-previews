@@ -1,5 +1,5 @@
 {
-  "updated": "2026-03-17T11:11:19.175Z",
+  "updated": "2026-03-17T11:11:20.804Z",
   "updated_by": "jay",
   "cards": {
     "c1": "jay",
@@ -10,7 +10,7 @@
     "c6": "jay",
     "c7": "jay",
     "c8": "night",
-    "c9": "george",
+    "c9": "night",
     "c10": "blocked",
     "c11": "blocked",
     "c12": "night",
@@ -41,14 +41,12 @@
     "c37": "done",
     "c38": "done"
   },
-  "started": {
-    "c9": "2026-03-17T06:05:22.890119+00:00"
-  },
+  "started": {},
   "last_move": {
-    "card": "c8",
+    "card": "c9",
     "from": "george",
     "to": "night",
     "by": "jay",
-    "at": "2026-03-17T11:11:19.175Z"
+    "at": "2026-03-17T11:11:20.804Z"
   }
 }
