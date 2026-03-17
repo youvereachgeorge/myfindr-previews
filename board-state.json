@@ -1,6 +1,6 @@
 {
-  "updated": "2026-03-17T11:11:20.804Z",
-  "updated_by": "jay",
+  "updated": "2026-03-17T19:02:44.153Z",
+  "updated_by": "george",
   "cards": {
     "c1": "jay",
     "c2": "jay",
@@ -43,10 +43,9 @@
   },
   "started": {},
   "last_move": {
-    "card": "c9",
-    "from": "george",
+    "card": "c8",
     "to": "night",
-    "by": "jay",
-    "at": "2026-03-17T11:11:20.804Z"
+    "by": "george",
+    "at": "2026-03-17T19:02:44.153Z"
   }
 }
