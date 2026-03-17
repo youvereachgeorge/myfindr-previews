@@ -7,7 +7,7 @@
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
   *{margin:0;padding:0;box-sizing:border-box}
-  body{font-family:'Inter',sans-serif;background:#0a0a0a;color:#fff;height:100vh;overflow:hidden;user-select:none}
+  body{font-family:'Inter',sans-serif;background:#0a0a0a;color:#fff;user-select:none}
   header{background:#111;border-bottom:1px solid #1f1f1f;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
   header img{height:26px;filter:invert(1)}
   .hr{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
@@ -18,7 +18,8 @@
   .sok{background:rgba(34,197,94,.1);color:#22c55e}
   .ssaving{background:rgba(234,179,8,.1);color:#eab308}
   .serr{background:rgba(239,68,68,.1);color:#ef4444}
-  .board{display:flex;gap:12px;padding:18px;align-items:flex-start;height:calc(100vh - 56px);width:100vw;overflow-x:auto;overflow-y:hidden}
+  .board-wrap{width:100vw;height:calc(100vh - 56px);overflow:hidden}
+  .board{display:flex;gap:12px;padding:18px;align-items:flex-start;height:100%;width:100%;overflow-x:auto;overflow-y:hidden}
   .col{width:272px;flex-shrink:0;display:flex;flex-direction:column;height:100%}
   .ch{padding:11px 13px 9px;border-radius:10px 10px 0 0;flex-shrink:0}
   .ct{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;margin-bottom:2px}
@@ -81,7 +82,7 @@
   </div>
 </header>
 
-<div class="board">
+<div class="board-wrap"><div class="board">
   <div class="col jay"><div class="ch"><div class="ct">Waiting for Jay</div><div class="cc" id="n-jay">—</div></div><div class="cb" id="col-jay"></div></div>
   <div class="col george"><div class="ch"><div class="ct">George Working On</div><div class="cc" id="n-george">—</div></div><div class="cb" id="col-george"></div></div>
   <div class="col urgent"><div class="ch"><div class="ct">Needs to Be Done</div><div class="cc" id="n-urgent">—</div></div><div class="cb" id="col-urgent"></div></div>
