@@ -1,0 +1,7 @@
+{
+  "name": "myfindr-app",
+  "builds": [{ "src": "*.html", "use": "@vercel/static" }],
+  "routes": [
+    { "src": "/(.*)", "dest": "/$1" }
+  ]
+}
