@@ -104,11 +104,19 @@
 
   .col-select {
     display: none;
-    margin-top: 12px; width: 100%; background: #161616;
-    border: 1px solid #333; color: #bbb; font-size: 12px;
-    font-weight: 600; padding: 10px 14px; border-radius: 10px;
-    cursor: pointer; font-family: Inter, sans-serif;
-    -webkit-appearance: none; appearance: none;
+    margin: 10px 0 4px;
+    width: 100%;
+    background: #1a1a1a;
+    border: 1px solid #2a2a2a;
+    color: #999;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 10px 14px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-family: Inter, sans-serif;
+    -webkit-appearance: none;
+    appearance: none;
     letter-spacing: -0.2px;
   }
 
@@ -380,6 +388,21 @@ async function loadState() {
     const d = new Date(state.updated);
     const ts = d.toLocaleString('en-AU',{timeZone:'Australia/Brisbane',day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'});
     document.getElementById('ts').textContent = `Updated: ${ts} AEST by ${state.updated_by||'—'}`;
+    // Fetch latest progress + ETA from Supabase and update CARDS
+    try {
+      const progRes = await fetch('https://ieqbavwzydlxiaclzcjl.supabase.co/rest/v1/kanban_cards?select=id,progress,eta_mins,bandwidth', {
+        headers: {'apikey':'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImllcWJhdnd6eWRseGlhY2x6Y2psIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3MzM4NDEwMCwiZXhwIjoyMDg4OTYwMTAwfQ.8FqHSTp-FxwIiiZWBpzAiYRkL5WdSNETn2ICAo-1DOE','Authorization':'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImllcWJhdnd6eWRseGlhY2x6Y2psIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3MzM4NDEwMCwiZXhwIjoyMDg4OTYwMTAwfQ.8FqHSTp-FxwIiiZWBpzAiYRkL5WdSNETn2ICAo-1DOE'}
+      });
+      const progData = await progRes.json();
+      progData.forEach(c => {
+        if (CARDS[c.id]) {
+          if (c.progress !== null) CARDS[c.id].prog = c.progress;
+          if (c.eta_mins !== null) CARDS[c.id].eta = c.eta_mins;
+          if (c.bandwidth !== null) CARDS[c.id].bw = c.bandwidth;
+        }
+      });
+    } catch(e) { /* non-critical */ }
+    
     setSS('sok','● Synced');
   } catch(e) { setSS('serr','● Load failed: '+e.message); }
 }
