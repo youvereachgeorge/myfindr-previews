@@ -104,25 +104,25 @@ const FILE = 'board-state.json';
 let fileSHA = '';
 
 const CARDS = {
-  c1:{t:'Approve + Send Re-activation Email',tags:['tk','te'],b:'R77gTS (dark) or UeALNG (minimal). Klaviyo → Campaigns → Create → send.',eta:5,bw:2},
-  c2:{t:'Turn On Klaviyo Welcome Flow',tags:['tk'],b:'Flow YcjXWk wired. One click at klaviyo.com/flows/YcjXWk/edit',eta:2,bw:1},
-  c3:{t:'Newie Products ✅',tags:['tn'],b:'myFindr Pro $200/wk + $250 onboarding. Early bird $100/wk. Done.',eta:0,bw:0},
-  c4:{t:'ManyChats New Follower Sequence',tags:['tm','ti'],b:'5-step DM flow SOP ready. Build in browser — 30 mins.',note:'SOP: agent-skills/content-agent/references/manychats-sequence.md',eta:30,bw:4},
-  c5:{t:'Top Up Kling AI Credits',tags:['tl'],b:'3 reels queued. klingai.com → top up → George fires immediately.',eta:5,bw:1},
-  c6:{t:'Review Instagram Content (14 posts)',tags:['ti','tc'],b:'Add feedback in column J of content calendar Google Sheet.',eta:20,bw:3},
-  c7:{t:'Review Email Previews',tags:['te'],b:'5 emails at youvereachgeorge.github.io/myfindr-previews/index.html',eta:10,bw:2},
-  c8:{t:'Framer Website Redesign',tags:['tf','tc'],b:'SaaS-style redesign (Flexifi/Aplix/Filo). HTML mockup first, push to Framer.',eta:90,bw:7},
-  c9:{t:'Klaviyo Re-activation Campaign',tags:['tk','te'],b:'Setting up as one-button send. Single product: myFindr Pro only.',eta:20,bw:4},
-  c10:{t:'Zapier Zaps (5 automations)',tags:['tz'],b:'Typeform→HubSpot, Newie→Klaviyo ×3, HubSpot→Klaviyo.',note:'⛔ Needs Newie webhook details first',eta:60,bw:6},
-  c11:{t:'Framer — Dashboard Screenshots',tags:['tf','td'],b:'Need Databox ICP boards fully built first.',note:'⛔ Waiting on overnight Databox task',eta:30,bw:5},
-  c12:{t:'Databox — 8 Missing ICP Metrics',tags:['td','ta'],b:'Multi-Dwelling, Consultant, New Build Starts, Hot Corridors, Approval Velocity, Active Devs, Suburb Hotspots, Dev Alerts.',note:'🌙 Overnight — browser stability needed',eta:120,bw:9},
-  c13:{t:'Databox Client Onboarding Trigger',tags:['td','tz'],b:'Form → Zapier → provision Databox account → send login email.',note:'⛔ Waiting on Zapier + Newie webhook',eta:45,bw:7},
-  c14:{t:'Start Rule of 100 — Cold Outreach',tags:['ti','ts2'],b:'Follow 100 ICP accounts/day. ManyChats fires when they follow back.',note:'⚠️ Hormozi: Zero daily actions happening. Starts TODAY.',eta:15,bw:2},
-  c15:{t:'Instagram Stories System',tags:['ti','tc'],b:'Mon/Wed/Sat — Problem → Solution → CTA (Typeform). Weekly.',eta:30,bw:5},
-  c16:{t:'Instagram Broadcast Channel',tags:['ti'],b:'Weekly DA intel channel. Jay creates via Instagram app.',eta:10,bw:2},
-  c17:{t:'Affiliate Programme',tags:['ts2'],b:'CSB + property educators. $50-100/subscriber referral. Hormozi highest leverage.',eta:60,bw:6},
-  c18:{t:'Scraper Expansion — Gold Coast/Ipswich',tags:['ta','tv'],b:'Add 2+ QLD councils. Heavy scraping job.',note:'🌙 Best run overnight',eta:120,bw:8},
-  c19:{t:'Fuelled Club — Agent Skills',tags:['tv'],b:'Replicate myFindr agent skills architecture.',eta:180,bw:8},
+  c1:{t:'Approve + Send Re-activation Email',tags:['tk','te'],b:'R77gTS (dark) or UeALNG (minimal). Klaviyo → Campaigns → Create → send.',eta:5,bw:2,prog:90},
+  c2:{t:'Turn On Klaviyo Welcome Flow',tags:['tk'],b:'Flow YcjXWk wired. One click at klaviyo.com/flows/YcjXWk/edit',eta:2,bw:1,prog:95},
+  c3:{t:'Newie Products ✅',tags:['tn'],b:'myFindr Pro $200/wk + $250 onboarding. Early bird $100/wk. Done.',eta:0,bw:0,prog:100},
+  c4:{t:'ManyChats New Follower Sequence',tags:['tm','ti'],b:'5-step DM flow SOP ready. Build in browser — 30 mins.',note:'SOP: agent-skills/content-agent/references/manychats-sequence.md',eta:30,bw:4,prog:0},
+  c5:{t:'Top Up Kling AI Credits',tags:['tl'],b:'3 reels queued. klingai.com → top up → George fires immediately.',eta:5,bw:1,prog:0},
+  c6:{t:'Review Instagram Content (14 posts)',tags:['ti','tc'],b:'Add feedback in column J of content calendar Google Sheet.',eta:20,bw:3,prog:0},
+  c7:{t:'Review Email Previews',tags:['te'],b:'5 emails at youvereachgeorge.github.io/myfindr-previews/index.html',eta:10,bw:2,prog:0},
+  c8:{t:'Framer Website Redesign',tags:['tf','tc'],b:'SaaS-style redesign (Flexifi/Aplix/Filo). HTML mockup first, push to Framer.',eta:90,bw:7,prog:25},
+  c9:{t:'Klaviyo Re-activation Campaign',tags:['tk','te'],b:'Setting up as one-button send. Single product: myFindr Pro only.',eta:20,bw:4,prog:45},
+  c10:{t:'Zapier Zaps (5 automations)',tags:['tz'],b:'Typeform→HubSpot, Newie→Klaviyo ×3, HubSpot→Klaviyo.',note:'⛔ Needs Newie webhook details first',eta:60,bw:6,prog:0},
+  c11:{t:'Framer — Dashboard Screenshots',tags:['tf','td'],b:'Need Databox ICP boards fully built first.',note:'⛔ Waiting on overnight Databox task',eta:30,bw:5,prog:0},
+  c12:{t:'Databox — 8 Missing ICP Metrics',tags:['td','ta'],b:'Multi-Dwelling, Consultant, New Build Starts, Hot Corridors, Approval Velocity, Active Devs, Suburb Hotspots, Dev Alerts.',note:'🌙 Overnight — browser stability needed',eta:120,bw:9,prog:5},
+  c13:{t:'Databox Client Onboarding Trigger',tags:['td','tz'],b:'Form → Zapier → provision Databox account → send login email.',note:'⛔ Waiting on Zapier + Newie webhook',eta:45,bw:7,prog:0},
+  c14:{t:'Start Rule of 100 — Cold Outreach',tags:['ti','ts2'],b:'Follow 100 ICP accounts/day. ManyChats fires when they follow back.',note:'⚠️ Hormozi: Zero daily actions happening. Starts TODAY.',eta:15,bw:2,prog:0},
+  c15:{t:'Instagram Stories System',tags:['ti','tc'],b:'Mon/Wed/Sat — Problem → Solution → CTA (Typeform). Weekly.',eta:30,bw:5,prog:0},
+  c16:{t:'Instagram Broadcast Channel',tags:['ti'],b:'Weekly DA intel channel. Jay creates via Instagram app.',eta:10,bw:2,prog:0},
+  c17:{t:'Affiliate Programme',tags:['ts2'],b:'CSB + property educators. $50-100/subscriber referral. Hormozi highest leverage.',eta:60,bw:6,prog:0},
+  c18:{t:'Scraper Expansion — Gold Coast/Ipswich',tags:['ta','tv'],b:'Add 2+ QLD councils. Heavy scraping job.',note:'🌙 Best run overnight',eta:120,bw:8,prog:0},
+  c19:{t:'Fuelled Club — Agent Skills',tags:['tv'],b:'Replicate myFindr agent skills architecture.',eta:180,bw:8,prog:0},
   c20:{t:'Brand Guide PDF v3 ✓',tags:['tc'],b:'Done.'},c21:{t:'Klaviyo Templates (5) ✓',tags:['tk'],b:'Done.'},
   c22:{t:'Klaviyo Welcome Flow ✓',tags:['tk'],b:'Done.'},c23:{t:'Typeform Form ✓',tags:['tt'],b:'Done. yytyraJA'},
   c24:{t:'HubSpot Calendar ✓',tags:['th'],b:'Done.'},c25:{t:'Databox Overview Board ✓',tags:['td'],b:'Done.'},
@@ -154,7 +154,7 @@ function mkCard(id, col) {
   const tags = (m.tags||[]).map(t=>`<span class="tag ${t}">${{te:'email',tc:'content',td:'databox',tf:'framer',tk:'klaviyo',ti:'instagram',tm:'manychats',tn:'newie',th:'hubspot',tz:'zapier',tl:'kling',ta:'data',tv:'dev',ts2:'strategy',tt:'typeform'}[t]||''}</span>`).join('');
   const eta = m.eta || 0;
   const bw = m.bw || 0;
-  const prog = window.CARD_PROGRESS && window.CARD_PROGRESS[id] !== undefined ? window.CARD_PROGRESS[id] : (m.prog || 0);
+  const prog = m.prog !== undefined ? m.prog : 0;
   const e = etaStr(eta); const b = pip(bw);
   const night = (bw >= 7 && eta >= 60) ? '<span class="moon">🌙 overnight</span>' : '';
   const progColor = prog >= 80 ? '#22c55e' : prog >= 40 ? '#eab308' : '#E64500';
@@ -200,18 +200,8 @@ async function loadState() {
     const data = await r.json();
     fileSHA = data.sha;
     const state = JSON.parse(atob(data.content.replace(/\n/g,'')));
-    
-    // Fetch progress from Supabase
-    try {
-      const pRes = await fetch(`https://ieqbavwzydlxiaclzcjl.supabase.co/rest/v1/kanban_cards?select=id,progress`, {
-        headers: {'apikey':'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImllcWJhdnd6eWRseGlhY2x6Y2psIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3MzM4NDEwMCwiZXhwIjoyMDg4OTYwMTAwfQ.8FqHSTp-FxwIiiZWBpzAiYRkL5WdSNETn2ICAo-1DOE','Authorization':'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImllcWJhdnd6eWRseGlhY2x6Y2psIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3MzM4NDEwMCwiZXhwIjoyMDg4OTYwMTAwfQ.8FqHSTp-FxwIiiZWBpzAiYRkL5WdSNETn2ICAo-1DOE'}
-      });
-      const pData = await pRes.json();
-      window.CARD_PROGRESS = {};
-      pData.forEach(c => window.CARD_PROGRESS[c.id] = c.progress);
-    } catch(e) { window.CARD_PROGRESS = {}; }
-    
-    COLS.forEach(c => document.getElementById('col-'+c).innerHTML = '');
+    window.CARD_PROGRESS = {};
+        COLS.forEach(c => document.getElementById('col-'+c).innerHTML = '');
     Object.entries(state.cards).forEach(([id, col]) => {
       const card = mkCard(id, col);
       if (card) document.getElementById('col-'+col)?.appendChild(card);
