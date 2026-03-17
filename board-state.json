@@ -1,5 +1,5 @@
 {
-  "updated": "2026-03-17T19:38:12.330772+00:00",
+  "updated": "2026-03-17T22:02:06.109784+00:00",
   "updated_by": "george",
   "cards": {
     "c1": "jay",
@@ -51,9 +51,12 @@
     "c47": "jay",
     "c48": "george",
     "c49": "george",
-    "c50": "george"
+    "c50": "george",
+    "c51": "george"
   },
-  "started": {},
+  "started": {
+    "c51": "2026-03-17T22:02:06.109784+00:00"
+  },
   "last_move": {
     "card": "c41",
     "from": "george",
