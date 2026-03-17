@@ -75,7 +75,7 @@
 
   @media (max-width: 768px) {
     .bw { display: none; }
-    .col-select { display: block !important; }
+    .col-select { display: none; margin-top: 8px; width: 100%; background: #1a1a1a; border: 1px solid #2a2a2a; color: #888; font-size: 11px; padding: 6px 8px; border-radius: 6px; cursor: pointer; font-family: Inter, sans-serif; }
     .cb { padding-bottom: 80px; }
     .moon { display: none; }
   }
@@ -212,9 +212,9 @@ function mkCard(id, col, startedAt) {
     pipHtml = '<div class="bw"><span class="bwl">BW</span><div class="pips">' + pips + '</div></div>';
   }
 
-  // Progress bar
+  // Progress bar — show on all active cards
   let progHtml = '';
-  if (prog > 0) {
+  if (col !== 'done') {
     const pc = prog >= 80 ? '#22c55e' : prog >= 40 ? '#eab308' : '#E64500';
     progHtml = '<div style="margin-top:8px"><div style="display:flex;justify-content:space-between;margin-bottom:3px">'
       + '<span style="font-size:9px;color:#444;font-weight:700;text-transform:uppercase">Progress</span>'
@@ -251,7 +251,7 @@ function mkCard(id, col, startedAt) {
   const COLS_LIST = ['jay','george','urgent','blocked','waiting','night','done'];
   const COL_LBL = {jay:'→ Jay',george:'→ George',urgent:'→ Needs Done',blocked:'→ Blocked',waiting:'→ Backlog',night:'→ Overnight',done:'→ Done ✓'};
   const sel = document.createElement('select');
-  sel.style.cssText = 'margin-top:8px;width:100%;background:#1a1a1a;border:1px solid #2a2a2a;color:#888;font-size:11px;padding:6px 8px;border-radius:6px;cursor:pointer;font-family:Inter,sans-serif;display:block;';
+  sel.className = 'col-select';
   let opts = '<option value="" disabled>📱 Move to…</option>';
   COLS_LIST.forEach(c => { opts += '<option value="' + c + '"' + (col===c?' selected':'') + '>' + COL_LBL[c] + '</option>'; });
   sel.innerHTML = opts;
@@ -277,6 +277,39 @@ function moveCardTo(cardId, newCol, selectEl) {
     countAll();
   }
 }
+
+
+// Stall detection — check every 5 mins if George tasks are overdue
+function checkStalls() {
+  const alerts = [];
+  document.querySelectorAll('#col-george .card').forEach(card => {
+    const finishEl = card.querySelector('[data-finish]');
+    if (!finishEl) return;
+    const finish = new Date(finishEl.dataset.finish);
+    const now = new Date();
+    const minsOverdue = Math.round((now - finish) / 60000);
+    if (minsOverdue > 15) { // Flag if 15+ mins overdue
+      const title = card.querySelector('.card-title')?.textContent || card.id;
+      alerts.push({ id: card.id, title, minsOverdue });
+      // Visual flag on the card
+      card.style.borderColor = '#ef4444';
+      card.style.borderWidth = '2px';
+      // Add stall badge if not already there
+      if (!card.querySelector('.stall-badge')) {
+        const badge = document.createElement('div');
+        badge.className = 'stall-badge';
+        badge.style.cssText = 'margin-top:8px;padding:8px 10px;background:#1a0000;border:1px solid #3a0000;border-radius:8px;font-size:11px;color:#ef4444;font-weight:600;line-height:1.4';
+        badge.innerHTML = '⚠️ <strong>Stalled ' + minsOverdue + 'm</strong> — May need attention. Check if blocked or needs reprioritising.';
+        card.appendChild(badge);
+      }
+    }
+  });
+  if (alerts.length > 0) {
+    console.warn('Stalled tasks:', alerts);
+  }
+}
+setInterval(checkStalls, 300000); // Every 5 mins
+setTimeout(checkStalls, 5000); // Also run 5s after load
 
 async function loadState() {
   setSS('ssaving','Loading...');
