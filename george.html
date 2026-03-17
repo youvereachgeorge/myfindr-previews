@@ -152,7 +152,7 @@
       </div>
       <div>
         <div style="font-size:13px;font-weight:700;margin-bottom:6px">Blocked (needs Jay)</div>
-        <div style="font-size:12px;color:#ef4444;line-height:1.8">⛔ Kling credits top-up<br>⛔ ManyChats browser session<br>⛔ HubSpot PAT key expired (new key needed)</div>
+        <div style="font-size:12px;color:#ef4444;line-height:1.8">⛔ Kling credits top-up<br>⛔ ManyChats browser session<br>⛔ Kling credits (3 reels queued, ready to fire)</div>
       </div>
     </div>
     <div style="margin-top:16px">
@@ -219,7 +219,7 @@
         </div>
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
           <span style="font-size:13px;color:#888">Browser tasks (high friction)</span>
-          <strong style="color:#eab308">4 blocked (Databox, HubSpot, ManyChats)</strong>
+          <strong style="color:#eab308">3 blocked (Databox, Kling credits, ManyChats)</strong>
         </div>
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
           <span style="font-size:13px;color:#888">API tasks (low friction)</span>
@@ -229,8 +229,8 @@
           <span style="font-size:13px;color:#888">Context window health</span>
           <strong style="color:#eab308">66% — approaching refresh point</strong>
         </div>
-        <div class="prog-track" style="margin-top:12px"><div class="prog-fill" style="width:73%;background:linear-gradient(90deg,#22c55e,#eab308)"></div></div>
-        <div style="font-size:11px;color:#555;margin-top:6px;text-align:right">Overall effectiveness today: ~73%</div>
+        <div class="prog-track" style="margin-top:12px"><div class="prog-fill" style="width:78%;background:linear-gradient(90deg,#22c55e,#eab308)"></div></div>
+        <div style="font-size:11px;color:#555;margin-top:6px;text-align:right">Overall effectiveness today: ~78%</div>
       </div>
     </div>
     <div class="insight-box">
@@ -262,7 +262,7 @@ function checkHealth() {
       document.getElementById('pulse-dot').className = 'pulse';
       document.getElementById('health-status').textContent = 'All Systems Operational';
       document.getElementById('health-status').style.color = '#22c55e';
-      document.getElementById('health-sub').textContent = 'Supabase ✅ · GitHub ✅ · Gemini ✅ · Klaviyo ✅ · Google OAuth ✅ · HubSpot ❌ (PAT expired)';
+      document.getElementById('health-sub').textContent = 'Supabase ✅ · GitHub ✅ · Gemini ✅ · Klaviyo ✅ · Google OAuth ✅ · HubSpot ✅ · Kling ⚠️ (no credits)';
       document.getElementById('ecg-line').style.stroke = '#22c55e';
     }
   }).catch(() => {
