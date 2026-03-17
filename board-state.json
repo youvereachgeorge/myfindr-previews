@@ -1,5 +1,5 @@
 {
-  "updated": "2026-03-17T22:12:00.233795+00:00",
+  "updated": "2026-03-17T22:22:24.553500+00:00",
   "updated_by": "george",
   "cards": {
     "c1": "jay",
@@ -52,7 +52,16 @@
     "c48": "waiting",
     "c49": "waiting",
     "c50": "waiting",
-    "c51": "done"
+    "c51": "done",
+    "c52": "george",
+    "c53": "george",
+    "c54": "george",
+    "c55": "george",
+    "c56": "george",
+    "c57": "george",
+    "c58": "george",
+    "c59": "george",
+    "c60": "george"
   },
   "started": {
     "c51": "2026-03-17T22:02:06.109784+00:00"
