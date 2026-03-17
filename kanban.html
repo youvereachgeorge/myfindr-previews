@@ -75,8 +75,8 @@
 
   @media (max-width: 768px) {
     .bw { display: none; }
-    .col-select { margin-top: 10px; width: 100%; background: #0d0d0d; border: 1px solid #2a2a2a; color: #aaa; font-size: 12px; font-weight: 600; padding: 8px 10px; border-radius: 8px; cursor: pointer; font-family: Inter, sans-serif; -webkit-appearance: none; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23E64500' stroke-width='2' fill='none'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 10px center; padding-right: 28px; }
-    .col-select { margin-top: 10px; width: 100%; background: #0d0d0d; border: 1px solid #2a2a2a; color: #aaa; font-size: 12px; font-weight: 600; padding: 8px 10px; border-radius: 8px; cursor: pointer; font-family: Inter, sans-serif; -webkit-appearance: none; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23E64500' stroke-width='2' fill='none'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 10px center; padding-right: 28px; }
+    
+    
     .cb { padding-bottom: 80px; }
     .moon { display: none; }
   }
@@ -95,6 +95,33 @@
     .cf { flex-direction: column; gap: 6px; align-items: flex-start; }
     .ch { padding: 10px 11px 8px; }
     .ct { font-size: 10px; }
+  }
+
+
+  /* Dropdown: hidden on mouse devices, shown on touch */
+  .col-select {
+    display: none;
+    margin-top: 10px;
+    width: 100%;
+    background: #0d0d0d;
+    border: 1px solid #2a2a2a;
+    color: #aaa;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 8px 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-family: Inter, sans-serif;
+    -webkit-appearance: none;
+    appearance: none;
+  }
+  /* Show on touch/mobile devices */
+  @media (pointer: coarse), (max-width: 768px) {
+    .col-select { display: block; }
+  }
+  /* Force hide on mouse devices (desktop) */
+  @media (pointer: fine) {
+    .col-select { display: none !important; }
   }
 
 </style>
@@ -257,10 +284,8 @@ function mkCard(id, col, startedAt) {
   COLS_LIST.forEach(c => { opts += '<option value="' + c + '"' + (col===c?' selected':'') + '>' + COL_LBL[c] + '</option>'; });
   sel.innerHTML = opts;
   sel.onchange = function() { if (this.value) moveCardTo(id, this.value, this); };
-  // Only show dropdown on mobile (screen width <= 768px)
-  if (window.innerWidth <= 768) {
-    d.appendChild(sel);
-  }
+  // Always append, CSS controls visibility
+  d.appendChild(sel);
 
   return d;
 }
