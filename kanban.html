@@ -152,6 +152,24 @@ function mkCard(id, col) {
   return d;
 }
 
+
+function moveCardTo(cardId, newCol, selectEl) {
+  if (!newCol) return;
+  const card = document.getElementById(cardId);
+  const targetCol = document.getElementById('col-' + newCol);
+  if (card && targetCol) {
+    targetCol.appendChild(card);
+    // Update all dropdowns on this card to show new col as selected
+    const sel = card.querySelector('.col-select');
+    if (sel) {
+      Array.from(sel.options).forEach(o => o.selected = (o.value === newCol));
+      sel.value = newCol;
+    }
+    saveMove(cardId, newCol, 'jay');
+    countAll();
+  }
+}
+
 async function loadState() {
   setSS('ssaving','Loading...');
   try {
