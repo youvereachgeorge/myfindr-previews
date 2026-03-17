@@ -184,55 +184,82 @@ function etaStr(m) { if (!m) return ''; return m < 60 ? m+'m' : Math.round(m/60*
 
 function mkCard(id, col, startedAt) {
   const m = CARDS[id]; if (!m) return null;
-  const tags = (m.tags||[]).map(t=>`<span class="tag ${t}">${{te:'email',tc:'content',td:'databox',tf:'framer',tk:'klaviyo',ti:'instagram',tm:'manychats',tn:'newie',th:'hubspot',tz:'zapier',tl:'kling',ta:'data',tv:'dev',ts2:'strategy',tt:'typeform'}[t]||''}</span>`).join('');
+  const d = document.createElement('div');
+  d.className = 'card'; d.id = id; d.draggable = true;
+
+  const TAG_CSS = {email:'te',content:'tc',databox:'td',framer:'tf',klaviyo:'tk',instagram:'ti',
+    manychats:'tm',newie:'tn',hubspot:'th',zapier:'tz',kling:'tl',data:'ta',dev:'tv',strategy:'ts2',typeform:'tt'};
+  const TAG_NAMES = {te:'email',tc:'content',td:'databox',tf:'framer',tk:'klaviyo',ti:'instagram',
+    tm:'manychats',tn:'newie',th:'hubspot',tz:'zapier',tl:'kling',ta:'data',tv:'dev',ts2:'strategy',tt:'typeform'};
+
+  const tags = (m.tags||[]).map(t => '<span class="tag ' + (t||'') + '">' + (TAG_NAMES[t]||t) + '</span>').join('');
   const eta = m.eta || 0;
   const bw = m.bw || 0;
   const prog = m.prog !== undefined ? m.prog : 0;
-  const e = etaStr(eta);
-  let finishStr = '';
+  const night = (bw >= 7 && eta >= 60) ? '<span class="moon">🌙 overnight</span>' : '';
+
+  // ETA display
+  const etaHtml = eta > 0 ? '<span class="eta">⏱ <span>' + (eta < 60 ? eta + 'm' : Math.round(eta/60*10)/10 + 'h') + '</span></span>' : '';
+
+  // BW pips
+  let pipHtml = '';
+  if (bw > 0) {
+    let pips = '';
+    for (let i = 0; i < 10; i++) {
+      const on = i < bw ? (bw <= 3 ? ' low' : bw <= 6 ? ' mid' : ' hi') : '';
+      pips += '<div class="pip' + on + '"></div>';
+    }
+    pipHtml = '<div class="bw"><span class="bwl">BW</span><div class="pips">' + pips + '</div></div>';
+  }
+
+  // Progress bar
+  let progHtml = '';
+  if (prog > 0) {
+    const pc = prog >= 80 ? '#22c55e' : prog >= 40 ? '#eab308' : '#E64500';
+    progHtml = '<div style="margin-top:8px"><div style="display:flex;justify-content:space-between;margin-bottom:3px">'
+      + '<span style="font-size:9px;color:#444;font-weight:700;text-transform:uppercase">Progress</span>'
+      + '<span style="font-size:10px;font-weight:800;color:' + pc + '">' + prog + '%</span></div>'
+      + '<div style="height:4px;background:#1a1a1a;border-radius:2px;overflow:hidden">'
+      + '<div style="width:' + prog + '%;height:100%;background:' + pc + ';border-radius:2px"></div></div></div>';
+  }
+
+  // Finish time (George column only)
+  let finishHtml = '';
   if (col === 'george' && eta > 0) {
     const base = startedAt ? new Date(startedAt) : new Date();
-    const finish = new Date(base.getTime() + eta * 60 * 1000);
+    const finish = new Date(base.getTime() + eta * 60000);
     const now = new Date();
     const mins = Math.round((finish - now) / 60000);
-    const timeStr = finish.toLocaleString('en-AU', {timeZone:'Australia/Brisbane', hour:'numeric', minute:'2-digit', hour12:true}).toLowerCase().replace(' ', '');
-    const isOverdue = finish <= now;
-    finishStr = `<div data-finish="${finish.toISOString()}" style="margin-top:9px;padding:8px 11px;background:${isOverdue?'#1a0800':'#0d0d00'};border:1px solid ${isOverdue?'#3a1500':'#2a2600'};border-radius:8px;display:flex;align-items:center;justify-content:space-between;gap:8px">
-      <span style="font-size:10px;font-weight:700;color:${isOverdue?'#f97316':'#eab308'};white-space:nowrap">${isOverdue?'⏰ overdue':'⚡ finish'}</span>
-      <span style="font-size:14px;font-weight:900;color:#fff;letter-spacing:-0.3px">${timeStr}</span>
-      <span style="font-size:10px;color:#555;white-space:nowrap">${isOverdue?Math.abs(mins)+'m ago':mins+'m left'}</span>
-    </div>`;
-  } const b = pip(bw);
-  const night = (bw >= 7 && eta >= 60) ? '<span class="moon">🌙 overnight</span>' : '';
-  const progColor = prog >= 80 ? '#22c55e' : prog >= 40 ? '#eab308' : '#E64500';
-  const progBar = prog > 0 ? `<div style="margin-top:8px">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
-      <span style="font-size:9px;color:#444;font-weight:600;letter-spacing:.06em;text-transform:uppercase">Progress</span>
-      <span style="font-size:10px;font-weight:700;color:${{progColor}}">${{prog}}%</span>
-    </div>
-    <div style="height:4px;background:#1a1a1a;border-radius:2px;overflow:hidden">
-      <div style="width:${{prog}}%;height:100%;background:${{progColor}};border-radius:2px;transition:width .4s"></div>
-    </div>
-  </div>` : '';
-  const d = document.createElement('div');
-  d.className = 'card'; d.id = id; d.draggable = true;
-  const progColor = prog >= 80 ? '#22c55e' : prog >= 40 ? '#eab308' : '#E64500';
-  const progBar = prog > 0 ? `<div style="margin-top:8px"><div style="display:flex;justify-content:space-between;margin-bottom:3px"><span style="font-size:9px;color:#444;font-weight:700;text-transform:uppercase">Progress</span><span style="font-size:10px;font-weight:800;color:${progColor}">${prog}%</span></div><div style="height:4px;background:#1a1a1a;border-radius:2px;overflow:hidden"><div style="width:${prog}%;height:100%;background:${progColor};border-radius:2px"></div></div></div>` : '';
-  d.innerHTML = `<div class="card-title">${m.t}</div><div class="card-body">${m.b||''}</div><div class="cf"><div class="ctags">${tags}${night}</div><div class="cstats">${e?`<span class="eta">⏱ <span>${e}</span></span>`:''}${b}</div></div>${m.note?`<div class="note">${m.note}</div>`:''}\${finishStr}\${progBar}`;
-  // Add column select dropdown
-  const colOpts = ['jay','george','urgent','blocked','waiting','night','done'].map(c => {
-    const lbl = {jay:'→ Jay',george:'→ George',urgent:'→ Needs Done',blocked:'→ Blocked',waiting:'→ Backlog',night:'→ Overnight',done:'→ Done ✓'};
-    return `<option value="${c}" ${col===c?'selected':''}>${lbl[c]}</option>`;
-  }).join('');
+    const t = finish.toLocaleString('en-AU', {timeZone:'Australia/Brisbane', hour:'numeric', minute:'2-digit', hour12:true}).toLowerCase().replace(' ','');
+    const over = finish <= now;
+    finishHtml = '<div data-finish="' + finish.toISOString() + '" style="margin-top:9px;padding:8px 11px;background:' + (over?'#1a0800':'#0d0d00') + ';border:1px solid ' + (over?'#3a1500':'#2a2600') + ';border-radius:8px;display:flex;align-items:center;justify-content:space-between;gap:8px">'
+      + '<span style="font-size:10px;font-weight:700;color:' + (over?'#f97316':'#eab308') + '">' + (over?'⏰ overdue':'⚡ finish') + '</span>'
+      + '<span style="font-size:14px;font-weight:900;color:#fff">' + t + '</span>'
+      + '<span style="font-size:10px;color:#555">' + (over ? Math.abs(mins)+'m ago' : mins+'m left') + '</span></div>';
+  }
+
+  // Build card HTML
+  d.innerHTML = '<div class="card-title">' + m.t + '</div>'
+    + '<div class="card-body">' + (m.b||'') + '</div>'
+    + '<div class="cf"><div class="ctags">' + tags + night + '</div>'
+    + '<div class="cstats">' + etaHtml + pipHtml + '</div></div>'
+    + (m.note ? '<div class="note">' + m.note + '</div>' : '')
+    + finishHtml
+    + progHtml;
+
+  // Column select dropdown
+  const COLS_LIST = ['jay','george','urgent','blocked','waiting','night','done'];
+  const COL_LBL = {jay:'→ Jay',george:'→ George',urgent:'→ Needs Done',blocked:'→ Blocked',waiting:'→ Backlog',night:'→ Overnight',done:'→ Done ✓'};
   const sel = document.createElement('select');
-  sel.className = 'col-select';
   sel.style.cssText = 'margin-top:8px;width:100%;background:#1a1a1a;border:1px solid #2a2a2a;color:#888;font-size:11px;padding:6px 8px;border-radius:6px;cursor:pointer;font-family:Inter,sans-serif;display:block;';
-  sel.innerHTML = `<option value="" disabled>📱 Move to…</option>${colOpts}`;
-  sel.onchange = function() { moveCardTo(id, this.value, this); };
+  let opts = '<option value="" disabled>📱 Move to…</option>';
+  COLS_LIST.forEach(c => { opts += '<option value="' + c + '"' + (col===c?' selected':'') + '>' + COL_LBL[c] + '</option>'; });
+  sel.innerHTML = opts;
+  sel.onchange = function() { if (this.value) moveCardTo(id, this.value, this); };
   d.appendChild(sel);
+
   return d;
 }
-
 
 function moveCardTo(cardId, newCol, selectEl) {
   if (!newCol) return;
