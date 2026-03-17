@@ -99,32 +99,17 @@
   }
 
 
-  /* Dropdown: hidden on mouse devices, shown on touch */
-  .col-select {
-    display: none;
-    margin-top: 10px;
-    width: 100%;
-    background: #0d0d0d;
-    border: 1px solid #2a2a2a;
-    color: #aaa;
-    font-size: 12px;
-    font-weight: 600;
-    padding: 8px 10px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-family: Inter, sans-serif;
-    -webkit-appearance: none;
-    appearance: none;
   }
-  /* Show on touch/mobile devices */
-  @media (pointer: coarse), (max-width: 768px) {
-    .col-select { display: block; }
-  }
-  /* Force hide on mouse devices (desktop) */
-  @media (pointer: fine) {
-    .col-select { display: none !important; }
   }
 
+  .col-select {
+    display: none;
+    margin-top: 10px; width: 100%; background: #0d0d0d;
+    border: 1px solid #2a2a2a; color: #aaa; font-size: 12px;
+    font-weight: 600; padding: 8px 10px; border-radius: 8px;
+    cursor: pointer; font-family: Inter, sans-serif;
+    -webkit-appearance: none; appearance: none;
+  }
 </style>
 </head>
 <body>
@@ -283,6 +268,11 @@ function mkCard(id, col, startedAt) {
   sel.innerHTML = opts;
   sel.onchange = function() { if (this.value) moveCardTo(id, this.value, this); };
   // Always append, CSS controls visibility
+  // Show dropdown only on touch/mobile
+  const isTouchDevice = ('ontouchstart' in window) || navigator.maxTouchPoints > 0 || window.innerWidth <= 900;
+  if (isTouchDevice) {
+    sel.style.display = 'block';
+  }
   d.appendChild(sel);
 
   return d;
