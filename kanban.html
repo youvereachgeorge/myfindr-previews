@@ -261,5 +261,176 @@ let tt; function showToast(m) { const t=document.getElementById('toast'); t.text
 loadState();
 setInterval(loadState, 90000);
 </script>
+
+<!-- PROJECT SECTION -->
+<div id="projects-section" style="padding:24px;border-top:1px solid #1f1f1f;margin-top:8px;">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+    <div>
+      <div style="font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#E64500;margin-bottom:4px;">PROJECTS</div>
+      <div style="font-size:22px;font-weight:900;letter-spacing:-0.8px;">Active Projects</div>
+    </div>
+    <div style="font-size:11px;color:#444;font-style:italic;">Monday.com-style project tracker — backed by Supabase</div>
+  </div>
+  <div id="project-list"></div>
+</div>
+
+<style>
+  .project-card {
+    background:#111;border:1px solid #1f1f1f;border-radius:14px;margin-bottom:20px;overflow:hidden;
+  }
+  .project-header {
+    padding:20px 24px 16px;display:flex;align-items:flex-start;justify-content:space-between;gap:16px;
+    border-bottom:1px solid #1a1a1a;
+  }
+  .project-color-bar {
+    width:4px;height:100%;border-radius:2px;flex-shrink:0;align-self:stretch;min-height:32px;
+  }
+  .project-name {font-size:18px;font-weight:800;letter-spacing:-0.5px;margin-bottom:4px;}
+  .project-obj {font-size:12px;color:#666;line-height:1.5;max-width:600px;}
+  .project-meta {display:flex;gap:16px;align-items:center;flex-shrink:0;}
+  .project-date {font-size:11px;color:#555;}
+  .project-date span {color:#888;}
+  .project-status {font-size:11px;font-weight:700;padding:4px 10px;border-radius:12px;}
+  .status-active {background:rgba(34,197,94,.15);color:#22c55e;}
+  .project-progress-wrap {padding:16px 24px;border-bottom:1px solid #141414;}
+  .progress-label {display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
+  .progress-label span {font-size:11px;color:#555;font-weight:600;letter-spacing:.06em;text-transform:uppercase;}
+  .progress-label strong {font-size:14px;font-weight:800;}
+  .progress-track {height:8px;background:#1f1f1f;border-radius:4px;overflow:hidden;}
+  .progress-fill {height:100%;border-radius:4px;transition:width .5s ease;}
+  .milestones-wrap {padding:16px 24px;border-bottom:1px solid #141414;}
+  .milestones-title {font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#444;margin-bottom:10px;}
+  .milestone-row {display:flex;align-items:center;gap:10px;padding:6px 0;border-bottom:1px solid #0f0f0f;}
+  .milestone-row:last-child {border-bottom:none;}
+  .ms-check {width:18px;height:18px;border-radius:50%;border:2px solid #333;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:10px;cursor:pointer;transition:all .2s;}
+  .ms-done {background:#22c55e;border-color:#22c55e;color:#fff;}
+  .ms-pending {background:transparent;}
+  .ms-title {font-size:12px;color:#bbb;flex:1;}
+  .ms-done-title {text-decoration:line-through;color:#444;}
+  .ms-date {font-size:10px;color:#555;}
+  .ms-overdue {color:#ef4444;}
+  .related-cards-wrap {padding:16px 24px;}
+  .rc-title {font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#444;margin-bottom:10px;}
+  .rc-grid {display:flex;gap:8px;flex-wrap:wrap;}
+  .rc-chip {display:flex;align-items:center;gap:6px;background:#1a1a1a;border:1px solid #252525;border-radius:8px;padding:5px 10px;font-size:11px;color:#888;cursor:pointer;transition:border-color .2s;}
+  .rc-chip:hover {border-color:#333;color:#ccc;}
+  .rc-col {display:inline-block;width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+  .col-dot-jay {background:#3b82f6;} .col-dot-george {background:#E64500;}
+  .col-dot-urgent {background:#f97316;} .col-dot-blocked {background:#ef4444;}
+  .col-dot-waiting {background:#555;} .col-dot-night {background:#6366f1;}
+  .col-dot-done {background:#22c55e;}
+</style>
+
+<script>
+const SB_URL2 = 'https://ieqbavwzydlxiaclzcjl.supabase.co';
+const SB_KEY2 = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImllcWJhdnd6eWRseGlhY2x6Y2psIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3MzM4NDEwMCwiZXhwIjoyMDg4OTYwMTAwfQ.8FqHSTp-FxwIiiZWBpzAiYRkL5WdSNETn2ICAo-1DOE';
+
+const CARD_TITLES2 = {};
+Object.entries(CARDS).forEach(([id,m]) => CARD_TITLES2[id] = m.t);
+
+const COL_DOTS = {jay:'col-dot-jay',george:'col-dot-george',urgent:'col-dot-urgent',blocked:'col-dot-blocked',waiting:'col-dot-waiting',night:'col-dot-night',done:'col-dot-done'};
+const COL_LABELS2 = {jay:'Jay',george:'George',urgent:'Urgent',blocked:'Blocked',waiting:'Backlog',night:'Overnight',done:'Done'};
+
+async function loadProjects() {
+  try {
+    const [pRes, mRes, cRes] = await Promise.all([
+      fetch(`${SB_URL2}/rest/v1/kanban_projects?order=created_at.asc`, {headers:{'apikey':SB_KEY2,'Authorization':'Bearer '+SB_KEY2}}).then(r=>r.json()),
+      fetch(`${SB_URL2}/rest/v1/project_milestones?order=sort_order.asc`, {headers:{'apikey':SB_KEY2,'Authorization':'Bearer '+SB_KEY2}}).then(r=>r.json()),
+      fetch(`${SB_URL2}/rest/v1/kanban_cards?select=id,col,project_id&not.project_id.is.null`, {headers:{'apikey':SB_KEY2,'Authorization':'Bearer '+SB_KEY2}}).then(r=>r.json()),
+    ]);
+
+    const container = document.getElementById('project-list');
+    container.innerHTML = '';
+
+    pRes.forEach(proj => {
+      const milestones = mRes.filter(m => m.project_id === proj.id);
+      const cards = cRes.filter(c => c.project_id === proj.id);
+      const doneMs = milestones.filter(m => m.completed).length;
+      const totalMs = milestones.length;
+      const progress = totalMs ? Math.round(doneMs / totalMs * 100) : proj.progress;
+
+      const today = new Date().toISOString().split('T')[0];
+      const deadlineStr = proj.deadline ? new Date(proj.deadline).toLocaleDateString('en-AU',{day:'2-digit',month:'short',year:'numeric'}) : 'Ongoing';
+      const startStr = proj.start_date ? new Date(proj.start_date).toLocaleDateString('en-AU',{day:'2-digit',month:'short'}) : '—';
+      const isOverdue = proj.deadline && proj.deadline < today && proj.status === 'active';
+
+      const msHtml = milestones.map(m => {
+        const overdue = m.due_date && m.due_date < today && !m.completed;
+        return `<div class="milestone-row">
+          <div class="ms-check ${m.completed?'ms-done':'ms-pending'}" onclick="toggleMilestone('${m.id}',${!m.completed},'${proj.id}')">${m.completed?'✓':''}</div>
+          <div class="ms-title ${m.completed?'ms-done-title':''}">${m.title}</div>
+          ${m.due_date?`<div class="ms-date ${overdue?'ms-overdue':''}">${overdue?'⚠️ ':''}${new Date(m.due_date).toLocaleDateString('en-AU',{day:'2-digit',month:'short'})}</div>`:''}
+        </div>`;
+      }).join('');
+
+      const cardsHtml = cards.length ? cards.map(c => {
+        const title = CARD_TITLES2[c.id] || c.id;
+        return `<div class="rc-chip" onclick="scrollToCard('${c.id}')">
+          <div class="rc-col ${COL_DOTS[c.col]||''}"></div>
+          <span>${title.length > 30 ? title.substring(0,30)+'…' : title}</span>
+          <span style="font-size:9px;opacity:.5">${COL_LABELS2[c.col]||c.col}</span>
+        </div>`;
+      }).join('') : '<div style="font-size:11px;color:#333;">No linked cards yet</div>';
+
+      const card = document.createElement('div');
+      card.className = 'project-card';
+      card.id = 'proj-' + proj.id;
+      card.innerHTML = `
+        <div class="project-header">
+          <div style="display:flex;gap:14px;align-items:flex-start;flex:1;">
+            <div class="project-color-bar" style="background:${proj.color};"></div>
+            <div>
+              <div class="project-name">${proj.name}</div>
+              <div class="project-obj">${proj.objective||''}</div>
+            </div>
+          </div>
+          <div class="project-meta">
+            <div class="project-date">Start: <span>${startStr}</span></div>
+            <div class="project-date" style="${isOverdue?'color:#ef4444':''}">Deadline: <span style="${isOverdue?'color:#ef4444':''}">${deadlineStr}</span></div>
+            <div class="project-status status-${proj.status}">${proj.status}</div>
+          </div>
+        </div>
+        <div class="project-progress-wrap">
+          <div class="progress-label">
+            <span>Progress</span>
+            <strong style="color:${proj.color}">${progress}%</strong>
+          </div>
+          <div class="progress-track">
+            <div class="progress-fill" style="width:${progress}%;background:${proj.color};"></div>
+          </div>
+          <div style="font-size:11px;color:#444;margin-top:6px;">${doneMs} of ${totalMs} milestones complete</div>
+        </div>
+        <div class="milestones-wrap">
+          <div class="milestones-title">Milestones</div>
+          ${msHtml}
+        </div>
+        <div class="related-cards-wrap">
+          <div class="rc-title">Linked Kanban Cards (${cards.length})</div>
+          <div class="rc-grid">${cardsHtml}</div>
+        </div>
+      `;
+      container.appendChild(card);
+    });
+  } catch(e) { console.error('Projects load error:', e); }
+}
+
+async function toggleMilestone(id, completed, projId) {
+  await fetch(`${SB_URL2}/rest/v1/project_milestones?id=eq.${id}`, {
+    method: 'PATCH',
+    headers: {'apikey':SB_KEY2,'Authorization':'Bearer '+SB_KEY2,'Content-Type':'application/json','Prefer':'return=minimal'},
+    body: JSON.stringify({completed, completed_at: completed ? new Date().toISOString() : null})
+  });
+  // Recalculate + update project progress
+  loadProjects();
+}
+
+function scrollToCard(cardId) {
+  const el = document.getElementById(cardId);
+  if (el) { el.scrollIntoView({behavior:'smooth',block:'center'}); el.style.borderColor='#E64500'; setTimeout(()=>el.style.borderColor='',1500); }
+}
+
+loadProjects();
+</script>
+
 </body>
 </html>
