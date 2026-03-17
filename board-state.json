@@ -1,5 +1,5 @@
 {
-  "updated": "2026-03-17T22:08:38.780169+00:00",
+  "updated": "2026-03-17T22:12:00.233795+00:00",
   "updated_by": "george",
   "cards": {
     "c1": "jay",
@@ -43,15 +43,15 @@
     "c39": "done",
     "c40": "done",
     "c41": "done",
-    "c42": "george",
-    "c43": "george",
-    "c44": "george",
-    "c45": "george",
+    "c42": "waiting",
+    "c43": "waiting",
+    "c44": "waiting",
+    "c45": "waiting",
     "c46": "night",
     "c47": "jay",
-    "c48": "george",
-    "c49": "george",
-    "c50": "george",
+    "c48": "waiting",
+    "c49": "waiting",
+    "c50": "waiting",
     "c51": "done"
   },
   "started": {
