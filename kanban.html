@@ -149,13 +149,44 @@ function pip(bw) {
 }
 function etaStr(m) { if (!m) return ''; return m < 60 ? m+'m' : Math.round(m/60*10)/10+'h'; }
 
-function mkCard(id, col) {
+function mkCard(id, col, startedAt) {
   const m = CARDS[id]; if (!m) return null;
   const tags = (m.tags||[]).map(t=>`<span class="tag ${t}">${{te:'email',tc:'content',td:'databox',tf:'framer',tk:'klaviyo',ti:'instagram',tm:'manychats',tn:'newie',th:'hubspot',tz:'zapier',tl:'kling',ta:'data',tv:'dev',ts2:'strategy',tt:'typeform'}[t]||''}</span>`).join('');
   const eta = m.eta || 0;
   const bw = m.bw || 0;
   const prog = m.prog !== undefined ? m.prog : 0;
-  const e = etaStr(eta); const b = pip(bw);
+  const e = etaStr(eta);
+  let finishStr = '';
+  if (col === 'george' && eta > 0 && startedAt) {
+    const started = new Date(startedAt);
+    const finish = new Date(started.getTime() + eta * 60 * 1000);
+    const now = new Date();
+    const remaining = Math.max(0, Math.round((finish - now) / 60000));
+    const finishTime = finish.toLocaleString('en-AU', {timeZone:'Australia/Brisbane', hour:'2-digit', minute:'2-digit'});
+    if (finish > now) {
+      finishStr = `<div style="margin-top:8px;padding:7px 10px;background:#1a1a00;border:1px solid #2a2a00;border-radius:7px;display:flex;align-items:center;justify-content:space-between">
+        <span style="font-size:10px;color:#eab308;font-weight:600">⚡ Est. finish</span>
+        <span style="font-size:12px;font-weight:700;color:#fff">${finishTime} AEST</span>
+        <span style="font-size:10px;color:#666">${remaining}m left</span>
+      </div>`;
+    } else {
+      finishStr = `<div style="margin-top:8px;padding:7px 10px;background:#1a0a00;border:1px solid #2a1000;border-radius:7px;display:flex;align-items:center;justify-content:space-between">
+        <span style="font-size:10px;color:#f97316;font-weight:600">⏰ Overdue</span>
+        <span style="font-size:12px;font-weight:700;color:#f97316">Should be done</span>
+        <span style="font-size:10px;color:#666">${Math.abs(remaining)}m ago</span>
+      </div>`;
+    }
+  } else if (col === 'george' && eta > 0 && !startedAt) {
+    // Just started, no timestamp yet
+    const now = new Date();
+    const finish = new Date(now.getTime() + eta * 60 * 1000);
+    const finishTime = finish.toLocaleString('en-AU', {timeZone:'Australia/Brisbane', hour:'2-digit', minute:'2-digit'});
+    finishStr = `<div style="margin-top:8px;padding:7px 10px;background:#1a1a00;border:1px solid #2a2a00;border-radius:7px;display:flex;align-items:center;justify-content:space-between">
+      <span style="font-size:10px;color:#eab308;font-weight:600">⚡ Est. finish</span>
+      <span style="font-size:12px;font-weight:700;color:#fff">${finishTime} AEST</span>
+      <span style="font-size:10px;color:#666">${eta}m</span>
+    </div>`;
+  } const b = pip(bw);
   const night = (bw >= 7 && eta >= 60) ? '<span class="moon">🌙 overnight</span>' : '';
   const progColor = prog >= 80 ? '#22c55e' : prog >= 40 ? '#eab308' : '#E64500';
   const progBar = prog > 0 ? `<div style="margin-top:8px">
@@ -203,7 +234,8 @@ async function loadState() {
     window.CARD_PROGRESS = {};
         COLS.forEach(c => document.getElementById('col-'+c).innerHTML = '');
     Object.entries(state.cards).forEach(([id, col]) => {
-      const card = mkCard(id, col);
+      const startedAt = state.started && state.started[id] ? state.started[id] : null;
+      const card = mkCard(id, col, startedAt);
       if (card) document.getElementById('col-'+col)?.appendChild(card);
     });
     
@@ -228,6 +260,15 @@ async function saveMove(cardId, newCol, movedBy) {
     
     const oldCol = state.cards[cardId];
     state.cards[cardId] = newCol;
+    // Stamp start time when moving to George's column
+    if (newCol === 'george') {
+      if (!state.started) state.started = {};
+      state.started[cardId] = new Date().toISOString();
+    }
+    // Clear start time if moved away from george
+    if (newCol !== 'george' && state.started && state.started[cardId]) {
+      delete state.started[cardId];
+    }
     state.updated = new Date().toISOString();
     state.updated_by = movedBy;
     state.last_move = {card: cardId, from: oldCol, to: newCol, by: movedBy, at: state.updated};
