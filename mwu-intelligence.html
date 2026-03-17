@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Move With Us — Business Intelligence</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:'Inter',sans-serif; background:#0a0a0a; color:#fff; padding:40px; }
+  .header { margin-bottom:32px; }
+  .header-tag { font-size:11px; font-weight:700; letter-spacing:.15em; text-transform:uppercase; color:#E64500; margin-bottom:10px; }
+  h1 { font-size:40px; font-weight:900; letter-spacing:-1.5px; line-height:1; margin-bottom:8px; }
+  .sub { font-size:13px; color:#555; margin-bottom:6px; }
+  .disc { background:#141414; border:1px solid #222; border-left:3px solid #E64500; border-radius:8px; padding:12px 16px; font-size:11px; color:#666; margin-bottom:36px; line-height:1.6; }
+  .sec { font-size:10px; font-weight:700; letter-spacing:.14em; text-transform:uppercase; color:#E64500; margin:36px 0 16px; }
+  .card { background:#111; border:1px solid #1f1f1f; border-radius:16px; padding:24px; }
+  .g4 { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:24px; }
+  .g3 { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-bottom:24px; }
+  .g2 { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:24px; }
+  .label { font-size:10px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:#555; margin-bottom:8px; }
+  .big { font-size:40px; font-weight:900; letter-spacing:-1.5px; line-height:1; }
+  .note { font-size:11px; color:#555; margin-top:6px; line-height:1.5; }
+  .orange { color:#E64500; } .green { color:#22c55e; } .blue { color:#3b82f6; } .yellow { color:#eab308; } .white { color:#fff; }
+  .tbl { width:100%; border-collapse:collapse; }
+  .tbl th { font-size:10px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:#444; padding:10px 12px; border-bottom:1px solid #1f1f1f; text-align:left; }
+  .tbl td { font-size:13px; color:#bbb; padding:11px 12px; border-bottom:1px solid #141414; vertical-align:top; }
+  .tbl td:first-child { font-weight:600; color:#fff; width:160px; }
+  .badge { display:inline-block; padding:3px 10px; border-radius:20px; font-size:11px; font-weight:600; }
+  .b-o { background:rgba(230,69,0,.15); color:#E64500; }
+  .b-g { background:rgba(34,197,94,.15); color:#22c55e; }
+  .b-y { background:rgba(234,179,8,.15); color:#eab308; }
+  .b-b { background:rgba(59,130,246,.15); color:#3b82f6; }
+  .b-gr { background:#1f1f1f; color:#666; }
+  .b-r { background:rgba(239,68,68,.15); color:#ef4444; }
+  .person-card { background:#111; border:1px solid #1f1f1f; border-radius:16px; padding:28px; }
+  .person-header { display:flex; align-items:flex-start; gap:20px; margin-bottom:20px; }
+  .avatar { width:80px; height:80px; border-radius:50%; flex-shrink:0; border:2px solid #E64500; overflow:hidden; }
+  .avatar img { width:100%; height:100%; object-fit:cover; }
+  .avatar-init { width:80px; height:80px; border-radius:50%; flex-shrink:0; border:2px solid #3b82f6; display:flex; align-items:center; justify-content:center; font-size:30px; font-weight:900; }
+  .person-name { font-size:20px; font-weight:800; margin-bottom:3px; }
+  .person-role { font-size:13px; color:#E64500; margin-bottom:8px; }
+  .person-role-blue { font-size:13px; color:#3b82f6; margin-bottom:8px; }
+  .person-social { font-size:12px; color:#555; }
+  .opp { background:#111; border:1px solid #1f1f1f; border-radius:12px; padding:20px 24px; margin-bottom:12px; display:flex; gap:16px; align-items:flex-start; }
+  .opp-num { background:#E64500; color:#fff; width:28px; height:28px; border-radius:50%; font-size:13px; font-weight:800; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:2px; }
+  .opp-title { font-size:14px; font-weight:700; margin-bottom:4px; }
+  .opp-body { font-size:13px; color:#888; line-height:1.5; }
+  .comp-tier { display:flex; align-items:flex-start; gap:10px; padding:12px 0; border-bottom:1px solid #141414; }
+  .comp-tier:last-child { border-bottom:none; }
+  .comp-rank { width:26px; height:26px; border-radius:50%; font-size:11px; font-weight:800; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:2px; }
+  .r1 { background:#E64500; color:#fff; }
+  .r2 { background:#1f1f1f; color:#888; }
+  .r3 { background:#141414; color:#555; border:1px solid #222; }
+  .comp-name { font-size:13px; font-weight:700; margin-bottom:2px; }
+  .comp-detail { font-size:12px; color:#666; line-height:1.4; }
+  .insight-box { background:#141414; border-radius:12px; padding:18px 20px; border-left:3px solid #E64500; }
+  .insight-blue { background:#141414; border-radius:12px; padding:18px 20px; border-left:3px solid #3b82f6; }
+  
+  /* TIMELINE */
+  .timeline { position:relative; padding-left:24px; }
+  .timeline::before { content:''; position:absolute; left:8px; top:0; bottom:0; width:2px; background:#1f1f1f; }
+  .tl-item { position:relative; padding-bottom:24px; }
+  .tl-item:last-child { padding-bottom:0; }
+  .tl-dot { position:absolute; left:-20px; top:4px; width:12px; height:12px; border-radius:50%; background:#1f1f1f; border:2px solid #333; }
+  .tl-dot.active { background:#E64500; border-color:#E64500; }
+  .tl-year { font-size:11px; font-weight:700; color:#E64500; letter-spacing:.08em; margin-bottom:3px; }
+  .tl-title { font-size:14px; font-weight:700; margin-bottom:3px; }
+  .tl-body { font-size:12px; color:#666; line-height:1.5; }
+  .tl-metrics { display:flex; gap:12px; margin-top:6px; flex-wrap:wrap; }
+  .tl-metric { font-size:11px; background:#1a1a1a; border:1px solid #222; border-radius:6px; padding:3px 10px; color:#888; }
+  
+  /* PIE CHART */
+  .pie-wrap { display:flex; align-items:center; gap:32px; }
+  .pie-svg { flex-shrink:0; }
+  .pie-legend { flex:1; }
+  .pie-item { display:flex; align-items:center; gap:10px; margin-bottom:10px; }
+  .pie-dot { width:12px; height:12px; border-radius:3px; flex-shrink:0; }
+  .pie-label { font-size:13px; color:#ccc; flex:1; }
+  .pie-pct { font-size:13px; font-weight:700; color:#fff; }
+  
+  /* FLYWHEEL */
+  .flywheel { display:grid; grid-template-columns:1fr auto 1fr auto 1fr; gap:8px; align-items:center; text-align:center; margin-bottom:24px; }
+  .fw-box { background:#141414; border:1px solid #1f1f1f; border-radius:12px; padding:16px 12px; }
+  .fw-arrow { color:#E64500; font-size:24px; font-weight:900; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-tag">Interview Intelligence · Confidential Research · March 2026</div>
+  <h1>Move With Us</h1>
+  <div class="sub">Business Intelligence Overview · Prepared for Jay · Interview 10am AEST · All figures estimated from public data</div>
+</div>
+<div class="disc">⚠️ Revenue/subscriber figures are modelled estimates based on: public pricing ($24.99/mo, $199.99/yr), stated community size (95k community, 200k+ transformations), LinkedIn headcount (31), industry conversion benchmarks (fitness app 2–8% free-to-paid), and comparables (SWEAT, Tone It Up). Not reported data.</div>
+
+<!-- CORE METRICS -->
+<div class="sec">Core Metrics — Estimated</div>
+<div class="g4">
+  <div class="card"><div class="label">Est. Paying Subscribers</div><div class="big orange">4,750–<br>7,600</div><div class="note">2–4% of 95k community. Conservative–mid range.</div></div>
+  <div class="card"><div class="label">Est. MRR (AUD)</div><div class="big green">$95k–<br>$190k</div><div class="note">Blended ARPU ~$20/mo (mix monthly/annual)</div></div>
+  <div class="card"><div class="label">Est. ARR (AUD)</div><div class="big white">$1.1M–<br>$2.3M</div><div class="note">App subscription only. Excludes CSB.</div></div>
+  <div class="card"><div class="label">Est. LTV</div><div class="big blue">$360–<br>$600</div><div class="note">18–24mo avg retention at $20/mo ARPU</div></div>
+</div>
+<div class="g4">
+  <div class="card"><div class="label">Community</div><div class="big white">95,000</div><div class="note">Active. 200k+ cumulative transformations.</div></div>
+  <div class="card"><div class="label">Team</div><div class="big white">31</div><div class="note">LinkedIn confirmed. HQ: Burleigh Heads QLD. Founded 2015/2017.</div></div>
+  <div class="card"><div class="label">Monthly Price</div><div class="big orange">$24.99</div><div class="note">Annual: $199.99/yr ($16.67/mo equiv, 33% saving)</div></div>
+  <div class="card"><div class="label">Est. Churn</div><div class="big yellow">5–8%<span style="font-size:18px;">/mo</span></div><div class="note">Fitness app industry benchmark range</div></div>
+</div>
+
+<!-- PIE CHART: AU MARKET SHARE -->
+<div class="sec">Estimated AU Women's Fitness App Market Share</div>
+<div class="card" style="margin-bottom:24px;">
+  <div class="pie-wrap">
+    <svg class="pie-svg" width="200" height="200" viewBox="0 0 200 200">
+      <!-- SWEAT: 42% -->
+      <path d="M100,100 L100,10 A90,90 0 0,1 196.3,72.5 Z" fill="#ef4444" opacity="0.9"/>
+      <!-- Centr: 18% -->
+      <path d="M100,100 L196.3,72.5 A90,90 0 0,1 164.6,181.3 Z" fill="#3b82f6" opacity="0.9"/>
+      <!-- MWU: 16% -->
+      <path d="M100,100 L164.6,181.3 A90,90 0 0,1 78.7,188.2 Z" fill="#E64500" opacity="0.95"/>
+      <!-- Freeletics: 10% -->
+      <path d="M100,100 L78.7,188.2 A90,90 0 0,1 10.0,127.5 Z" fill="#8b5cf6" opacity="0.9"/>
+      <!-- Tone It Up: 8% -->
+      <path d="M100,100 L10.0,127.5 A90,90 0 0,1 20.7,44.0 Z" fill="#eab308" opacity="0.9"/>
+      <!-- Others: 6% -->
+      <path d="M100,100 L20.7,44.0 A90,90 0 0,1 100,10 Z" fill="#444" opacity="0.9"/>
+      <!-- Center circle -->
+      <circle cx="100" cy="100" r="38" fill="#111"/>
+      <text x="100" y="96" text-anchor="middle" fill="#fff" font-size="14" font-weight="900" font-family="Inter,sans-serif">AU</text>
+      <text x="100" y="112" text-anchor="middle" fill="#888" font-size="10" font-family="Inter,sans-serif">Market</text>
+    </svg>
+    <div class="pie-legend">
+      <div class="pie-item"><div class="pie-dot" style="background:#ef4444;"></div><div class="pie-label">SWEAT (Kayla Itsines)</div><div class="pie-pct">~42%</div></div>
+      <div class="pie-item"><div class="pie-dot" style="background:#3b82f6;"></div><div class="pie-label">Centr (Chris Hemsworth)</div><div class="pie-pct">~18%</div></div>
+      <div class="pie-item"><div class="pie-dot" style="background:#E64500;"></div><div class="pie-label"><strong>Move With Us</strong></div><div class="pie-pct" style="color:#E64500;">~16%</div></div>
+      <div class="pie-item"><div class="pie-dot" style="background:#8b5cf6;"></div><div class="pie-label">Freeletics</div><div class="pie-pct">~10%</div></div>
+      <div class="pie-item"><div class="pie-dot" style="background:#eab308;"></div><div class="pie-label">Tone It Up</div><div class="pie-pct">~8%</div></div>
+      <div class="pie-item"><div class="pie-dot" style="background:#444;"></div><div class="pie-label">Others / Emerging</div><div class="pie-pct">~6%</div></div>
+    </div>
+  </div>
+  <div style="margin-top:16px; font-size:11px; color:#444; line-height:1.6;">* Estimated from Instagram following size, app store ranking, community size disclosures, and media coverage. AU women-focused fitness app segment only. Not audited.</div>
+</div>
+
+<!-- GROWTH TIMELINE -->
+<div class="sec">5-Year Growth Timeline</div>
+<div class="card" style="margin-bottom:24px;">
+  <div class="timeline">
+    <div class="tl-item">
+      <div class="tl-dot"></div>
+      <div class="tl-year">2015</div>
+      <div class="tl-title">Bodies By Rachel — Origin</div>
+      <div class="tl-body">Rachel Dillon starts 1:1 coaching and bootcamps from Gold Coast home. Online pivot begins.</div>
+      <div class="tl-metrics"><span class="tl-metric">Community: &lt;1,000</span><span class="tl-metric">Revenue: &lt;$100k</span></div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-dot"></div>
+      <div class="tl-year">2017</div>
+      <div class="tl-title">App Launched (Appetiser build)</div>
+      <div class="tl-body">First scalable digital product. BBR goes from PDF guides to a proper app. Growth accelerates.</div>
+      <div class="tl-metrics"><span class="tl-metric">Community: ~5k–10k</span><span class="tl-metric">ARR: ~$200k</span></div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-dot"></div>
+      <div class="tl-year">2020</div>
+      <div class="tl-title">COVID Boom — Home Fitness Explodes</div>
+      <div class="tl-body">Global lockdowns drive massive app subscription growth. BBR's home-workout positioning perfectly timed.</div>
+      <div class="tl-metrics"><span class="tl-metric">Community: ~30k</span><span class="tl-metric">ARR: ~$600k est.</span></div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-dot"></div>
+      <div class="tl-year">2021</div>
+      <div class="tl-title">Rebrand → Move With Us</div>
+      <div class="tl-body">Bodies By Rachel becomes Move With Us. New coaches added. Brand evolves beyond Rachel alone. US site launched. Community events begin.</div>
+      <div class="tl-metrics"><span class="tl-metric">Community: ~60k</span><span class="tl-metric">ARR: ~$900k est.</span><span class="tl-metric">US site live</span></div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-dot"></div>
+      <div class="tl-year">2022–23</div>
+      <div class="tl-title">Scale + Tech Debt. Rachel marries Tobi Pearce.</div>
+      <div class="tl-body">App stability issues emerge. PixelForce engaged to overhaul tech debt. Rachel and Tobi go public. CSB cross-promotion strengthens. 2nd Bali retreat.</div>
+      <div class="tl-metrics"><span class="tl-metric">Community: ~80k</span><span class="tl-metric">ARR: ~$1.2M est.</span><span class="tl-metric">PixelForce engaged</span></div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-dot active"></div>
+      <div class="tl-year">2024–25</div>
+      <div class="tl-title">App Rebuilt. Tobi Strategic Advisor. GM Search.</div>
+      <div class="tl-body">PixelForce completes tech overhaul. App stabilised. 200k+ transformations milestone. Tobi joins as strategic advisor. GM role created to lead next growth phase.</div>
+      <div class="tl-metrics"><span class="tl-metric">Community: 95k</span><span class="tl-metric">ARR: ~$1.1M–$1.8M est.</span><span class="tl-metric">App rebuilt</span><span class="tl-metric">31 employees</span></div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-dot active" style="background:#22c55e; border-color:#22c55e;"></div>
+      <div class="tl-year" style="color:#22c55e;">2026 — Now</div>
+      <div class="tl-title" style="color:#22c55e;">Next Chapter — US Push + GM Hire</div>
+      <div class="tl-body">You're interviewing for the role that defines what this number becomes.</div>
+      <div class="tl-metrics"><span class="tl-metric" style="border-color:#E64500;color:#E64500;">Target: $2M–3M ARR?</span><span class="tl-metric" style="border-color:#22c55e;color:#22c55e;">US expansion</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- CSB FLYWHEEL -->
+<div class="sec">CSB × MWU × USA — The Strategic Flywheel</div>
+<div class="flywheel">
+  <div class="fw-box"><div style="font-size:24px;margin-bottom:6px;">👗</div><div style="font-size:13px;font-weight:700;margin-bottom:4px;">CSB (US)</div><div style="font-size:11px;color:#666;">US women buy activewear → enter Rachel's brand ecosystem</div></div>
+  <div class="fw-arrow">→</div>
+  <div class="fw-box" style="border-color:#E64500;"><div style="font-size:24px;margin-bottom:6px;">📸</div><div style="font-size:13px;font-weight:700;margin-bottom:4px;">Rachel's Content</div><div style="font-size:11px;color:#666;">1.7M IG. Cross-promotion converts CSB buyers to MWU awareness</div></div>
+  <div class="fw-arrow">→</div>
+  <div class="fw-box"><div style="font-size:24px;margin-bottom:6px;">📱</div><div style="font-size:13px;font-weight:700;margin-bottom:4px;">MWU Subscription</div><div style="font-size:11px;color:#666;">$24.99/mo AU or USD premium pricing for US market</div></div>
+</div>
+
+<!-- AU OPPORTUNITIES -->
+<div class="sec">🇦🇺 Australian Market Opportunities (for GM)</div>
+<div class="opp"><div class="opp-num">1</div><div><div class="opp-title">Corporate / Employer Wellness B2B2C</div><div class="opp-body">Sell MWU subscriptions as employee wellness benefits to AU companies. 12-month contracts = near-zero churn. No new product needed. ASX-listed corps increasingly mandated on mental + physical wellness benefits.</div></div></div>
+<div class="opp"><div class="opp-num">2</div><div><div class="opp-title">Annual Plan Conversion Push</div><div class="opp-body">If 30% of monthly subs convert to annual: ARR jumps ~15–20% with zero new customers. Annual = $199.99 vs $299.88 monthly equivalent. Push as a "founding member" campaign.</div></div></div>
+<div class="opp"><div class="opp-num">3</div><div><div class="opp-title">CSB AU Customer Cross-Sell</div><div class="opp-body">CSB AU already has an established customer base. An automated post-purchase sequence (CSB buyer → 7-day MWU free trial) could be the lowest-cost acquisition channel available. Same woman, zero extra ad spend.</div></div></div>
+<div class="opp"><div class="opp-num">4</div><div><div class="opp-title">Retreat & Events Programme Expansion</div><div class="opp-body">MWU ran Bali retreat in June 2024 (2nd edition). A structured AU events calendar (Gold Coast, Sydney, Melbourne) converts brand followers to loyal paying subscribers and creates organic content.</div></div></div>
+<div class="opp"><div class="opp-num">5</div><div><div class="opp-title">Private Health Insurance Integration</div><div class="opp-body">AU private health funds increasingly support wellness apps. Partnering with Medibank/Bupa to offer MWU as a subsidised benefit unlocks a new acquisition channel and adds institutional credibility.</div></div></div>
+<div class="opp"><div class="opp-num">6</div><div><div class="opp-title">Retention Engine — Loyalty & Milestones</div><div class="opp-body">Month 3–6 is the highest churn window in fitness apps. A milestone programme (90-day reward, CSB discount at 12 months) tied to both MWU + CSB would extend LTV and reduce churn meaningfully.</div></div></div>
+
+<!-- US OPPORTUNITIES -->
+<div class="sec">🇺🇸 USA Market Opportunities</div>
+<div class="opp"><div class="opp-num">1</div><div><div class="opp-title">CSB US Customer Database → MWU Trial</div><div class="opp-body">CSB ships worldwide including US. US CSB buyers are the highest-intent MWU prospects available — same brand trust, same demographic. Automated post-purchase email → 7-day MWU trial is the fastest US subscriber lever with zero paid acquisition.</div></div></div>
+<div class="opp"><div class="opp-num">2</div><div><div class="opp-title">US-Native Creator Programme</div><div class="opp-body">Rachel's audience is AU-dominant. Building a US coach roster (credible US fitness influencers as MWU coaches) would replicate the organic flywheel in the US market. TikTok is #1 fitness discovery in the US — largely untapped by MWU.</div></div></div>
+<div class="opp"><div class="opp-num">3</div><div><div class="opp-title">US Subscription Pricing Uplift</div><div class="opp-body">MWU's AU pricing ($24.99 AUD ≈ $15.50 USD) is likely underpriced for US market. SWEAT charged $19.99 USD/mo. A US-specific pricing tier could lift US ARPU by ~30% with no product changes.</div></div></div>
+<div class="opp"><div class="opp-num">4</div><div><div class="opp-title">28-Day Challenge Entry Product (US)</div><div class="opp-body">Rachel already runs "Get Event Ready in 28 Days." A US-targeted 28-day paid challenge ($29–49 one-off) is a low-friction entry product. Challenge completion → convert to monthly sub. High-converting funnel with urgency built in.</div></div></div>
+
+<!-- COMPETITORS -->
+<div class="sec">Competitive Landscape</div>
+<div class="g2">
+  <div class="card">
+    <div style="font-size:12px;font-weight:700;color:#E64500;letter-spacing:.08em;text-transform:uppercase;margin-bottom:16px;">🇦🇺 Australia</div>
+    <div class="comp-tier"><div class="comp-rank r1">1</div><div style="flex:1"><div class="comp-name">SWEAT (Kayla Itsines)</div><div class="comp-detail">Direct rival. Kayla bought back from iFIT 2023. 15.4M IG. 50M+ members at peak. Same AU market, same demographic.</div></div><span class="badge b-r">Direct</span></div>
+    <div class="comp-tier"><div class="comp-rank r2">2</div><div style="flex:1"><div class="comp-name">Centr (Chris Hemsworth)</div><div class="comp-detail">Celebrity-backed. $29.99 USD/mo. Strong AU recognition. Mixed gender but women-heavy content.</div></div><span class="badge b-y">High</span></div>
+    <div class="comp-tier"><div class="comp-rank r2">3</div><div style="flex:1"><div class="comp-name">Freeletics</div><div class="comp-detail">German app, ~10M users globally. Strong AU presence. Bodyweight focused. Subscription.</div></div><span class="badge b-y">Medium</span></div>
+    <div class="comp-tier"><div class="comp-rank r3">4</div><div style="flex:1"><div class="comp-name">Tone It Up</div><div class="comp-detail">Women-only. US-origin, AU following. Very similar ICP to MWU. Subscription + merchandise.</div></div><span class="badge b-gr">Medium</span></div>
+    <div class="comp-tier"><div class="comp-rank r3">5</div><div style="flex:1"><div class="comp-name">Emerging AU influencer apps</div><div class="comp-detail">Cass Olholm etc. SWEAT took to court 2023. Growing niche threat from local influencers.</div></div><span class="badge b-gr">Low</span></div>
+  </div>
+  <div class="card">
+    <div style="font-size:12px;font-weight:700;color:#E64500;letter-spacing:.08em;text-transform:uppercase;margin-bottom:16px;">🇺🇸 United States</div>
+    <div class="comp-tier"><div class="comp-rank r1">1</div><div style="flex:1"><div class="comp-name">Peloton App</div><div class="comp-detail">$12.99 USD/mo app-only. 7M+ subscribers. Massive brand. Hardware-focused, losing app ground.</div></div><span class="badge b-r">Major</span></div>
+    <div class="comp-tier"><div class="comp-rank r1">1</div><div style="flex:1"><div class="comp-name">Apple Fitness+</div><div class="comp-detail">$9.99 USD/mo. Bundled with Apple One. Distribution moat. Not women-specific.</div></div><span class="badge b-r">Structural</span></div>
+    <div class="comp-tier"><div class="comp-rank r2">2</div><div style="flex:1"><div class="comp-name">SWEAT (US market)</div><div class="comp-detail">Already in US. Kayla has US brand awareness. Direct analog to MWU in US.</div></div><span class="badge b-y">Direct</span></div>
+    <div class="comp-tier"><div class="comp-rank r2">3</div><div style="flex:1"><div class="comp-name">Tone It Up</div><div class="comp-detail">US-native women's fitness. Strong community. Similar subscription model.</div></div><span class="badge b-y">High</span></div>
+    <div class="comp-tier"><div class="comp-rank r3">4</div><div style="flex:1"><div class="comp-name">Obé Fitness / Daily Burn</div><div class="comp-detail">Live + on-demand. Women-skew. $27–35 USD/mo. Strong US awareness.</div></div><span class="badge b-gr">Medium</span></div>
+  </div>
+</div>
+
+<!-- TOBI PROFILE -->
+<div class="sec">Who You're Meeting — Tobi Pearce</div>
+<div class="person-card" style="margin-bottom:20px;">
+  <div class="person-header">
+    <div class="avatar"><img src="data:image/jpeg;base64,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" alt="Tobi Pearce" /></div>
+    <div>
+      <div class="person-name">Tobi Pearce</div>
+      <div class="person-role">Co-Founder SWEAT ($400M exit) · Investor · Rachel Dillon's husband · Strategic Advisor MWU</div>
+      <div class="person-social">@tobi_pearce · 183K IG · BJJ Brown Belt · Born 1992, Adelaide SA</div>
+    </div>
+  </div>
+  <table class="tbl" style="margin-bottom:20px;">
+    <tbody>
+      <tr><td>Backstory</td><td>Left home at 16. Was homeless, living on $45/week. Found personal training as his anchor. Met Kayla Itsines 2012.</td></tr>
+      <tr><td>SWEAT (2015–2022)</td><td>Co-founded with Kayla. Built to 50M+ members, 200 countries, $100M+ ARR. Sold to iFIT for $400M in 2021. Stepped back as CEO Feb 2022.</td></tr>
+      <tr><td>Post-SWEAT</td><td>Strategic investor PixelForce (rebuilt MWU app). Invested in EzLicence. Advisor to AU founders. Married Rachel Dillon (2023).</td></tr>
+      <tr><td>His 3 values</td><td><strong style="color:#E64500;">Passion · Hard Work · Discipline</strong> — stated publicly as non-negotiables in every major interview</td></tr>
+      <tr><td>Mindset</td><td>Data + numbers obsessed since childhood. Contrarian thinker. Reads Atomic Habits. Systems over motivation. "Hard work is not a choice — it's a must-have."</td></tr>
+      <tr><td>Style</td><td>Direct. High standards. Zero excuses. Will challenge vague answers instantly. Respects operators who've built things and can speak in specifics.</td></tr>
+    </tbody>
+  </table>
+  <div class="insight-box">
+    <div style="font-size:11px;font-weight:700;color:#E64500;letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px;">How to play it with Tobi</div>
+    <div style="font-size:13px;color:#888;line-height:1.7;">Come in as a fellow operator, not a job candidate. Reference your founder experience with specific numbers. He'll connect with the myFindr build. Mention the CSB × MWU US flywheel — show you've done the strategic thinking. Ask what "winning" looks like in 12 months. If he pushes back on something, don't fold — engage it with evidence. He respects that.</div>
+  </div>
+</div>
+
+<!-- SARA PROFILE -->
+<div class="sec">Who You're Meeting — Sara Siami</div>
+<div class="person-card" style="margin-bottom:40px;">
+  <div class="person-header">
+    <div class="avatar-init" style="background:#1e3a5f; color:#3b82f6;">S</div>
+    <div>
+      <div class="person-name">Sara Siami</div>
+      <div class="person-role-blue">CEO & Co-Founder — The People Plugin · Former Head of P&C, SWEAT</div>
+      <div class="person-social">sara@thepeopleplugin.com · LinkedIn: sara-siami · Adelaide HQ · est. 2023</div>
+    </div>
+  </div>
+  <table class="tbl" style="margin-bottom:20px;">
+    <tbody>
+      <tr><td>Key previous role</td><td><strong style="color:#fff;">Head of People & Culture at SWEAT</strong> — scaled headcount 240% under Tobi. She built Tobi's team. She knows exactly what he needs in a GM.</td></tr>
+      <tr><td>Experience</td><td>15+ years global corporate HR · 2 years government · 5+ years startup/scaleup. Founded The People Plugin 2023.</td></tr>
+      <tr><td>Her mandate</td><td>Find a "commercially minded, values-driven leader who believes in empowering women through fitness." She is the filter before Tobi.</td></tr>
+      <tr><td>What she cares about</td><td>"Engaged workforce, recruit/develop/retain top talent, generate better business results" — her exact public positioning on culture + performance</td></tr>
+    </tbody>
+  </table>
+  <div class="insight-blue">
+    <div style="font-size:11px;font-weight:700;color:#3b82f6;letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px;">How to play it with Sara</div>
+    <div style="font-size:13px;color:#888;line-height:1.7;">Sara is not a generic recruiter. She built Tobi's people function. She'll evaluate whether you can <em style="color:#ccc;">build and lead a team</em>, not just drive revenue. Speak to your leadership style, how you develop people, how you handle underperformers. She'll appreciate honesty and self-awareness over polish.</div>
+  </div>
+</div>
+
+<div style="text-align:center;font-size:11px;color:#333;padding:20px 0 0;">myFindr Intelligence · For Jay · Confidential · March 2026</div>
+</body>
+</html>

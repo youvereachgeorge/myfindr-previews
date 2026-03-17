@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>A quick look at what's in your dashboard</title>
+<style>.highlights li::before {content:"→ ";color:#E64500;font-weight:600}
+.checklist li::before {content:"✓ ";color:#E64500;font-weight:700}</style><style>* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box
+    }
+body {
+    font-family: Inter, -apple-system, Arial, sans-serif;
+    background: #f5f5f5;
+    color: #121212
+    }
+.wrapper {
+    max-width: 600px;
+    margin: 0 auto;
+    background: #fff
+    }
+.header {
+    background: #121212;
+    padding: 28px 40px
+    }
+.header-logo {
+    color: #E64500;
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    font-family: Inter, Arial, sans-serif;
+    text-decoration: none
+    }
+.body {
+    padding: 48px 40px
+    }
+.body p {
+    font-size: 16px;
+    line-height: 1.75;
+    color: #121212;
+    margin-bottom: 20px
+    }
+.highlights {
+    border-left: 3px solid #E64500;
+    padding: 4px 0 4px 20px;
+    margin: 28px 0
+    }
+.highlights li {
+    font-size: 15px;
+    line-height: 1.9;
+    color: #333;
+    list-style: none
+    }
+.checklist li {
+    font-size: 15px;
+    line-height: 1.9;
+    color: #333;
+    list-style: none;
+    padding-left: 4px
+    }
+.cta-wrap {
+    text-align: center;
+    margin: 36px 0
+    }
+.cta-btn {
+    display: inline-block;
+    background: #E64500;
+    color: #fff !important;
+    text-decoration: none;
+    font-family: Inter, Arial, sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    padding: 16px 36px;
+    border-radius: 4px
+    }
+.divider {
+    border: none;
+    border-top: 1px solid #eee;
+    margin: 32px 0
+    }
+.signoff {
+    font-size: 15px;
+    color: #444;
+    line-height: 1.9
+    }
+.signoff a {
+    color: #E64500;
+    text-decoration: none
+    }
+.callout {
+    background: #fff8f5;
+    border: 1px solid #E64500;
+    border-radius: 6px;
+    padding: 20px 24px;
+    margin: 28px 0
+    }
+.callout p {
+    font-size: 15px;
+    color: #121212;
+    margin: 0
+    }
+.footer {
+    background: #f9f9f9;
+    padding: 24px 40px;
+    text-align: center;
+    font-size: 12px;
+    color: #999;
+    line-height: 1.6;
+    border-top: 1px solid #eee
+    }
+.footer a {
+    color: #999;
+    text-decoration: underline
+    }</style></head>
+<body>
+<div class="wrapper">
+<div class="header">
+<span class="header-logo">myFindr</span>
+</div>
+<div class="body">
+<p>Hey {{ first_name|default:"there" }},</p>
+<p>Two weeks in — hope the data's been useful. I wanted to do a quick spotlight on the features that our most active users get the most out of.</p>
+<div class="callout">
+<p><strong>🗺 Suburb Heat View</strong> — see which suburbs have the most DA activity this week. Great for spotting areas before your competitors do.</p>
+</div>
+<div class="callout">
+<p><strong>🏗 Developer Leaderboard</strong> — who's submitting the most DAs? These are your best prospecting targets. Track them over time.</p>
+</div>
+<div class="callout">
+<p><strong>🔍 Trade Filters</strong> — you've already got your trade set, but you can layer on project type, estimated value, and stage (new build vs. reno). Takes 30 seconds and completely changes your feed.</p>
+</div>
+<div class="callout">
+<p><strong>📩 Weekly Report Email</strong> — you'll get this every Monday. The subject line tells you how many new DAs are in your area. Treat it like your lead sheet for the week.</p>
+</div>
+<p>One use case: an interior designer on the Sunshine Coast used the suburb heat view to identify that Buderim had 3x more new builds this month than Noosa. She pivoted her outreach — and landed two new clients from it.</p>
+<p>Log in and have a play. If you want to walk through any of these together, book a call:</p>
+<div class="cta-wrap">
+<a class="cta-btn" href="https://meetings-ap1.hubspot.com/meetings/jsanto">Book a Call →</a>
+</div>
+<hr class="divider"/>
+<div class="signoff">
+<p>Kind regards,</p>
+<p><strong>Jay</strong><br/>
+<a href="mailto:info@myFindr.com.au">info@myFindr.com.au</a>  | 
+      <a href="https://www.myFindr.com.au">www.myFindr.com.au</a><br/>
+<a href="https://instagram.com/myFindr">@myFindr</a>  | 
+      <a href="https://meetings-ap1.hubspot.com/meetings/jsanto">Book a call</a></p>
+</div>
+</div>
+<div class="footer">
+<p>myFindr  |  Brisbane &amp; Sunshine Coast  |  <a href="https://www.myFindr.com.au">myFindr.com.au</a></p>
+<p style="margin-top:8px"><a href="{{ unsubscribe_url }}">Unsubscribe</a></p>
+</div>
+</div>
+</body>
+</html>
