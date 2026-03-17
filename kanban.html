@@ -30,7 +30,7 @@
   .ch{padding:11px 13px 9px;border-radius:10px 10px 0 0;flex-shrink:0}
   .ct{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;margin-bottom:2px}
   .cc{font-size:11px;opacity:.5}
-  .cb{padding:5px;border-radius:0 0 10px 10px;transition:background .15s;flex:1;overflow-y:auto;min-height:0;scrollbar-width:thin;scrollbar-color:#222 transparent}
+  .cb{padding:5px;padding-bottom:60px;border-radius:0 0 10px 10px;transition:background .15s;flex:1;overflow-y:auto;min-height:0;scrollbar-width:thin;scrollbar-color:#222 transparent}
   .cb::-webkit-scrollbar{width:4px}
   .cb::-webkit-scrollbar-track{background:transparent}
   .cb::-webkit-scrollbar-thumb{background:#222;border-radius:2px}
@@ -72,6 +72,13 @@
   @keyframes su{from{transform:translateY(10px);opacity:0}to{transform:none;opacity:1}}
 
   /* ── MOBILE ── */
+
+  @media (max-width: 768px) {
+    .bw { display: none; }
+    .col-select { display: block !important; }
+    .cb { padding-bottom: 80px; }
+    .moon { display: none; }
+  }
   @media (max-width: 768px) {
     .board { padding: 10px; gap: 10px; }
     .col { width: 82vw; flex-shrink: 0; }
@@ -183,34 +190,17 @@ function mkCard(id, col, startedAt) {
   const prog = m.prog !== undefined ? m.prog : 0;
   const e = etaStr(eta);
   let finishStr = '';
-  if (col === 'george' && eta > 0 && startedAt) {
-    const started = new Date(startedAt);
-    const finish = new Date(started.getTime() + eta * 60 * 1000);
+  if (col === 'george' && eta > 0) {
+    const base = startedAt ? new Date(startedAt) : new Date();
+    const finish = new Date(base.getTime() + eta * 60 * 1000);
     const now = new Date();
-    const remaining = Math.max(0, Math.round((finish - now) / 60000));
-    const finishTime = finish.toLocaleString('en-AU', {timeZone:'Australia/Brisbane', hour:'2-digit', minute:'2-digit'});
-    if (finish > now) {
-      finishStr = `<div data-finish="${finish.toISOString()}" style="margin-top:8px;padding:7px 10px;background:#1a1a00;border:1px solid #2a2a00;border-radius:7px;display:flex;align-items:center;justify-content:space-between">
-        <span style="font-size:10px;color:#eab308;font-weight:600">⚡ Est. finish</span>
-        <span style="font-size:12px;font-weight:700;color:#fff">${finishTime} AEST</span>
-        <span style="font-size:10px;color:#666">${remaining}m left</span>
-      </div>`;
-    } else {
-      finishStr = `<div data-finish="${finish.toISOString()}" style="margin-top:8px;padding:7px 10px;background:#1a0a00;border:1px solid #2a1000;border-radius:7px;display:flex;align-items:center;justify-content:space-between">
-        <span style="font-size:10px;color:#f97316;font-weight:600">⏰ Overdue</span>
-        <span style="font-size:12px;font-weight:700;color:#f97316">Should be done</span>
-        <span style="font-size:10px;color:#666">${Math.abs(remaining)}m ago</span>
-      </div>`;
-    }
-  } else if (col === 'george' && eta > 0 && !startedAt) {
-    // Just started, no timestamp yet
-    const now = new Date();
-    const finish = new Date(now.getTime() + eta * 60 * 1000);
-    const finishTime = finish.toLocaleString('en-AU', {timeZone:'Australia/Brisbane', hour:'2-digit', minute:'2-digit'});
-    finishStr = `<div data-finish="${finish.toISOString()}" style="margin-top:8px;padding:7px 10px;background:#1a1a00;border:1px solid #2a2a00;border-radius:7px;display:flex;align-items:center;justify-content:space-between">
-      <span style="font-size:10px;color:#eab308;font-weight:600">⚡ Est. finish</span>
-      <span style="font-size:12px;font-weight:700;color:#fff">${finishTime} AEST</span>
-      <span style="font-size:10px;color:#666">${eta}m</span>
+    const mins = Math.round((finish - now) / 60000);
+    const timeStr = finish.toLocaleString('en-AU', {timeZone:'Australia/Brisbane', hour:'numeric', minute:'2-digit', hour12:true}).toLowerCase().replace(' ', '');
+    const isOverdue = finish <= now;
+    finishStr = `<div data-finish="${finish.toISOString()}" style="margin-top:9px;padding:8px 11px;background:${isOverdue?'#1a0800':'#0d0d00'};border:1px solid ${isOverdue?'#3a1500':'#2a2600'};border-radius:8px;display:flex;align-items:center;justify-content:space-between;gap:8px">
+      <span style="font-size:10px;font-weight:700;color:${isOverdue?'#f97316':'#eab308'};white-space:nowrap">${isOverdue?'⏰ overdue':'⚡ finish'}</span>
+      <span style="font-size:14px;font-weight:900;color:#fff;letter-spacing:-0.3px">${timeStr}</span>
+      <span style="font-size:10px;color:#555;white-space:nowrap">${isOverdue?Math.abs(mins)+'m ago':mins+'m left'}</span>
     </div>`;
   } const b = pip(bw);
   const night = (bw >= 7 && eta >= 60) ? '<span class="moon">🌙 overnight</span>' : '';
@@ -226,7 +216,20 @@ function mkCard(id, col, startedAt) {
   </div>` : '';
   const d = document.createElement('div');
   d.className = 'card'; d.id = id; d.draggable = true;
-  d.innerHTML = `<div class="card-title">${m.t}</div><div class="card-body">${m.b||''}</div><div class="cf"><div class="ctags">${tags}${night}</div><div class="cstats">${e?`<span class="eta">⏱ <span>${e}</span></span>`:''}${b}</div></div>${m.note?`<div class="note">${m.note}</div>`:''}`;
+  const progColor = prog >= 80 ? '#22c55e' : prog >= 40 ? '#eab308' : '#E64500';
+  const progBar = prog > 0 ? `<div style="margin-top:8px"><div style="display:flex;justify-content:space-between;margin-bottom:3px"><span style="font-size:9px;color:#444;font-weight:700;text-transform:uppercase">Progress</span><span style="font-size:10px;font-weight:800;color:${progColor}">${prog}%</span></div><div style="height:4px;background:#1a1a1a;border-radius:2px;overflow:hidden"><div style="width:${prog}%;height:100%;background:${progColor};border-radius:2px"></div></div></div>` : '';
+  d.innerHTML = `<div class="card-title">${m.t}</div><div class="card-body">${m.b||''}</div><div class="cf"><div class="ctags">${tags}${night}</div><div class="cstats">${e?`<span class="eta">⏱ <span>${e}</span></span>`:''}${b}</div></div>${m.note?`<div class="note">${m.note}</div>`:''}\${finishStr}\${progBar}`;
+  // Add column select dropdown
+  const colOpts = ['jay','george','urgent','blocked','waiting','night','done'].map(c => {
+    const lbl = {jay:'→ Jay',george:'→ George',urgent:'→ Needs Done',blocked:'→ Blocked',waiting:'→ Backlog',night:'→ Overnight',done:'→ Done ✓'};
+    return `<option value="${c}" ${col===c?'selected':''}>${lbl[c]}</option>`;
+  }).join('');
+  const sel = document.createElement('select');
+  sel.className = 'col-select';
+  sel.style.cssText = 'margin-top:8px;width:100%;background:#1a1a1a;border:1px solid #2a2a2a;color:#888;font-size:11px;padding:6px 8px;border-radius:6px;cursor:pointer;font-family:Inter,sans-serif;display:block;';
+  sel.innerHTML = `<option value="" disabled>📱 Move to…</option>${colOpts}`;
+  sel.onchange = function() { moveCardTo(id, this.value, this); };
+  d.appendChild(sel);
   return d;
 }
 
