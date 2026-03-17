@@ -61,6 +61,8 @@
   .tv{background:rgba(107,114,128,.15);color:#9ca3af}.ts2{background:rgba(250,204,21,.15);color:#facc15}
   .tt{background:rgba(99,102,241,.15);color:#6366f1}
   .eta{font-size:10px;color:#555;white-space:nowrap}.eta span{color:#888}
+  .ref-btn{display:inline-block;margin:6px 0 8px;font-size:10px;font-weight:700;color:#E64500;background:rgba(230,69,0,.1);border:1px solid rgba(230,69,0,.3);border-radius:6px;padding:4px 10px;text-decoration:none;letter-spacing:.02em;cursor:pointer}
+  .ref-btn:hover{background:rgba(230,69,0,.2)}
   .bw{display:flex;align-items:center;gap:3px}
   .bwl{font-size:9px;color:#444}
   .pips{display:flex;gap:2px}
@@ -273,8 +275,12 @@ function mkCard(id, col, startedAt) {
   }
 
   // Build card HTML
+  const refBtn = (m.ref && m.ref.url)
+    ? '<a href="' + m.ref.url + '" target="_blank" rel="noopener" class="ref-btn" onclick="event.stopPropagation()">📋 ' + (m.ref.label||'Reference Sheet') + ' →</a>'
+    : '';
   d.innerHTML = '<div class="card-title">' + m.t + '</div>'
     + '<div class="card-body">' + (m.b||'') + '</div>'
+    + refBtn
     + '<div class="cf"><div class="ctags">' + tags + night + '</div>'
     + '<div class="cstats">' + etaHtml + pipHtml + '</div></div>'
     + (m.note ? '<div class="note">' + m.note + '</div>' : '')
