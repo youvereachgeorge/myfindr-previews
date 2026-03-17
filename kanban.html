@@ -152,9 +152,9 @@ function etaStr(m) { if (!m) return ''; return m < 60 ? m+'m' : Math.round(m/60*
 function mkCard(id, col) {
   const m = CARDS[id]; if (!m) return null;
   const tags = (m.tags||[]).map(t=>`<span class="tag ${t}">${{te:'email',tc:'content',td:'databox',tf:'framer',tk:'klaviyo',ti:'instagram',tm:'manychats',tn:'newie',th:'hubspot',tz:'zapier',tl:'kling',ta:'data',tv:'dev',ts2:'strategy',tt:'typeform'}[t]||''}</span>`).join('');
-  const eta = argEta !== undefined ? argEta : m.eta;
-  const bw = argBw !== undefined ? argBw : m.bw;
-  const prog = argProg !== undefined ? argProg : 0;
+  const eta = m.eta || 0;
+  const bw = m.bw || 0;
+  const prog = window.CARD_PROGRESS && window.CARD_PROGRESS[id] !== undefined ? window.CARD_PROGRESS[id] : (m.prog || 0);
   const e = etaStr(eta); const b = pip(bw);
   const night = (bw >= 7 && eta >= 60) ? '<span class="moon">🌙 overnight</span>' : '';
   const progColor = prog >= 80 ? '#22c55e' : prog >= 40 ? '#eab308' : '#E64500';
@@ -200,6 +200,16 @@ async function loadState() {
     const data = await r.json();
     fileSHA = data.sha;
     const state = JSON.parse(atob(data.content.replace(/\n/g,'')));
+    
+    // Fetch progress from Supabase
+    try {
+      const pRes = await fetch(`https://ieqbavwzydlxiaclzcjl.supabase.co/rest/v1/kanban_cards?select=id,progress`, {
+        headers: {'apikey':'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImllcWJhdnd6eWRseGlhY2x6Y2psIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3MzM4NDEwMCwiZXhwIjoyMDg4OTYwMTAwfQ.8FqHSTp-FxwIiiZWBpzAiYRkL5WdSNETn2ICAo-1DOE','Authorization':'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImllcWJhdnd6eWRseGlhY2x6Y2psIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3MzM4NDEwMCwiZXhwIjoyMDg4OTYwMTAwfQ.8FqHSTp-FxwIiiZWBpzAiYRkL5WdSNETn2ICAo-1DOE'}
+      });
+      const pData = await pRes.json();
+      window.CARD_PROGRESS = {};
+      pData.forEach(c => window.CARD_PROGRESS[c.id] = c.progress);
+    } catch(e) { window.CARD_PROGRESS = {}; }
     
     COLS.forEach(c => document.getElementById('col-'+c).innerHTML = '');
     Object.entries(state.cards).forEach(([id, col]) => {
