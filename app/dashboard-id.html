@@ -228,15 +228,14 @@
     .toast{position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%);background:#121212;border:1px solid rgba(76,175,80,.4);color:#81c784;font-size:.75rem;font-weight:600;padding:.65rem 1.25rem;border-radius:8px;z-index:999;opacity:0;transition:opacity .3s;pointer-events:none}
     .toast.show{opacity:1}
 
-    /* ── CARD FILE UPLOAD ── */
-    .card-footer{margin-top:.5rem;padding-top:.4rem;border-top:1px solid rgba(255,255,255,.05);display:flex;flex-direction:column;gap:.3rem}
-    .upload-btn{display:inline-flex;align-items:center;gap:4px;font-size:.62rem;font-weight:600;color:var(--text3);cursor:pointer;padding:2px 6px;border-radius:5px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);transition:.15s;position:relative}
-    .upload-btn:hover{color:var(--text);background:rgba(255,255,255,.08)}
-    .file-count{font-size:.6rem;font-weight:700;color:var(--teal)}
-    .file-list{display:flex;flex-direction:column;gap:2px;margin-top:2px}
-    .file-list a{font-size:.6rem;color:var(--teal);text-decoration:none;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:block}
-    .file-list a:hover{text-decoration:underline}
-    .upload-uploading{font-size:.6rem;color:var(--amber);animation:pulse 1s infinite alternate}
+    /* ── MODAL FILE UPLOAD ── */
+    .modal-files-list{display:flex;flex-direction:column;gap:4px;margin-bottom:.6rem;min-height:4px}
+    .file-item{display:flex;align-items:center;gap:6px;font-size:.68rem;color:var(--teal);text-decoration:none;padding:4px 6px;background:rgba(255,255,255,.03);border-radius:5px;border:1px solid rgba(255,255,255,.06)}
+    .file-item:hover{background:rgba(0,188,212,.08);border-color:rgba(0,188,212,.25)}
+    .file-date{font-size:.6rem;color:var(--text3);margin-left:auto}
+    .modal-upload-btn{display:inline-flex;align-items:center;gap:6px;font-size:.68rem;font-weight:600;color:var(--accent2);cursor:pointer;padding:5px 12px;border-radius:6px;background:rgba(230,69,0,.1);border:1px solid rgba(230,69,0,.25);transition:.15s}
+    .modal-upload-btn:hover{background:rgba(230,69,0,.2)}
+    .upload-uploading{font-size:.62rem;color:var(--amber);margin-top:.3rem}
     @keyframes pulse{from{opacity:.5}to{opacity:1}}
     .btn-comment{background:var(--accent);color:#fff;border:none;border-radius:8px;padding:.5rem .9rem;font-size:.72rem;font-weight:700;cursor:pointer;font-family:inherit;align-self:flex-end}
     .detail-save-row{display:flex;justify-content:flex-end;gap:.5rem;margin-top:.75rem}
@@ -341,6 +340,14 @@
       header{height:auto}
       .pipe-stats-row{grid-template-columns:1fr 1fr}
     }
+    /* ── WELCOME BANNER ── */
+    .welcome-banner{display:flex;justify-content:space-between;align-items:flex-start;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:20px 24px;margin-bottom:24px}
+    .welcome-banner h2{font-size:1.4rem;margin:0 0 4px;color:#fff}
+    .welcome-banner p{color:#868686;font-size:.875rem;margin:0}
+    .last-sync{font-size:.8rem;color:#868686;text-align:right}
+    @media(max-width:768px){.welcome-banner{flex-direction:column;gap:12px}.last-sync{text-align:left}}
+    /* ── REGION BADGE ── */
+    .region-badge{background:rgba(255,255,255,.1);border-radius:4px;padding:4px 10px;font-size:.75rem;color:#ccc;display:inline-flex;align-items:center;gap:4px}
   </style>
 </head>
 <body>
@@ -364,6 +371,16 @@
 <!-- ═══════════════════ OVERVIEW ═══════════════════ -->
 <div class="section active" id="sec-overview">
   <div id="load-error" style="display:none;background:rgba(233,30,99,.15);border:1px solid rgba(233,30,99,.4);border-radius:8px;padding:.75rem 1rem;margin-bottom:1rem;font-size:.75rem;color:#f48fb1;white-space:pre-wrap"></div>
+  <!-- FIX 4: Welcome banner -->
+  <div class="welcome-banner">
+    <div class="welcome-text">
+      <h2>Welcome back, <span id="client-first-name">there</span> 👋</h2>
+      <p id="client-company-location"></p>
+    </div>
+    <div class="last-sync" id="last-sync-display">
+      🔄 Last synced: <span id="last-sync-time">checking...</span>
+    </div>
+  </div>
   <div class="kpi-row">
     <div class="kpi"><div class="kpi-l">HOT Leads</div><div class="kpi-v hot" id="k-hot">—</div><div class="kpi-s">Act immediately</div></div>
     <div class="kpi"><div class="kpi-l">Warm Leads</div><div class="kpi-v warm" id="k-warm">—</div><div class="kpi-s">Reach out this week</div></div>
@@ -558,13 +575,16 @@ const suburbsParam = params.get('suburbs') || '';
 const clientId = params.get('clientId') || sessionStorage.getItem('clientId') || '';
 const suburbs = suburbsParam ? suburbsParam.split(',').map(s=>s.trim().toUpperCase()).filter(Boolean) : [];
 
-// Suburb pills
-const pillWrap = document.getElementById('suburb-pills');
-suburbs.forEach(s => {
-  const el = document.createElement('span');
-  el.className = 'suburb-pill'; el.textContent = s;
-  pillWrap.appendChild(el);
-});
+// FIX 3 — Region badges (replace suburb pills)
+const brisbaneSuburbs=['hendra','camp hill','ascot','newstead','teneriffe','bulimba','hamilton','clayfield','albion','windsor','lutwyche','gordon park','kedron','stafford','wavell heights','chermside','nundah','toombul','northgate','virginia','geebung','zillmere','boondall','fitzgibbon','taigum','bracken ridge','sandgate','shorncliffe','brighton','deagon','nudgee','banyo','eagle farm','pinkenba','murarrie','tingalpa','wynnum','manly','lota','wakerley','cannon hill','morningside','hawthorne','coorparoo','greenslopes','stones corner','east brisbane','south brisbane','west end','highgate hill','woolloongabba','dutton park','fairfield','yeronga','annerley','moorooka','rocklea','salisbury','nathan','mt gravatt','upper mt gravatt','eight mile plains','robertson','sunnybank','macgregor','coopers plains','runcorn','calamvale','parkinson','stretton','drewvale','algester','kuraby'];
+const sunshineCoastSuburbs=['noosa','noosaville','tewantin','cooroy','pomona','sunshine beach','peregian','marcus beach','twin waters','mudjimba','maroochydore','alexandra headland','mooloolaba','buderim','mountain creek','sippy downs','palmview','caloundra','little mountain','pelican waters','currimundi','kawana','bokarina'];
+const urlSuburbs=(params.get('suburbs')||'').toLowerCase().split(',').map(s=>s.trim());
+const isBrisbane=urlSuburbs.some(s=>brisbaneSuburbs.includes(s));
+const isSunshineCoast=urlSuburbs.some(s=>sunshineCoastSuburbs.includes(s));
+const pillWrap=document.getElementById('suburb-pills');
+if(isBrisbane){const el=document.createElement('span');el.className='region-badge';el.textContent='📍 Brisbane';pillWrap.appendChild(el);}
+if(isSunshineCoast){const el=document.createElement('span');el.className='region-badge';el.textContent='📍 Sunshine Coast';pillWrap.appendChild(el);}
+if(!isBrisbane&&!isSunshineCoast&&suburbs.length){suburbs.forEach(s=>{const el=document.createElement('span');el.className='suburb-pill';el.textContent=s;pillWrap.appendChild(el);});}
 
 // Tab switching
 function showTab(tab) {
@@ -572,6 +592,7 @@ function showTab(tab) {
   document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
   document.getElementById('sec-'+tab).classList.add('active');
   if (tab==='pipeline') renderPipeline();
+  if (tab==='overview') updateLastSync(); // FIX 5
 }
 
 // Supabase fetch
@@ -629,11 +650,12 @@ let allLeads=[], pipelineData=[], currentModalProject=null;
 
 // ── LOAD ALL DATA ──
 async function loadAll(){
-  // PostgREST or() filter: needs parens, spaces as +, no encodeURIComponent
-  const orFilter = suburbs.length?'('+suburbs.map(s=>'address.ilike.*'+s.replace(/ /g,'+')+'*').join(',')+')'  :null;
+  // FIX 2: Hot leads — NO suburb filter, show all leads ordered by opportunity score, limit 50+
+  // Only filter out leads already in the pipeline (done in renderLeads/filterLeads)
   const subOr = suburbs.length?'('+suburbs.map(s=>'suburb.ilike.*'+s.replace(/ /g,'+')+'*').join(',')+')'  :null;
   const baseQ={order:'rank.asc',limit:'200'};
-  const leadsQ=orFilter?{...baseQ,or:orFilter}:baseQ;
+  // Leads query: no suburb restriction — pull all hot/warm leads for the ICP
+  const leadsQ={order:'rank.asc',limit:'50'};
   const renoQ=subOr?{order:'reno_30d.desc',limit:'20',or:subOr}:{order:'reno_30d.desc',limit:'20'};
 
   const now=new Date();
@@ -721,6 +743,28 @@ async function loadAll(){
 
   // Leads tab (render after pipeline loaded so duplicates are excluded)
   renderLeads(allLeads);
+
+  // FIX 4: Load client profile for welcome banner
+  if (clientId) {
+    try {
+      const cr = await fetch(`${SUPA}/rest/v1/clients?id=eq.${clientId}&limit=1`, {
+        headers: {'apikey':KEY,'Authorization':'Bearer '+KEY,'Accept':'application/json'}
+      });
+      const cdata = await cr.json();
+      const client = Array.isArray(cdata) ? cdata[0] : null;
+      if (client) {
+        const firstName = (client.full_name || 'there').split(' ')[0];
+        const fnEl = document.getElementById('client-first-name');
+        if (fnEl) fnEl.textContent = firstName;
+        const parts = [client.company, client.location || client.suburb].filter(Boolean);
+        const clEl = document.getElementById('client-company-location');
+        if (clEl) clEl.textContent = parts.join(' · ') || '';
+      }
+    } catch(e) { console.warn('Client profile load failed:', e.message); }
+  }
+
+  // FIX 5: Show last sync time on dashboard load
+  updateLastSync();
 }
 
 function renderSuburbGrowth(suburbs_data){
@@ -824,8 +868,9 @@ function renderLeads(leads){
 function filterLeads(){
   const sig=document.getElementById('filter-signal').value;
   const show=sig?leadsAll.filter(r=>r.icp_signal===sig):leadsAll;
-  // Hide ALL projects already in pipeline from hot leads
-  const shown=show.filter(r=>!r.application_number||!pipelineData.some(p=>p.application_number===r.application_number)).slice(0,40);
+  // FIX 2: Only hide leads EXACTLY in the pipeline by application_number
+  const addedIds=new Set((pipelineData||[]).map(p=>p.application_number).filter(Boolean));
+  const shown=show.filter(r=>!r.application_number||!addedIds.has(r.application_number)).slice(0,50);
   window._shownLeads=shown;
   const el=document.getElementById('leads-container');
   if(!shown.length){el.innerHTML='<div style="color:var(--text3);padding:2rem;text-align:center">No leads matching your filter</div>';return;}
@@ -1214,13 +1259,7 @@ function renderPipeline(){
         ${p.expected_start_date?`<div style="font-size:.6rem;color:var(--text3);margin-bottom:5px">Starts: ${p.expected_start_date}</div>`:''}
         ${p.comments&&p.comments.length?`<div style="font-size:.6rem;color:var(--text3);margin-bottom:5px">💬 ${p.comments.length} note${p.comments.length>1?'s':''}</div>`:''}
         <button data-pid="${p.id||p.application_number}" onclick="event.stopPropagation();openDetail(this.dataset.pid)" style="font-size:.62rem;font-weight:600;color:var(--teal);background:rgba(0,188,212,.1);border:1px solid rgba(0,188,212,.25);border-radius:5px;padding:2px 8px;cursor:pointer;font-family:inherit;width:100%;margin-bottom:.35rem">Details →</button>
-        <div class="card-footer">
-          <label class="upload-btn" title="Upload file" onclick="event.stopPropagation()">
-            📎 <span class="file-count">${p.files&&p.files.length?p.files.length:''}</span>
-            <input type="file" style="display:none" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" onchange="handleCardFileUpload(this,'${p.application_number||p.id}')">
-          </label>
-          ${p.files&&p.files.length?`<div class="file-list">${p.files.map(f=>`<a href="${f.url}" target="_blank" onclick="event.stopPropagation()">📄 ${f.name}</a>`).join('')}</div>`:''}
-        </div>
+        ${p.files&&p.files.length?`<div style="font-size:.6rem;color:var(--text3);margin-top:2px">📎 ${p.files.length} file${p.files.length>1?'s':''}</div>`:''}
       </div>`).join('');
     const sumEl=document.getElementById('sum-'+s);
     if(sumEl)sumEl.textContent=sum>0?fmt$(sum):'$0';
@@ -1372,6 +1411,7 @@ function openDetail(projectId) {
   }).join('');
 
   renderComments(p);
+  renderModalFiles(p); // FIX 1: populate files list
   document.getElementById('detail-overlay').classList.add('open');
 }
 
@@ -1429,14 +1469,12 @@ function showToast(msg, duration=3000) {
   t.classList.add('show');
   setTimeout(() => t.classList.remove('show'), duration);
 }
-// ── FILE UPLOAD ON KANBAN CARDS ──
+// ── FILE UPLOAD (MODAL / PROJECT DETAIL) ── FIX 1
 
-async function uploadFileToCard(clientId, applicationNumber, file) {
+async function uploadFileToStorage(cid, applicationNumber, file) {
   if (file.size > 10 * 1024 * 1024) throw new Error('File too large (max 10MB)');
   const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
-  const path = `${clientId}/${applicationNumber}/${safeName}`;
-
-  // Upload via Supabase Storage REST API
+  const path = `${cid}/${applicationNumber}/${safeName}`;
   const uploadRes = await fetch(`${SUPA}/storage/v1/object/project-files/${path}`, {
     method: 'POST',
     headers: {
@@ -1451,38 +1489,70 @@ async function uploadFileToCard(clientId, applicationNumber, file) {
     const txt = await uploadRes.text();
     throw new Error('Upload failed: ' + txt);
   }
-
   const publicUrl = `${SUPA}/storage/v1/object/public/project-files/${path}`;
   return { name: file.name, url: publicUrl, uploaded_at: new Date().toISOString() };
 }
 
-async function handleCardFileUpload(inputEl, applicationNumber) {
+function renderModalFiles(p) {
+  const el = document.getElementById('modal-files-list');
+  if (!el) return;
+  const files = p && p.files ? p.files : [];
+  if (!files.length) {
+    el.innerHTML = '<div style="font-size:.68rem;color:var(--text3);margin-bottom:.4rem">No files attached yet.</div>';
+    return;
+  }
+  el.innerHTML = files.map(f => {
+    const d = f.uploaded_at ? new Date(f.uploaded_at).toLocaleDateString('en-AU',{day:'numeric',month:'short',year:'numeric'}) : '';
+    return `<a href="${f.url}" target="_blank" class="file-item">📄 ${f.name}<span class="file-date">${d}</span></a>`;
+  }).join('');
+}
+
+async function handleModalFileUpload(inputEl) {
   const file = inputEl.files[0];
   if (!file) return;
   inputEl.value = '';
-
-  // Find the card footer to show uploading state
-  const uploadBtn = inputEl.parentElement;
-  const originalHTML = uploadBtn.innerHTML;
-  uploadBtn.innerHTML = '<span class="upload-uploading">⏫ Uploading...</span>';
-
+  if (!currentDetailId) { showToast('❌ No project selected'); return; }
+  const p = pipelineData.find(x => (x.id || x.application_number) === currentDetailId);
+  if (!p) { showToast('❌ Project not found'); return; }
+  const prog = document.getElementById('upload-progress');
+  if (prog) prog.style.display = 'block';
   try {
     const cid = clientId || 'anon';
-    const fileObj = await uploadFileToCard(cid, applicationNumber, file);
-
-    // Update pipeline item
-    const p = pipelineData.find(x => (x.application_number || x.id) === applicationNumber);
-    if (p) {
-      if (!p.files) p.files = [];
-      p.files.push(fileObj);
-      await savePipeline();
-      showToast('📎 File uploaded: ' + file.name);
-      renderPipeline();
-    }
+    const appNum = p.application_number || p.id || currentDetailId;
+    const fileObj = await uploadFileToStorage(cid, appNum, file);
+    if (!p.files) p.files = [];
+    p.files.push(fileObj);
+    await savePipeline();
+    renderModalFiles(p);
+    renderPipeline();
+    showToast('📎 File uploaded: ' + file.name);
   } catch(err) {
-    console.error('File upload error:', err);
+    console.error('Modal file upload error:', err);
     showToast('❌ Upload failed: ' + (err.message || 'Unknown error'));
-    uploadBtn.innerHTML = originalHTML;
+  } finally {
+    if (prog) prog.style.display = 'none';
+  }
+}
+
+// FIX 5 — Last synced timestamp
+async function updateLastSync() {
+  try {
+    const r = await fetch(`${SUPA}/rest/v1/da_submissions?select=created_at&order=created_at.desc&limit=1`, {
+      headers: { 'apikey': KEY, 'Authorization': 'Bearer ' + KEY, 'Accept': 'application/json' }
+    });
+    const data = await r.json();
+    const row = Array.isArray(data) ? data[0] : null;
+    const el = document.getElementById('last-sync-time');
+    if (!el) return;
+    if (row && row.created_at) {
+      const d = new Date(row.created_at);
+      el.textContent = d.toLocaleDateString('en-AU', { weekday: 'short', day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
+    } else {
+      el.textContent = 'N/A';
+    }
+  } catch(e) {
+    const el = document.getElementById('last-sync-time');
+    if (el) el.textContent = 'N/A';
   }
 }
 
@@ -1564,6 +1634,17 @@ async function handleCardFileUpload(inputEl, applicationNumber) {
       <div class="detail-section" id="dp-timeline-section">
         <div class="detail-section-title">Application History</div>
         <div id="dp-timeline"></div>
+      </div>
+
+      <!-- FIX 1: Project Files -->
+      <div class="detail-section">
+        <div class="detail-section-title">Project Files</div>
+        <div class="modal-files-list" id="modal-files-list"></div>
+        <label class="modal-upload-btn">
+          📎 Attach File
+          <input type="file" id="modal-file-input" style="display:none" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.xls,.xlsx" onchange="handleModalFileUpload(this)">
+        </label>
+        <div class="upload-uploading" id="upload-progress" style="display:none;animation:pulse 1s infinite alternate">⏫ Uploading...</div>
       </div>
 
       <!-- Notes & Comments -->
