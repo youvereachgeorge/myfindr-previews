@@ -230,6 +230,106 @@
     .btn-comment{background:var(--accent);color:#fff;border:none;border-radius:8px;padding:.5rem .9rem;font-size:.72rem;font-weight:700;cursor:pointer;font-family:inherit;align-self:flex-end}
     .detail-save-row{display:flex;justify-content:flex-end;gap:.5rem;margin-top:.75rem}
     @media(max-width:768px){.kpi-row{grid-template-columns:repeat(2,1fr)}.g2,.g3{grid-template-columns:1fr}.kanban-wrap{gap:.6rem}.kb-col{min-width:180px}}
+
+    /* ═══ MOBILE RESPONSIVE ═══ */
+    @media(max-width:768px){
+      /* Body & layout */
+      html,body{font-size:0.875rem}
+      .section{padding:10px}
+      .section-label{font-size:0.75rem}
+
+      /* Header */
+      header{padding:0 10px;height:auto;min-height:54px;flex-wrap:wrap;gap:6px;padding-top:8px;padding-bottom:8px}
+      .h-left{flex-wrap:wrap;gap:6px}
+      .pills{gap:4px}
+      .suburb-pill{font-size:0.6rem;padding:2px 6px}
+      .icp-pill{font-size:0.6rem;padding:2px 8px}
+      .btn-back{font-size:0.7rem;padding:8px 12px;min-height:44px}
+
+      /* Tabs — scrollable row */
+      .tabs{padding:0 10px;overflow-x:auto;-webkit-overflow-scrolling:touch;flex-wrap:nowrap;gap:0}
+      .tab{padding:10px 12px;font-size:0.7rem;min-height:44px;display:flex;align-items:center;white-space:nowrap}
+
+      /* KPI grid */
+      .kpi-row{grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:10px}
+      .kpi{padding:0.8rem 0.9rem}
+      .kpi-l{font-size:0.6rem}
+      .kpi-v{font-size:1.5rem}
+      .kpi-s{font-size:0.6rem}
+
+      /* Grid layouts */
+      .g2,.g3{grid-template-columns:1fr;gap:10px;margin-bottom:10px}
+      .full{margin-bottom:10px}
+
+      /* Cards */
+      .card{padding:10px}
+      .card-title{font-size:0.72rem}
+      .lead-card{padding:10px;margin-bottom:8px}
+      .lead-addr{font-size:0.8rem}
+      .lead-meta{font-size:0.65rem}
+      .lead-row{gap:0.4rem}
+      .lead-section{font-size:0.65rem}
+      .value-range{font-size:0.75rem}
+
+      /* Buttons / tap targets */
+      .btn-add,.btn-back,.tab,.filter-btn,.a-link{min-height:44px;display:inline-flex;align-items:center}
+      .btn-add{padding:8px 12px;font-size:0.68rem}
+
+      /* Tables — horizontal scroll */
+      .tbl{font-size:0.72rem}
+      .card:has(.tbl){overflow-x:auto;-webkit-overflow-scrolling:touch}
+      .tbl th{font-size:0.58rem;padding:6px 7px}
+      .tbl td{padding:8px 7px}
+
+      /* Insights section labels */
+      #sec-insights .section-label{font-size:0.72rem;margin-top:0.75rem}
+
+      /* Pipeline / kanban */
+      .pipe-stats-row{grid-template-columns:repeat(2,1fr);gap:8px}
+      .pipe-stat2{padding:0.75rem 0.85rem}
+      .ps2-label{font-size:0.6rem}
+      .ps2-val{font-size:1.3rem}
+      .pipe-layout{grid-template-columns:1fr}
+      .kanban-wrap{gap:0.5rem;padding-bottom:0.5rem}
+      .kb-col{min-width:200px}
+      .kb-header{padding:0.7rem 0.8rem}
+      .kb-card{padding:0.65rem 0.75rem;margin-bottom:0.5rem}
+
+      /* Pipeline summary */
+      .pipeline-summary{padding:0.9rem}
+      .pipe-row{gap:1rem;padding-bottom:0.4rem}
+      .pipe-stat{min-width:100px}
+      .pipe-val{font-size:1.1rem}
+
+      /* Charts */
+      .chart-h{height:160px}
+      .chart-hsm{height:130px}
+      .growth-row{grid-template-columns:1fr;gap:10px}
+
+      /* Modal */
+      .modal{padding:1.25rem;max-width:calc(100vw - 20px)}
+      .modal h3{font-size:1rem}
+      .modal label{font-size:0.75rem}
+      .modal input,.modal select,.modal textarea{font-size:0.875rem;padding:0.6rem 0.8rem}
+      .btn-pri,.btn-sec{min-height:44px;font-size:0.8rem;padding:0.6rem 1rem}
+
+      /* Funnel */
+      .funnel-card{padding:0.9rem}
+      .funnel-title{font-size:0.75rem}
+      .ai-panel{padding:0.9rem}
+      .ai-summary{font-size:0.78rem}
+
+      /* Detail overlay */
+      .detail-panel{max-width:100vw;max-height:100vh;border-radius:12px 12px 0 0}
+      .detail-grid{grid-template-columns:1fr}
+    }
+
+    @media(max-width:480px){
+      .kpi-row{grid-template-columns:1fr 1fr}
+      .kpi-v{font-size:1.35rem}
+      header{height:auto}
+      .pipe-stats-row{grid-template-columns:1fr 1fr}
+    }
   </style>
 </head>
 <body>
@@ -244,10 +344,9 @@
 </header>
 
 <div class="tabs">
-  <div class="tab active" onclick="showTab('overview')">📊 Overview</div>
+  <div class="tab active" onclick="showTab('overview')">📊 Dashboard</div>
   <div class="tab" onclick="showTab('leads')">🔥 Hot Leads</div>
-  <div class="tab" onclick="showTab('suburbs')">📍 Suburb Intel</div>
-  <div class="tab" onclick="showTab('network')">👥 Network</div>
+  <div class="tab" onclick="showTab('insights')">🔍 Insights</div>
   <div class="tab" onclick="showTab('pipeline')">💼 My Pipeline</div>
 </div>
 
@@ -290,8 +389,10 @@
   <div id="leads-container">Loading leads...</div>
 </div>
 
-<!-- ═══════════════════ SUBURB INTEL ═══════════════════ -->
-<div class="section" id="sec-suburbs">
+<!-- ═══════════════════ INSIGHTS (Suburb Intel + Network) ═══════════════════ -->
+<div class="section" id="sec-insights">
+  <!-- Suburb Intel -->
+  <div class="section-label" style="margin-bottom:.75rem;margin-top:.25rem">📍 Suburb Intelligence</div>
   <div class="g2">
     <div class="card">
       <div class="card-title"><span class="card-dot"></span>Growing Suburbs — Month on Month Activity</div>
@@ -306,10 +407,9 @@
     <div class="card-title"><span class="card-dot"></span>Suburb Activity Trend — Last 6 Months</div>
     <div class="chart-h"><canvas id="chart-suburb-trend"></canvas></div>
   </div>
-</div>
 
-<!-- ═══════════════════ NETWORK ═══════════════════ -->
-<div class="section" id="sec-network">
+  <!-- Network -->
+  <div class="section-label" style="margin-bottom:.75rem;margin-top:1.5rem">👥 Network</div>
   <div class="g2">
     <div class="card">
       <div class="card-title"><span class="card-dot"></span>Top 5 Active Developers (Last 6 Months)</div>
@@ -447,7 +547,7 @@ suburbs.forEach(s => {
 
 // Tab switching
 function showTab(tab) {
-  document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',['overview','leads','suburbs','network','pipeline'][i]===tab));
+  document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',['overview','leads','insights','pipeline'][i]===tab));
   document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
   document.getElementById('sec-'+tab).classList.add('active');
   if (tab==='pipeline') renderPipeline();

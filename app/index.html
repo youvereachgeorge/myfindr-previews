@@ -947,6 +947,62 @@
       .kpi-number { font-size: 26px; }
       .table-section-header { flex-direction: column; align-items: flex-start; }
     }
+
+    /* ─── MOBILE ENHANCEMENTS ─── */
+    @media (max-width: 768px) {
+      html, body { font-size: 0.875rem; }
+
+      /* Login card */
+      .login-card { padding: 1.75rem 1.25rem; margin: 10px; }
+      .login-card h2 { font-size: 1rem; }
+      .form-group label { font-size: 0.75rem; }
+      .form-group input { font-size: 0.93rem; padding: 0.75rem 0.9rem; min-height: 44px; }
+      .btn-login { min-height: 44px; font-size: 0.9rem; padding: 0.75rem; }
+
+      /* Header */
+      header { padding: 0 10px; height: auto; min-height: 54px; flex-wrap: wrap; gap: 6px; padding-top: 8px; padding-bottom: 8px; }
+      .header-left { flex-wrap: wrap; gap: 6px; }
+      .nav-pill { min-height: 44px; display: inline-flex; align-items: center; }
+      .btn-logout { min-height: 44px; }
+
+      /* Dashboard content */
+      .dash-content { padding: 10px 10px 2rem; }
+      .welcome-strip { gap: 0.5rem; margin-bottom: 10px; }
+      .welcome-left h1 { font-size: 1rem; }
+      .welcome-left .sub { font-size: 0.72rem; }
+
+      /* KPI */
+      .kpi-row { grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 10px; }
+      .kpi-number { font-size: 28px; letter-spacing: -1px; }
+      .kpi-label { font-size: 0.6rem; }
+      .kpi-tile { padding: 0.85rem 0.9rem 0.8rem; }
+
+      /* Charts */
+      .charts-row { grid-template-columns: 1fr; gap: 10px; margin-bottom: 10px; }
+      .area-chart-wrap { height: 150px; }
+      .donut-wrap { height: 140px; }
+
+      /* Bottom row */
+      .bottom-row { grid-template-columns: 1fr; gap: 10px; margin-bottom: 10px; }
+
+      /* Table */
+      .table-section-header { flex-direction: column; align-items: flex-start; gap: 8px; }
+      .table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+      .filter-btn { min-height: 44px; padding: 8px 12px; font-size: 0.7rem; }
+
+      /* Cards */
+      .card { padding: 10px; }
+      .suburb-bars-list { padding: 10px 10px 6px; gap: 0.6rem; }
+      .suburb-bar-name { font-size: 0.72rem; }
+      .ai-insight-card { padding: 10px; }
+      .ai-insight-text { font-size: 0.78rem; }
+      .pipeline-card { padding: 10px; }
+
+      /* Footer CTA */
+      .footer-cta { padding: 1.25rem 1rem; flex-direction: column; align-items: flex-start; }
+      .footer-cta h3 { font-size: 0.88rem; }
+      .footer-cta p { font-size: 0.72rem; }
+    }
   </style>
 </head>
 <body>
@@ -1292,13 +1348,14 @@ function showDashboard(client) {
   ).join('');
 
   // ─── ICP FULL DASHBOARD LINK ───
+  // FIX 3: Skip landing page — redirect directly to ICP dashboard
   const icpDashMap = { interior_designer: 'dashboard-id.html', builder: 'dashboard-builders.html', real_estate: 'dashboard-re.html' };
   const icpDash = icpDashMap[client.icp_type];
   if (icpDash) {
     const suburbParam = encodeURIComponent(client.target_suburbs.join(','));
-    const dashBtn = document.getElementById('btn-full-dashboard');
-    dashBtn.href = `./${icpDash}?suburbs=${suburbParam}&icp=${encodeURIComponent(client.icp_type)}&clientId=${encodeURIComponent(client.id || '')}`;
-    dashBtn.style.display = 'inline-block';
+    const redirectUrl = `./${icpDash}?suburbs=${suburbParam}&icp=${encodeURIComponent(client.icp_type)}&clientId=${encodeURIComponent(client.id || '')}`;
+    window.location.href = redirectUrl;
+    return;
   }
 
   document.getElementById('kpi-suburbs').textContent = client.target_suburbs.length;
