@@ -1,0 +1,9 @@
+{
+  "name": "myfindr-previews",
+  "builds": [{ "src": "**/*", "use": "@vercel/static" }],
+  "routes": [
+    { "src": "/reports/(.*)", "dest": "/reports/$1" },
+    { "src": "/scripts/(.*)", "dest": "/scripts/$1" },
+    { "src": "/(.*)", "dest": "/$1" }
+  ]
+}
