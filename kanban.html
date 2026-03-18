@@ -396,19 +396,19 @@ async function loadState() {
   setSS('ssaving','Loading...');
   try {
     let state, data;
+    // Always fetch raw for display (instant, no auth, works everywhere)
+    const rawUrl = `https://raw.githubusercontent.com/${REPO}/main/${FILE}?t=${Date.now()}`;
+    const rawR = await fetch(rawUrl);
+    state = await rawR.json();
+    // If we have a token, also get the SHA so we can save moves
     if (GH_TOKEN) {
-      // Authenticated: use GitHub API (can also save)
-      const r = await fetch(`https://api.github.com/repos/${REPO}/contents/${FILE}`, {
-        headers: {'Authorization':'Bearer '+GH_TOKEN,'Accept':'application/vnd.github.v3+json'}
-      });
-      data = await r.json();
-      fileSHA = data.sha;
-      state = JSON.parse(atob(data.content.replace(/\n/g,'')));
-    } else {
-      // Read-only (mobile/no token): fetch raw file directly — no auth needed on public repo
-      const rawUrl = `https://raw.githubusercontent.com/${REPO}/main/${FILE}?t=${Date.now()}`;
-      const r = await fetch(rawUrl);
-      state = await r.json();
+      try {
+        const apiR = await fetch(`https://api.github.com/repos/${REPO}/contents/${FILE}`, {
+          headers: {'Authorization':'Bearer '+GH_TOKEN,'Accept':'application/vnd.github.v3+json'}
+        });
+        data = await apiR.json();
+        fileSHA = data.sha;
+      } catch(e) { /* non-critical — can still view without SHA */ }
     }
     window.CARD_PROGRESS = {};
         COLS.forEach(c => document.getElementById('col-'+c).innerHTML = '');
