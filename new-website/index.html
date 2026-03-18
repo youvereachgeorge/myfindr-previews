@@ -1038,43 +1038,13 @@
       color: var(--text-ter);
     }
 
-    /*  PRICING BADGE  */
-    .pricing-banner {
-      background: rgba(230,69,0,0.08);
-      border: 1px solid rgba(230,69,0,0.2);
-      border-radius: 12px;
-      padding: 20px 28px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
-      margin-top: 40px;
-      flex-wrap: wrap;
+    
     }
-    .pricing-main {
-      display: flex;
-      align-items: baseline;
-      gap: 8px;
-    }
-    .pricing-amount {
-      font-size: 2.5rem;
-      font-weight: 900;
-      letter-spacing: -0.05em;
-      color: var(--text);
-    }
-    .pricing-per { font-size: 0.9rem; color: var(--text-sec); }
-    .pricing-badge-early {
-      background: rgba(230,69,0,0.2);
-      border: 1px solid rgba(230,69,0,0.4);
-      border-radius: var(--r-pill);
-      padding: 4px 14px;
-      font-size: 0.75rem;
-      font-weight: 700;
-      color: #FA7734;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }
-    .pricing-note { font-size: 0.8rem; color: var(--text-ter); }
+    
+    
+    
+    
+    
 
     /*  RESPONSIVE  */
     @media (max-width: 900px) {
@@ -1289,7 +1259,7 @@
     </div>
     <div class="features-grid">
       <div class="feature-card reveal">
-        <div class="feature-icon">⏱</div>
+        <div class="feature-icon" style="width:40px;height:40px;border-radius:10px;background:rgba(230,69,0,0.15);border:1px solid rgba(230,69,0,0.3);display:flex;align-items:center;justify-content:center;margin-bottom:1rem"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#E64500" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
         <h3>Lead Timing Intelligence</h3>
         <p>Know if a project is 4 months or 14 months away. Contact at exactly the right moment — not too early, never too late. Our timing benchmarks are built from historical approval patterns across both regions.</p>
       </div>
@@ -1353,47 +1323,7 @@
             <span class="warm-badge"> WARM</span>
           </div>
         </div>
-        <div class="pricing-banner" style="margin-top:28px;">
-          <div>
-            <div class="pricing-main">
-              <span class="pricing-amount">/span>
-              <span class="pricing-per"></span>
-            </div>
-            <div class="pricing-note">onboarding · No lock-in</div>
-          </div>
-          <div class="pricing-badge-early">  wk until March</div>
-          <a href="https://meetings-ap1.hubspot.com/meetings/jsanto" target="_blank" class="btn-primary" style="flex-shrink:0;">Get Started </a>
-        </div>
-      </div>
-
-      <!-- 5 Tabs card -->
-      <div class="bento-card">
-        <h3>5 Tabs of Intelligence</h3>
-        <p>Everything you need in one place — no toggling between tools.</p>
-        <div class="tab-pills">
-          <span class="tab-pill active">Overview</span>
-          <span class="tab-pill">Hot Leads</span>
-          <span class="tab-pill">Suburb Intel</span>
-          <span class="tab-pill">Network</span>
-          <span class="tab-pill">My Pipeline</span>
-        </div>
-        <div style="margin-top:20px; padding:16px; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.06); border-radius:10px;">
-          <div style="font-size:0.72rem; color:var(--text-ter); font-weight:600; text-transform:uppercase; letter-spacing:0.08em; margin-bottom:10px;">Network Intel — Top Developers</div>
-          <div style="display:flex;flex-direction:column;gap:8px;">
-            <div style="display:flex;align-items:center;justify-content:space-between;font-size:0.75rem;">
-              <span style="color:var(--text);">Aria Built Pty Ltd</span>
-              <span style="color:var(--orange2);font-weight:700;">14 DAs </span>
-            </div>
-            <div style="display:flex;align-items:center;justify-content:space-between;font-size:0.75rem;">
-              <span style="color:var(--text);">Brisbane Design Co</span>
-              <span style="color:var(--orange2);font-weight:700;">9 DAs</span>
-            </div>
-            <div style="display:flex;align-items:center;justify-content:space-between;font-size:0.75rem;">
-              <span style="color:var(--text);">Coastal Form Studio</span>
-              <span style="color:var(--text-sec);">7 DAs</span>
-            </div>
-          </div>
-        </div>
+        
       </div>
 
       <!-- AI Pipeline card -->
@@ -1494,7 +1424,7 @@
             </div>
           </div>
           <div style="margin-top:16px;padding:12px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:8px;font-size:0.72rem;color:var(--text-sec);">
-            ⏱ <strong style="color:var(--text);">Timing:</strong> 42 Gordon St — approval expected in 6 weeks. Contact window opens now.
+            <strong style="color:var(--text);">Timing:</strong> 42 Gordon St — approval expected in 6 weeks. Contact window opens now.
           </div>
         </div>
       </div>
@@ -1667,7 +1597,7 @@
       <div class="section-tag" style="display:inline-flex; margin-bottom:20px;"> Get Started</div>
       <h2>Ready to get ahead of<br>every project?</h2>
       <p>Book a 30-minute demo and see your suburbs, your trade, your leads.<br>
-       pricing: <strong style="color:#FA7734;">week</strong> until end of March. week after.</p>
+       <strong style="color:#FA7734;">week</strong> until end of March. week after.</p>
       <a href="https://meetings-ap1.hubspot.com/meetings/jsanto" target="_blank" class="btn-primary">
          Book Your Demo
       </a>
