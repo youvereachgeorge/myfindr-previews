@@ -1001,6 +1001,7 @@
         <div class="sub" id="welcome-subtitle">Your DA intelligence dashboard</div>
       </div>
       <div class="suburb-pills" id="suburb-pills"></div>
+      <a href="#" id="btn-full-dashboard" style="display:none;margin-left:auto;background:var(--teal);color:#000;font-size:0.78rem;font-weight:700;padding:8px 16px;border-radius:8px;text-decoration:none;letter-spacing:0.3px;white-space:nowrap;transition:opacity 0.2s;" onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='1'">View Full Dashboard →</a>
     </div>
 
     <!-- KPI Tiles (c56) -->
@@ -1289,6 +1290,16 @@ function showDashboard(client) {
   document.getElementById('suburb-pills').innerHTML = client.target_suburbs.map(s =>
     `<span class="suburb-pill">${s}</span>`
   ).join('');
+
+  // ─── ICP FULL DASHBOARD LINK ───
+  const icpDashMap = { interior_designer: 'dashboard-id.html', builder: 'dashboard-builders.html', real_estate: 'dashboard-re.html' };
+  const icpDash = icpDashMap[client.icp_type];
+  if (icpDash) {
+    const suburbParam = encodeURIComponent(client.target_suburbs.join(','));
+    const dashBtn = document.getElementById('btn-full-dashboard');
+    dashBtn.href = `./${icpDash}?suburbs=${suburbParam}&icp=${encodeURIComponent(client.icp_type)}&clientId=${encodeURIComponent(client.id || '')}`;
+    dashBtn.style.display = 'inline-block';
+  }
 
   document.getElementById('kpi-suburbs').textContent = client.target_suburbs.length;
   renderSparkline('sparkline-subs', flatSpark(client.target_suburbs.length));

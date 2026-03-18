@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>myFindr — Interior Designers Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0f0f0f;
+      --card: rgba(26,26,26,0.85);
+      --card-border: rgba(255,255,255,0.06);
+      --accent: #E64500;
+      --accent2: #FA5914;
+      --green: #4CAF50;
+      --pink: #E91E63;
+      --orange: #FF9800;
+      --text: #FFFFFF;
+      --text2: #8899AA;
+      --text3: #607080;
+      --radius: 10px;
+      --radius-lg: 14px;
+    }
+    html, body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+    ::-webkit-scrollbar { width: 6px; } ::-webkit-scrollbar-track { background: var(--bg); } ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.12); border-radius: 3px; }
+
+    /* HEADER */
+    header {
+      background: rgba(15,15,15,0.96);
+      border-bottom: 1px solid var(--card-border);
+      padding: 0 1.5rem;
+      display: flex; align-items: center; justify-content: space-between;
+      height: 56px; position: sticky; top: 0; z-index: 200;
+      backdrop-filter: blur(12px);
+    }
+    .header-left { display: flex; align-items: center; gap: 1rem; }
+    .header-logo { height: 28px; }
+    .icp-badge {
+      background: rgba(230,69,0,0.15);
+      border: 1px solid rgba(230,69,0,0.3);
+      color: var(--accent2); font-size: 0.72rem; font-weight: 700;
+      padding: 4px 10px; border-radius: 20px; letter-spacing: 0.5px; text-transform: uppercase;
+    }
+    .suburb-badges { display: flex; gap: 6px; flex-wrap: wrap; }
+    .suburb-tag {
+      background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
+      color: var(--text2); font-size: 0.68rem; font-weight: 600;
+      padding: 3px 8px; border-radius: 12px; letter-spacing: 0.4px;
+    }
+    .btn-back {
+      display: flex; align-items: center; gap: 6px;
+      background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
+      color: var(--text2); font-size: 0.78rem; font-weight: 600;
+      padding: 6px 14px; border-radius: 8px; text-decoration: none;
+      transition: all 0.2s; font-family: inherit;
+    }
+    .btn-back:hover { background: rgba(255,255,255,0.1); color: var(--text); }
+
+    /* MAIN */
+    main { max-width: 1400px; margin: 0 auto; padding: 1.5rem; }
+    .section-title { font-size: 0.7rem; font-weight: 700; color: var(--text3); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 0.75rem; }
+
+    /* KPI ROW */
+    .kpi-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 1.5rem; }
+    .kpi-card {
+      background: var(--card); border: 1px solid var(--card-border);
+      border-radius: var(--radius-lg); padding: 1.2rem 1.4rem;
+      backdrop-filter: blur(8px);
+    }
+    .kpi-label { font-size: 0.68rem; font-weight: 700; color: var(--text2); letter-spacing: 0.8px; text-transform: uppercase; margin-bottom: 0.5rem; }
+    .kpi-value { font-size: 2rem; font-weight: 800; color: var(--text); line-height: 1; }
+    .kpi-value.hot { color: var(--pink); }
+    .kpi-value.warm { color: var(--orange); }
+    .kpi-value.accent { color: var(--accent); }
+    .kpi-sub { font-size: 0.72rem; color: var(--text3); margin-top: 4px; }
+
+    /* GRID LAYOUTS */
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem; }
+    .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem; }
+    .full-row { margin-bottom: 1.5rem; }
+
+    /* CARDS */
+    .card {
+      background: var(--card); border: 1px solid var(--card-border);
+      border-radius: var(--radius-lg); padding: 1.25rem;
+      backdrop-filter: blur(8px);
+    }
+    .card-title {
+      font-size: 0.8rem; font-weight: 700; color: var(--text);
+      margin-bottom: 1rem; display: flex; align-items: center; gap: 8px;
+    }
+    .card-title .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); }
+    .chart-wrap { position: relative; height: 220px; }
+    .chart-wrap-sm { position: relative; height: 180px; }
+
+    /* TABLES */
+    .tbl { width: 100%; border-collapse: collapse; font-size: 0.78rem; }
+    .tbl thead tr { border-bottom: 1px solid rgba(255,255,255,0.08); }
+    .tbl thead th { color: var(--text3); font-size: 0.65rem; font-weight: 700; letter-spacing: 0.7px; text-transform: uppercase; padding: 0 0.75rem 0.6rem; text-align: left; }
+    .tbl tbody tr { border-bottom: 1px solid rgba(255,255,255,0.04); transition: background 0.15s; }
+    .tbl tbody tr:hover { background: rgba(255,255,255,0.03); }
+    .tbl tbody td { padding: 0.6rem 0.75rem; color: var(--text); vertical-align: middle; }
+    .tbl tbody td.muted { color: var(--text2); }
+    .rank-num { font-weight: 800; color: var(--accent); font-size: 0.9rem; }
+    .stage-badge {
+      display: inline-block; font-size: 0.62rem; font-weight: 700; letter-spacing: 0.5px;
+      padding: 2px 8px; border-radius: 12px; text-transform: uppercase;
+    }
+    .badge-hot { background: rgba(233,30,99,0.18); color: #FF6090; }
+    .badge-warm { background: rgba(255,152,0,0.18); color: #FFBB44; }
+    .badge-cold { background: rgba(96,112,128,0.2); color: var(--text2); }
+    .badge-new { background: rgba(76,175,80,0.18); color: #66BB6A; }
+    .da-link { color: var(--accent2); text-decoration: none; font-size: 0.72rem; }
+    .da-link:hover { text-decoration: underline; }
+    .empty-state { text-align: center; color: var(--text3); font-size: 0.8rem; padding: 2rem; }
+
+    /* DONUT */
+    .donut-wrap { display: flex; align-items: center; gap: 1.5rem; }
+    .donut-chart-wrap { position: relative; width: 140px; height: 140px; flex-shrink: 0; }
+    .donut-legend { flex: 1; }
+    .legend-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+    .legend-dot-wrap { display: flex; align-items: center; gap: 8px; }
+    .legend-dot { width: 10px; height: 10px; border-radius: 50%; }
+    .legend-label { font-size: 0.78rem; color: var(--text2); font-weight: 500; }
+    .legend-val { font-size: 0.85rem; font-weight: 700; color: var(--text); }
+
+    /* TIMING WIDGET */
+    .timeline-wrap { padding: 1rem 0.5rem; }
+    .timeline-track { position: relative; display: flex; align-items: center; justify-content: space-between; margin: 2rem 0; }
+    .timeline-line {
+      position: absolute; top: 50%; left: 0; right: 0;
+      height: 2px; background: linear-gradient(90deg, var(--accent), var(--accent2));
+      transform: translateY(-50%); z-index: 0;
+    }
+    .timeline-node { position: relative; z-index: 1; text-align: center; flex: 1; }
+    .timeline-dot {
+      width: 16px; height: 16px; border-radius: 50%;
+      background: var(--accent); border: 3px solid var(--bg);
+      margin: 0 auto 8px; box-shadow: 0 0 12px rgba(230,69,0,0.6);
+    }
+    .timeline-dot.dim { background: var(--text3); box-shadow: none; }
+    .timeline-dot.bright { background: var(--accent2); box-shadow: 0 0 16px rgba(250,89,20,0.8); }
+    .timeline-label { font-size: 0.7rem; font-weight: 700; color: var(--text); }
+    .timeline-sub { font-size: 0.62rem; color: var(--text3); margin-top: 2px; }
+    .timeline-badge {
+      display: inline-block; background: rgba(230,69,0,0.2); border: 1px solid rgba(230,69,0,0.4);
+      color: var(--accent2); font-size: 0.65rem; font-weight: 700; padding: 3px 8px; border-radius: 10px;
+      margin-top: 4px;
+    }
+    .timing-tip {
+      background: rgba(230,69,0,0.08); border: 1px solid rgba(230,69,0,0.2);
+      border-radius: 8px; padding: 0.75rem 1rem; font-size: 0.78rem; color: var(--text2); margin-top: 0.5rem;
+    }
+    .timing-tip strong { color: var(--accent2); }
+
+    /* LOADING STATES */
+    .skeleton { background: rgba(255,255,255,0.06); border-radius: 4px; animation: pulse 1.5s infinite; }
+    @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+    @media (max-width: 900px) {
+      .kpi-row { grid-template-columns: repeat(2, 1fr); }
+      .grid-2 { grid-template-columns: 1fr; }
+      .grid-3 { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 600px) {
+      .kpi-row { grid-template-columns: 1fr 1fr; }
+      header { flex-wrap: wrap; height: auto; padding: 0.75rem 1rem; gap: 0.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-left">
+    <a href="./index.html"><img src="./myfindr-logo-white.svg" class="header-logo" alt="myFindr"></a>
+    <span class="icp-badge">🎨 Interior Designers</span>
+    <div class="suburb-badges" id="suburb-badges"></div>
+  </div>
+  <a href="./index.html" class="btn-back">← Back to Dashboard</a>
+</header>
+
+<main>
+
+  <!-- KPI ROW -->
+  <div class="kpi-row" id="kpi-row">
+    <div class="kpi-card">
+      <div class="kpi-label">🔥 HOT Reno Leads</div>
+      <div class="kpi-value hot" id="kpi-hot">—</div>
+      <div class="kpi-sub">High-priority contacts</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">♨️ WARM Leads</div>
+      <div class="kpi-value warm" id="kpi-warm">—</div>
+      <div class="kpi-sub">Approaching decision stage</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">🏗️ Multi-Dwelling Pipeline</div>
+      <div class="kpi-value accent" id="kpi-multi">—</div>
+      <div class="kpi-sub">Active multi-unit projects</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">👥 Active Consultants</div>
+      <div class="kpi-value" id="kpi-consultants">—</div>
+      <div class="kpi-sub">In your suburbs (30d)</div>
+    </div>
+  </div>
+
+  <!-- ROW 2: Reno Chart + Multi Donut -->
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title"><div class="dot"></div> Reno Leads by Suburb (30d)</div>
+      <div class="chart-wrap"><canvas id="reno-chart"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-title"><div class="dot"></div> Multi-Dwelling Pipeline</div>
+      <div class="donut-wrap" style="height:200px; align-items:center;">
+        <div class="donut-chart-wrap"><canvas id="multi-donut"></canvas></div>
+        <div class="donut-legend" id="donut-legend"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ROW 3: Lead Rankings (full width) -->
+  <div class="full-row">
+    <div class="card">
+      <div class="card-title"><div class="dot"></div> Lead Rankings — Interior Designers</div>
+      <div style="overflow-x:auto;">
+        <table class="tbl" id="leads-table">
+          <thead><tr>
+            <th>#</th><th>Address</th><th>Stage</th><th>Recommended Action</th><th>Est. Value</th><th>DA</th>
+          </tr></thead>
+          <tbody id="leads-tbody"><tr><td colspan="6" class="empty-state">Loading leads...</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ROW 4: Consultant Leaderboard -->
+  <div class="full-row">
+    <div class="card">
+      <div class="card-title"><div class="dot"></div> Active Consultant Leaderboard</div>
+      <div style="overflow-x:auto;">
+        <table class="tbl" id="consultants-table">
+          <thead><tr>
+            <th>#</th><th>Consultant</th><th>Total Projects</th><th>Last 30d</th><th>Last Seen</th>
+          </tr></thead>
+          <tbody id="consultants-tbody"><tr><td colspan="5" class="empty-state">Loading consultants...</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ROW 5: Timing Intelligence -->
+  <div class="full-row">
+    <div class="card">
+      <div class="card-title"><div class="dot"></div> Timing Intelligence — When to Contact</div>
+      <div class="timeline-wrap">
+        <div class="timeline-track">
+          <div class="timeline-line"></div>
+          <div class="timeline-node">
+            <div class="timeline-dot"></div>
+            <div class="timeline-label">Building Work Lodged</div>
+            <div class="timeline-sub">Day 0</div>
+          </div>
+          <div class="timeline-node">
+            <div class="timeline-dot bright"></div>
+            <div class="timeline-label" style="color:var(--accent2);">⚡ Contact Now</div>
+            <div class="timeline-sub">Days 1–30</div>
+            <div class="timeline-badge">OPTIMAL WINDOW</div>
+          </div>
+          <div class="timeline-node">
+            <div class="timeline-dot dim"></div>
+            <div class="timeline-label">Approval Stage</div>
+            <div class="timeline-sub">~Day 120</div>
+          </div>
+          <div class="timeline-node">
+            <div class="timeline-dot dim"></div>
+            <div class="timeline-label">Construction Starts</div>
+            <div class="timeline-sub">Post-Approval</div>
+          </div>
+        </div>
+        <div class="timing-tip">
+          💡 <strong>Best practice:</strong> Contact homeowners within <strong>30 days</strong> of Building Work Approval lodgement — before they've engaged contractors or designers. Average approval timeline is <strong>120 days</strong>. Don't wait for the approval notice.
+        </div>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<script>
+// ─── CONFIG ───
+const SUPABASE_URL = 'https://ieqbavwzydlxiaclzcjl.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImllcWJhdnd6eWRseGlhY2x6Y2psIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3MzM4NDEwMCwiZXhwIjoyMDg4OTYwMTAwfQ.8FqHSTp-FxwIiiZWBpzAiYRkL5WdSNETn2ICAo-1DOE';
+
+// ─── PARAMS ───
+const params = new URLSearchParams(location.search);
+const suburbsRaw = params.get('suburbs') || '';
+const suburbs = suburbsRaw ? suburbsRaw.split(',').map(s => s.trim().toUpperCase()).filter(Boolean) : [];
+const clientId = params.get('clientId') || '';
+
+// ─── SUBURB BADGES ───
+const badgesEl = document.getElementById('suburb-badges');
+if (suburbs.length) {
+  badgesEl.innerHTML = suburbs.map(s => `<span class="suburb-tag">${s}</span>`).join('');
+}
+
+// ─── API HELPER ───
+async function sbGet(view, queryParams = {}) {
+  const url = new URL(`${SUPABASE_URL}/rest/v1/${view}`);
+  url.searchParams.set('select', '*');
+  url.searchParams.set('limit', queryParams.limit || '200');
+  if (queryParams.order) url.searchParams.set('order', queryParams.order);
+  if (queryParams.or) url.searchParams.set('or', queryParams.or);
+  if (queryParams.extra) {
+    Object.entries(queryParams.extra).forEach(([k,v]) => url.searchParams.set(k, v));
+  }
+  const res = await fetch(url.toString(), {
+    headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
+  });
+  if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
+  return res.json();
+}
+
+// ─── SUBURB FILTER ───
+function suburbOrFilter(col = 'suburb') {
+  if (!suburbs.length) return null;
+  return suburbs.map(s => `${col}.ilike.*${s}*`).join(',');
+}
+
+// ─── CHART.JS DEFAULTS ───
+Chart.defaults.color = '#8899AA';
+Chart.defaults.font.family = 'Inter';
+
+// ─── INIT ───
+(async () => {
+  await Promise.allSettled([
+    loadKPIs(),
+    loadRenoChart(),
+    loadLeads(),
+    loadMultiDonut(),
+    loadConsultants(),
+  ]);
+})();
+
+// ─── KPIs ───
+async function loadKPIs() {
+  try {
+    const orFilter = suburbOrFilter();
+    const [leads, multi, consultants] = await Promise.all([
+      sbGet('vw_icp_lead_rankings_id', { limit: '500', ...(orFilter ? { or: orFilter } : {}) }).catch(() => []),
+      sbGet('vw_id_multi_count', { limit: '500', ...(orFilter ? { or: orFilter } : {}) }).catch(() => []),
+      sbGet('vw_id_consultant_overlap', { limit: '200', ...(orFilter ? { or: orFilter } : {}) }).catch(() => []),
+    ]);
+    const hot = leads.filter(l => (l.signal || l.stage || '').toUpperCase().includes('HOT')).length;
+    const warm = leads.filter(l => (l.signal || l.stage || '').toUpperCase().includes('WARM')).length;
+    const multiTotal = multi.reduce((a, r) => a + (parseInt(r.count || r.total || 1) || 1), 0) || multi.length;
+    document.getElementById('kpi-hot').textContent = hot || leads.length;
+    document.getElementById('kpi-warm').textContent = warm;
+    document.getElementById('kpi-multi').textContent = multiTotal;
+    document.getElementById('kpi-consultants').textContent = consultants.length;
+  } catch(e) { console.error('KPI error', e); }
+}
+
+// ─── RENO BAR CHART ───
+async function loadRenoChart() {
+  try {
+    const orFilter = suburbOrFilter();
+    const data = await sbGet('vw_id_reno_count', { limit: '100', order: 'reno_30d.desc', ...(orFilter ? { or: orFilter } : {}) });
+    const top10 = data.slice(0, 10);
+    const labels = top10.map(r => r.suburb || r.SUBURB || '?');
+    const values = top10.map(r => parseInt(r.reno_30d || r.count || 0));
+    const ctx = document.getElementById('reno-chart').getContext('2d');
+    new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels,
+        datasets: [{
+          label: 'Reno Leads (30d)',
+          data: values,
+          backgroundColor: labels.map((_, i) => i === 0 ? 'rgba(230,69,0,0.9)' : i < 3 ? 'rgba(250,89,20,0.7)' : 'rgba(230,69,0,0.4)'),
+          borderRadius: 4, borderSkipped: false,
+        }]
+      },
+      options: {
+        indexAxis: 'y',
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { display: false }, tooltip: {
+          backgroundColor: 'rgba(15,15,15,0.95)', borderColor: 'rgba(255,255,255,0.1)', borderWidth: 1,
+          titleColor: '#8899AA', bodyColor: '#FFFFFF'
+        }},
+        scales: {
+          x: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: '#8899AA' } },
+          y: { grid: { display: false }, ticks: { color: '#FFFFFF', font: { size: 11, weight: '600' } } }
+        }
+      }
+    });
+  } catch(e) { console.error('Reno chart error', e); }
+}
+
+// ─── LEADS TABLE ───
+async function loadLeads() {
+  const tbody = document.getElementById('leads-tbody');
+  try {
+    const orFilter = suburbOrFilter();
+    const data = await sbGet('vw_icp_lead_rankings_id', { limit: '100', order: 'rank.asc', ...(orFilter ? { or: orFilter } : {}) });
+    if (!data.length) { tbody.innerHTML = `<tr><td colspan="6" class="empty-state">No leads found for your suburbs.</td></tr>`; return; }
+    tbody.innerHTML = data.map((r, i) => {
+      const stage = (r.signal || r.stage || 'WARM').toUpperCase();
+      const badgeClass = stage.includes('HOT') ? 'badge-hot' : stage.includes('COLD') ? 'badge-cold' : stage.includes('NEW') ? 'badge-new' : 'badge-warm';
+      const val = r.est_value ? `$${Number(r.est_value).toLocaleString()}` : r.estimated_value ? `$${Number(r.estimated_value).toLocaleString()}` : '—';
+      const addr = r.address || r.property_address || r.location || '—';
+      const action = r.recommended_action || r.action || '—';
+      const daUrl = r.da_link || r.application_url || r.link || null;
+      return `<tr>
+        <td><span class="rank-num">${r.rank || i+1}</span></td>
+        <td style="max-width:220px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${addr}</td>
+        <td><span class="stage-badge ${badgeClass}">${stage}</span></td>
+        <td class="muted" style="max-width:240px;font-size:0.73rem;">${action}</td>
+        <td style="font-weight:700;color:var(--green);">${val}</td>
+        <td>${daUrl ? `<a href="${daUrl}" target="_blank" class="da-link">View →</a>` : '<span style="color:var(--text3)">—</span>'}</td>
+      </tr>`;
+    }).join('');
+  } catch(e) { tbody.innerHTML = `<tr><td colspan="6" class="empty-state">Error loading leads.</td></tr>`; }
+}
+
+// ─── MULTI DONUT ───
+async function loadMultiDonut() {
+  try {
+    const orFilter = suburbOrFilter();
+    const data = await sbGet('vw_id_multi_count', { limit: '500', ...(orFilter ? { or: orFilter } : {}) });
+    let hot = 0, warm = 0, cold = 0;
+    data.forEach(r => {
+      const stage = (r.signal || r.stage || r.status || '').toUpperCase();
+      const cnt = parseInt(r.count || r.total || 1) || 1;
+      if (stage.includes('HOT')) hot += cnt;
+      else if (stage.includes('COLD')) cold += cnt;
+      else warm += cnt;
+    });
+    if (!hot && !warm && !cold) { hot = data.length; }
+    const total = hot + warm + cold || 1;
+    const ctx = document.getElementById('multi-donut').getContext('2d');
+    new Chart(ctx, {
+      type: 'doughnut',
+      data: {
+        labels: ['HOT','WARM','COLD'],
+        datasets: [{ data: [hot, warm, cold],
+          backgroundColor: ['rgba(233,30,99,0.85)','rgba(255,152,0,0.8)','rgba(96,112,128,0.4)'],
+          borderColor: ['#E91E63','#FF9800','#607080'], borderWidth: 1, hoverOffset: 4
+        }]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false, cutout: '70%',
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            backgroundColor: 'rgba(15,15,15,0.95)', borderColor: 'rgba(255,255,255,0.1)', borderWidth: 1,
+            callbacks: { label: (ctx) => ` ${ctx.label}: ${ctx.raw} (${Math.round((ctx.raw/total)*100)}%)` }
+          }
+        }
+      }
+    });
+    const colors = ['#E91E63','#FF9800','#607080'];
+    const vals = [hot, warm, cold];
+    document.getElementById('donut-legend').innerHTML = ['HOT','WARM','COLD'].map((l,i) => `
+      <div class="legend-row">
+        <div class="legend-dot-wrap"><div class="legend-dot" style="background:${colors[i]}"></div><span class="legend-label">${l}</span></div>
+        <span class="legend-val">${vals[i]} <span style="color:var(--text3);font-size:0.7rem">(${Math.round((vals[i]/total)*100)}%)</span></span>
+      </div>`).join('');
+  } catch(e) { console.error('Multi donut error', e); }
+}
+
+// ─── CONSULTANTS ───
+async function loadConsultants() {
+  const tbody = document.getElementById('consultants-tbody');
+  try {
+    const orFilter = suburbOrFilter();
+    const data = await sbGet('vw_id_consultant_overlap', { limit: '50', order: 'project_count.desc', ...(orFilter ? { or: orFilter } : {}) });
+    if (!data.length) { tbody.innerHTML = `<tr><td colspan="5" class="empty-state">No consultant data for your suburbs.</td></tr>`; return; }
+    tbody.innerHTML = data.map((r, i) => `<tr>
+      <td><span class="rank-num">${i+1}</span></td>
+      <td style="font-weight:600;">${r.consultant_name || r.name || r.applicant || '—'}</td>
+      <td>${r.project_count || r.total_projects || '—'}</td>
+      <td>${r.last_30d || r.recent_count || '—'}</td>
+      <td class="muted">${r.last_seen ? new Date(r.last_seen).toLocaleDateString('en-AU') : '—'}</td>
+    </tr>`).join('');
+  } catch(e) { tbody.innerHTML = `<tr><td colspan="5" class="empty-state">Error loading consultants.</td></tr>`; }
+}
+</script>
+</body>
+</html>
