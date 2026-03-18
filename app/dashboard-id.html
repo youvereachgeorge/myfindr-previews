@@ -716,7 +716,54 @@ async function loadPipeline(){
 
 async function savePipeline(){
   localStorage.setItem('pipeline_'+suburbsParam, JSON.stringify(pipelineData));
+  // Sync to Supabase if client is logged in
+  if(clientId){
+    try{
+      await sbWrite('client_pipeline', clientId);
+    }catch(e){
+      console.error('Supabase save failed, localStorage preserved:', e.message);
+    }
+  }
   renderPipeline();
+}
+
+// Write entire pipeline to Supabase via delete + insert
+async function sbWrite(table, cid){
+  // Strategy: DELETE current records for this client, then INSERT all current pipelineData
+  await fetch(`${SUPA}/rest/v1/${table}?client_id=eq.${cid}`, {
+    method: 'DELETE',
+    headers: { 'apikey': KEY, 'Authorization': 'Bearer '+KEY }
+  });
+  if(!pipelineData.length) return;
+  const rows = pipelineData.map(p => ({
+    client_id: cid,
+    application_number: p.application_number || null,
+    application_link: p.application_link || p.da_link || null,
+    address: p.address || null,
+    suburb: p.suburb || null,
+    council: p.council || null,
+    application_type: p.application_type || null,
+    property_type: p.property_type || null,
+    stage: p.stage || 'watching',
+    estimated_value: p.estimated_value ? parseFloat(p.estimated_value) : null,
+    expected_start_date: p.expected_start_date || null,
+    notes: p.notes || null,
+    source: 'portal',
+    applicant: p.applicant || null,
+    date_lodged: p.date_lodged || null,
+    da_link: p.da_link || p.application_link || null,
+    created_at: p.created_at || new Date().toISOString()
+  }));
+  await fetch(`${SUPA}/rest/v1/${table}`, {
+    method: 'POST',
+    headers: {
+      'apikey': KEY,
+      'Authorization': 'Bearer '+KEY,
+      'Content-Type': 'application/json',
+      'Prefer': 'return=minimal'
+    },
+    body: JSON.stringify(rows)
+  });
 }
 
 function stageSum(s){return pipelineData.filter(p=>p.stage===s).reduce((a,p)=>a+(parseFloat(p.estimated_value)||0),0);}
@@ -1085,11 +1132,8 @@ async function saveToHipeline(){
     });
   }
 
-  // Save to localStorage
-  localStorage.setItem('pipeline_'+suburbsParam, JSON.stringify(pipelineData));
-
-  // Now render — kb-drop elements exist because tab is active
-  renderPipeline();
+  // Save to localStorage + Supabase (via savePipeline)
+  await savePipeline();
 
   // Update hot leads buttons
   renderLeads(leadsAll);
