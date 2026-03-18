@@ -40,12 +40,12 @@
       -webkit-font-smoothing: antialiased;
     }
 
-    /* ── SCROLLBAR ── */
+    /*  SCROLLBAR  */
     ::-webkit-scrollbar { width: 6px; }
     ::-webkit-scrollbar-track { background: var(--bg); }
     ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.12); border-radius: 99px; }
 
-    /* ── BACKGROUND ORBS ── */
+    /*  BACKGROUND ORBS  */
     .orb-container {
       position: fixed;
       inset: 0;
@@ -84,7 +84,7 @@
       100% { transform: translate(30px,20px) scale(1.05); }
     }
 
-    /* ── NAV ── */
+    /*  NAV  */
     nav {
       position: fixed;
       top: 0; left: 0; right: 0;
@@ -231,7 +231,7 @@
     .mobile-menu a:hover { color: var(--text); }
     .mobile-menu .btn-primary { width: 100%; justify-content: center; margin-top: 8px; }
 
-    /* ── LAYOUT ── */
+    /*  LAYOUT  */
     section { position: relative; z-index: 1; }
 
     .container {
@@ -240,7 +240,7 @@
       padding: 0 5vw;
     }
 
-    /* ── HERO ── */
+    /*  HERO  */
     #hero {
       min-height: 100vh;
       display: flex;
@@ -334,7 +334,7 @@
       to   { opacity: 1; transform: translateY(0); }
     }
 
-    /* ── DASHBOARD MOCKUP ── */
+    /*  DASHBOARD MOCKUP  */
     .dashboard-wrap {
       margin-top: 56px;
       opacity: 0;
@@ -467,7 +467,7 @@
     }
     .bar-name { font-size: 0.55rem; color: var(--text-ter); text-align: center; }
 
-    /* ── MARQUEE ── */
+    /*  MARQUEE  */
     .marquee-section {
       padding: 20px 0;
       border-top: 1px solid var(--border);
@@ -501,7 +501,7 @@
     }
     .marquee-pill .icon { color: var(--orange); font-size: 0.9rem; }
 
-    /* ── SECTION SHARED ── */
+    /*  SECTION SHARED  */
     .section-tag {
       display: inline-flex;
       align-items: center;
@@ -531,7 +531,7 @@
       max-width: 540px;
     }
 
-    /* ── REVEAL ANIMATION ── */
+    /*  REVEAL ANIMATION  */
     .reveal {
       opacity: 0;
       transform: translateY(40px);
@@ -542,7 +542,7 @@
       transform: translateY(0);
     }
 
-    /* ── FEATURES ── */
+    /*  FEATURES  */
     #features { padding: 100px 0; }
     .features-header { text-align: center; margin-bottom: 60px; }
     .features-header .section-sub { margin: 0 auto; }
@@ -602,7 +602,7 @@
       line-height: 1.7;
     }
 
-    /* ── PRODUCT SHOWCASE ── */
+    /*  PRODUCT SHOWCASE  */
     #product { padding: 100px 0; }
     .product-header { text-align: center; margin-bottom: 60px; }
     .product-header .section-sub { margin: 0 auto; }
@@ -687,7 +687,7 @@
     .funnel-4 { width: 32%; background: linear-gradient(90deg, rgba(230,69,0,0.35), rgba(230,69,0,0.2)); }
     .funnel-5 { width: 18%; background: linear-gradient(90deg, rgba(100,200,100,0.6), rgba(100,200,100,0.4)); }
 
-    /* ── Bento KPI mini ── */
+    /*  Bento KPI mini  */
     .mini-kpi-row {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -739,7 +739,7 @@
       font-weight: 700;
     }
 
-    /* ── HOW IT WORKS ── */
+    /*  HOW IT WORKS  */
     #how { padding: 100px 0; background: rgba(255,255,255,0.01); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
     .how-header { text-align: center; margin-bottom: 64px; }
     .how-header .section-sub { margin: 0 auto; }
@@ -792,7 +792,7 @@
       line-height: 1.7;
     }
 
-    /* ── ICP SHOWCASE ── */
+    /*  ICP SHOWCASE  */
     #icp { padding: 100px 0; }
     .icp-header { text-align: center; margin-bottom: 48px; }
     .icp-header .section-sub { margin: 0 auto; }
@@ -892,7 +892,7 @@
       margin-bottom: 16px;
     }
 
-    /* ── TESTIMONIALS ── */
+    /*  TESTIMONIALS  */
     #testimonials { padding: 100px 0; }
     .testimonials-header { text-align: center; margin-bottom: 60px; }
     .testimonials-header .section-sub { margin: 0 auto; }
@@ -940,7 +940,7 @@
     .author-name { font-weight: 700; font-size: 0.9rem; }
     .author-role { font-size: 0.78rem; color: var(--text-ter); margin-top: 2px; }
 
-    /* ── CTA SECTION ── */
+    /*  CTA SECTION  */
     #cta {
       padding: 120px 0;
       text-align: center;
@@ -1003,7 +1003,7 @@
       color: var(--text-ter);
     }
 
-    /* ── FOOTER ── */
+    /*  FOOTER  */
     footer {
       border-top: 1px solid var(--border);
       padding: 48px 5vw 40px;
@@ -1038,7 +1038,7 @@
       color: var(--text-ter);
     }
 
-    /* ── PRICING BADGE ── */
+    /*  PRICING BADGE  */
     .pricing-banner {
       background: rgba(230,69,0,0.08);
       border: 1px solid rgba(230,69,0,0.2);
@@ -1076,7 +1076,7 @@
     }
     .pricing-note { font-size: 0.8rem; color: var(--text-ter); }
 
-    /* ── RESPONSIVE ── */
+    /*  RESPONSIVE  */
     @media (max-width: 900px) {
       .features-grid { grid-template-columns: 1fr; }
       .bento-grid { grid-template-columns: 1fr; }
@@ -1101,7 +1101,7 @@
       .kpi-row { grid-template-columns: repeat(2,1fr); }
     }
 
-    /* ── GRID LINES ── */
+    /*  GRID LINES  */
     .grid-bg {
       position: absolute;
       inset: 0;
@@ -1112,7 +1112,19 @@
       pointer-events: none;
       mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 0%, transparent 100%);
     }
-  </style>
+  
+  /* Filo-matched typography */
+  :root {
+    --font-heading-ls: -0.04em;
+    --font-subheading-ls: -0.02em;
+  }
+  h1, h2 { letter-spacing: -0.05em !important; font-weight: 700 !important; }
+  h3 { letter-spacing: -0.03em !important; font-weight: 600 !important; }
+  .nav-links a { font-weight: 500; letter-spacing: -0.01em; }
+  .badge, .pill { font-weight: 500; letter-spacing: 0.01em; font-size: 12px; }
+  p, .body-text { font-weight: 400; line-height: 1.65; }
+
+</style>
 </head>
 <body>
 
@@ -1125,7 +1137,7 @@
 
 <!-- NAV -->
 <nav>
-  <a href="#" class="nav-logo">my<span class="bold">Findr</span><span class="dot">●</span></a>
+  <a href="#" class="nav-logo"><img src="../myfindr-logo-white.svg" alt="myFindr" style="height:28px;display:block"></a>
   <ul class="nav-links">
     <li><a href="#features">Features</a></li>
     <li><a href="#product">Product</a></li>
@@ -1171,10 +1183,10 @@
 
     <div class="hero-ctas">
       <a href="https://meetings-ap1.hubspot.com/meetings/jsanto" target="_blank" class="btn-primary">
-        🗓 Book a Demo
+         Book a Demo
       </a>
       <a href="https://meetings-ap1.hubspot.com/meetings/jsanto" target="_blank" class="btn-ghost">
-        ▶ See It Live
+         See It Live
       </a>
     </div>
 
@@ -1192,19 +1204,19 @@
         <div class="dash-body">
           <div class="kpi-row">
             <div class="kpi-tile">
-              <div class="kpi-label">🔥 HOT Leads</div>
+              <div class="kpi-label"> HOT Leads</div>
               <div class="kpi-value kpi-hot" data-count="72">72</div>
             </div>
             <div class="kpi-tile">
-              <div class="kpi-label">🟡 WARM</div>
+              <div class="kpi-label"> WARM</div>
               <div class="kpi-value kpi-warm" data-count="37">37</div>
             </div>
             <div class="kpi-tile">
-              <div class="kpi-label">📋 DAs This Week</div>
+              <div class="kpi-label"> DAs This Week</div>
               <div class="kpi-value kpi-week" data-count="138">138</div>
             </div>
             <div class="kpi-tile">
-              <div class="kpi-label">📍 Suburbs Tracked</div>
+              <div class="kpi-label"> Suburbs Tracked</div>
               <div class="kpi-value kpi-sub" data-count="5">5</div>
             </div>
           </div>
@@ -1214,7 +1226,7 @@
               <div class="lead-address">20 Palm Ave, Ascot</div>
               <div class="lead-type">Building Permit · Interior Renovation</div>
             </div>
-            <div class="lead-badge">🔥 HOT · Contact this week</div>
+            <div class="lead-badge"> HOT · Contact this week</div>
           </div>
 
           <div class="dash-chart-label">Activity by Suburb</div>
@@ -1249,21 +1261,21 @@
 <!-- MARQUEE -->
 <div class="marquee-section">
   <div class="marquee-track" id="marqueeTrack">
-    <div class="marquee-pill"><span class="icon">✦</span> Interior Designers</div>
-    <div class="marquee-pill"><span class="icon">✦</span> Architects</div>
-    <div class="marquee-pill"><span class="icon">✦</span> Builders &amp; Trades</div>
-    <div class="marquee-pill"><span class="icon">✦</span> Real Estate Agents</div>
-    <div class="marquee-pill"><span class="icon">✦</span> Project Managers</div>
-    <div class="marquee-pill"><span class="icon">✦</span> Quantity Surveyors</div>
-    <div class="marquee-pill"><span class="icon">✦</span> Property Developers</div>
+    <div class="marquee-pill"><span class="icon"></span> Renovation Leads</div>
+    <div class="marquee-pill"><span class="icon"></span> New Build Projects</div>
+    <div class="marquee-pill"><span class="icon"></span> Builders &amp; Trades</div>
+    <div class="marquee-pill"><span class="icon"></span> Development Opportunities</div>
+    <div class="marquee-pill"><span class="icon"></span> Project Managers</div>
+    <div class="marquee-pill"><span class="icon"></span> Quantity Surveyors</div>
+    <div class="marquee-pill"><span class="icon"></span> Property Developers</div>
     <!-- Duplicate for seamless loop -->
-    <div class="marquee-pill"><span class="icon">✦</span> Interior Designers</div>
-    <div class="marquee-pill"><span class="icon">✦</span> Architects</div>
-    <div class="marquee-pill"><span class="icon">✦</span> Builders &amp; Trades</div>
-    <div class="marquee-pill"><span class="icon">✦</span> Real Estate Agents</div>
-    <div class="marquee-pill"><span class="icon">✦</span> Project Managers</div>
-    <div class="marquee-pill"><span class="icon">✦</span> Quantity Surveyors</div>
-    <div class="marquee-pill"><span class="icon">✦</span> Property Developers</div>
+    <div class="marquee-pill"><span class="icon"></span> Renovation Leads</div>
+    <div class="marquee-pill"><span class="icon"></span> New Build Projects</div>
+    <div class="marquee-pill"><span class="icon"></span> Builders &amp; Trades</div>
+    <div class="marquee-pill"><span class="icon"></span> Development Opportunities</div>
+    <div class="marquee-pill"><span class="icon"></span> Project Managers</div>
+    <div class="marquee-pill"><span class="icon"></span> Quantity Surveyors</div>
+    <div class="marquee-pill"><span class="icon"></span> Property Developers</div>
   </div>
 </div>
 
@@ -1271,7 +1283,7 @@
 <section id="features">
   <div class="container">
     <div class="features-header reveal">
-      <div class="section-tag">✦ What Makes Us Different</div>
+      <div class="section-tag"> What Makes Us Different</div>
       <h2 class="section-h2">Intelligence that actually moves the needle</h2>
       <p class="section-sub">Not raw data dumps. Not generic alerts. Ranked, timed, and filtered intelligence built for property professionals.</p>
     </div>
@@ -1282,12 +1294,12 @@
         <p>Know if a project is 4 months or 14 months away. Contact at exactly the right moment — not too early, never too late. Our timing benchmarks are built from historical approval patterns across both regions.</p>
       </div>
       <div class="feature-card reveal">
-        <div class="feature-icon">🎯</div>
+        <div class="feature-icon"></div>
         <h3>Filtered to Your Trade</h3>
-        <p>Interior Designers see renovation leads. Builders see construction corridors. RE agents see plan sealings. Your dashboard is configured to show only what's relevant to your specific business.</p>
+        <p>Renovation Leads see renovation leads. Builders see construction corridors. RE agents see plan sealings. Your dashboard is configured to show only what's relevant to your specific business.</p>
       </div>
       <div class="feature-card reveal">
-        <div class="feature-icon">🔄</div>
+        <div class="feature-icon"></div>
         <h3>Project Lifecycle Tracking</h3>
         <p>Follow a project from subdivision through to construction approval — see exactly when it's hot for your business. Never miss a transition, never contact too early.</p>
       </div>
@@ -1299,7 +1311,7 @@
 <section id="product">
   <div class="container">
     <div class="product-header reveal">
-      <div class="section-tag">✦ The Platform</div>
+      <div class="section-tag"> The Platform</div>
       <h2 class="section-h2">Your complete property intelligence hub</h2>
       <p class="section-sub">Five powerful views, one personal dashboard — configured for your trade and your suburbs.</p>
     </div>
@@ -1311,11 +1323,11 @@
         <p>Real leads, ranked by priority — filtered to exactly what you need to see.</p>
         <div class="mini-kpi-row">
           <div class="mini-kpi">
-            <div class="mini-kpi-label">🔥 Hot Leads</div>
+            <div class="mini-kpi-label"> Hot Leads</div>
             <div class="mini-kpi-value kpi-hot">72</div>
           </div>
           <div class="mini-kpi">
-            <div class="mini-kpi-label">🟡 Warm</div>
+            <div class="mini-kpi-label"> Warm</div>
             <div class="mini-kpi-value kpi-warm">37</div>
           </div>
         </div>
@@ -1323,34 +1335,34 @@
           <div class="mini-lead">
             <span class="street">20 Palm Ave, Ascot</span>
             <span class="status">Interior Reno</span>
-            <span class="hot-badge">🔥 HOT</span>
+            <span class="hot-badge"> HOT</span>
           </div>
           <div class="mini-lead">
             <span class="street">14 Riverview Rd, Hendra</span>
             <span class="status">New Build</span>
-            <span class="warm-badge">🟡 WARM</span>
+            <span class="warm-badge"> WARM</span>
           </div>
           <div class="mini-lead">
             <span class="street">7 Merton St, Camp Hill</span>
             <span class="status">Extension</span>
-            <span class="hot-badge">🔥 HOT</span>
+            <span class="hot-badge"> HOT</span>
           </div>
           <div class="mini-lead">
             <span class="street">3 Sylvan Rd, Toowong</span>
             <span class="status">Renovation</span>
-            <span class="warm-badge">🟡 WARM</span>
+            <span class="warm-badge"> WARM</span>
           </div>
         </div>
         <div class="pricing-banner" style="margin-top:28px;">
           <div>
             <div class="pricing-main">
-              <span class="pricing-amount">$200</span>
-              <span class="pricing-per">/week</span>
+              <span class="pricing-amount">/span>
+              <span class="pricing-per"></span>
             </div>
-            <div class="pricing-note">$250 onboarding · No lock-in</div>
+            <div class="pricing-note">onboarding · No lock-in</div>
           </div>
-          <div class="pricing-badge-early">🐦 Early Bird $100/wk until March</div>
-          <a href="https://meetings-ap1.hubspot.com/meetings/jsanto" target="_blank" class="btn-primary" style="flex-shrink:0;">Get Started →</a>
+          <div class="pricing-badge-early">  wk until March</div>
+          <a href="https://meetings-ap1.hubspot.com/meetings/jsanto" target="_blank" class="btn-primary" style="flex-shrink:0;">Get Started </a>
         </div>
       </div>
 
@@ -1370,7 +1382,7 @@
           <div style="display:flex;flex-direction:column;gap:8px;">
             <div style="display:flex;align-items:center;justify-content:space-between;font-size:0.75rem;">
               <span style="color:var(--text);">Aria Built Pty Ltd</span>
-              <span style="color:var(--orange2);font-weight:700;">14 DAs ↑</span>
+              <span style="color:var(--orange2);font-weight:700;">14 DAs </span>
             </div>
             <div style="display:flex;align-items:center;justify-content:space-between;font-size:0.75rem;">
               <span style="color:var(--text);">Brisbane Design Co</span>
@@ -1396,7 +1408,7 @@
           <div class="funnel-bar funnel-5">Won &nbsp;(4)</div>
         </div>
         <div style="margin-top:14px;padding:12px;background:rgba(230,69,0,0.06);border:1px solid rgba(230,69,0,0.15);border-radius:10px;font-size:0.75rem;color:var(--text-sec);">
-          💡 <strong style="color:var(--text);">AI Insight:</strong> Your proposal-to-won rate is strong. 3 Contacted leads are timing-ready — move them to Meeting now.
+           <strong style="color:var(--text);">AI Insight:</strong> Your proposal-to-won rate is strong. 3 Contacted leads are timing-ready — move them to Meeting now.
         </div>
       </div>
 
@@ -1408,7 +1420,7 @@
 <section id="how">
   <div class="container">
     <div class="how-header reveal">
-      <div class="section-tag">✦ Process</div>
+      <div class="section-tag"> Process</div>
       <h2 class="section-h2">Three steps to smarter prospecting</h2>
       <p class="section-sub">We do the heavy lifting. You get the intelligence — ready to act on every morning.</p>
     </div>
@@ -1436,16 +1448,16 @@
 <section id="icp">
   <div class="container">
     <div class="icp-header reveal">
-      <div class="section-tag">✦ Built for Your Trade</div>
+      <div class="section-tag"> Built for Your Trade</div>
       <h2 class="section-h2">Built differently for each trade</h2>
       <p class="section-sub">One platform, four tailored views — because a builder's needs are nothing like an interior designer's.</p>
     </div>
 
     <div class="icp-tabs reveal">
-      <button class="icp-tab active" data-tab="designers">Interior Designers</button>
-      <button class="icp-tab" data-tab="architects">Architects</button>
+      <button class="icp-tab active" data-tab="designers">Renovation Leads</button>
+      <button class="icp-tab" data-tab="architects">New Build Projects</button>
       <button class="icp-tab" data-tab="builders">Builders</button>
-      <button class="icp-tab" data-tab="realestate">Real Estate Agents</button>
+      <button class="icp-tab" data-tab="realestate">Development Opportunities</button>
     </div>
 
     <div class="icp-panels">
@@ -1453,13 +1465,13 @@
       <!-- Designers -->
       <div class="icp-panel active" id="tab-designers">
         <div class="icp-card">
-          <div class="icp-role">Interior Designers</div>
+          <div class="icp-role">Renovation Leads</div>
           <h3>Find renovations before they're even listed</h3>
           <ul class="icp-list">
-            <li><span class="check">✓</span> <span>Residential renovation DAs ranked by interior scope and project value — skip the noise.</span></li>
-            <li><span class="check">✓</span> <span>Timing intelligence: know if a project is 4 months from needing a designer or 14 months away.</span></li>
-            <li><span class="check">✓</span> <span>Track your preferred suburbs — Camp Hill, Hendra, Ascot, New Farm, and more.</span></li>
-            <li><span class="check">✓</span> <span>CRM pipeline to manage outreach from first contact through to won project.</span></li>
+            <li><span class="check"></span> <span>Residential renovation DAs ranked by interior scope and project value — skip the noise.</span></li>
+            <li><span class="check"></span> <span>Timing intelligence: know if a project is 4 months from needing a designer or 14 months away.</span></li>
+            <li><span class="check"></span> <span>Track your preferred suburbs — Camp Hill, Hendra, Ascot, New Farm, and more.</span></li>
+            <li><span class="check"></span> <span>CRM pipeline to manage outreach from first contact through to won project.</span></li>
           </ul>
         </div>
         <div class="icp-dash-card">
@@ -1468,17 +1480,17 @@
             <div class="mini-lead">
               <span class="street">42 Gordon St, Ascot</span>
               <span class="status">Reno DA</span>
-              <span class="hot-badge">🔥 HOT</span>
+              <span class="hot-badge"> HOT</span>
             </div>
             <div class="mini-lead">
               <span class="street">8 Beach Rd, New Farm</span>
               <span class="status">Interior</span>
-              <span class="hot-badge">🔥 HOT</span>
+              <span class="hot-badge"> HOT</span>
             </div>
             <div class="mini-lead">
               <span class="street">19 Brook Ave, Hendra</span>
               <span class="status">Extension</span>
-              <span class="warm-badge">🟡 WARM</span>
+              <span class="warm-badge"> WARM</span>
             </div>
           </div>
           <div style="margin-top:16px;padding:12px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:8px;font-size:0.72rem;color:var(--text-sec);">
@@ -1487,16 +1499,16 @@
         </div>
       </div>
 
-      <!-- Architects -->
+      <!-- New Build Projects -->
       <div class="icp-panel" id="tab-architects">
         <div class="icp-card">
-          <div class="icp-role">Architects</div>
+          <div class="icp-role">New Build Projects</div>
           <h3>Spot design opportunities at planning stage</h3>
           <ul class="icp-list">
-            <li><span class="check">✓</span> <span>Pre-approval DAs flagged for architectural opportunity — new builds, extensions, multi-res.</span></li>
-            <li><span class="check">✓</span> <span>Developer network intelligence — know which developers are most active in your suburbs.</span></li>
-            <li><span class="check">✓</span> <span>Approval velocity data — understand how long each application type typically takes.</span></li>
-            <li><span class="check">✓</span> <span>Track the full project lifecycle from land subdivision through to construction approval.</span></li>
+            <li><span class="check"></span> <span>Pre-approval DAs flagged for architectural opportunity — new builds, extensions, multi-res.</span></li>
+            <li><span class="check"></span> <span>Developer network intelligence — know which developers are most active in your suburbs.</span></li>
+            <li><span class="check"></span> <span>Approval velocity data — understand how long each application type typically takes.</span></li>
+            <li><span class="check"></span> <span>Track the full project lifecycle from land subdivision through to construction approval.</span></li>
           </ul>
         </div>
         <div class="icp-dash-card">
@@ -1505,21 +1517,21 @@
             <div class="mini-lead">
               <span class="street">Lot 4, Highgate Rd</span>
               <span class="status">New Build</span>
-              <span class="hot-badge">🔥 HOT</span>
+              <span class="hot-badge"> HOT</span>
             </div>
             <div class="mini-lead">
               <span class="street">21 River Tce, Kangaroo Point</span>
               <span class="status">Multi-res</span>
-              <span class="warm-badge">🟡 WARM</span>
+              <span class="warm-badge"> WARM</span>
             </div>
             <div class="mini-lead">
               <span class="street">87 Moray St, New Farm</span>
               <span class="status">Extension</span>
-              <span class="warm-badge">🟡 WARM</span>
+              <span class="warm-badge"> WARM</span>
             </div>
           </div>
           <div style="margin-top:16px;padding:12px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:8px;font-size:0.72rem;color:var(--text-sec);">
-            🏗 <strong style="color:var(--text);">Network:</strong> Apex Developments — 6 new DAs this month across your tracked suburbs.
+             <strong style="color:var(--text);">Network:</strong> Apex Developments — 6 new DAs this month across your tracked suburbs.
           </div>
         </div>
       </div>
@@ -1530,10 +1542,10 @@
           <div class="icp-role">Builders &amp; Trades</div>
           <h3>Never run out of pipeline again</h3>
           <ul class="icp-list">
-            <li><span class="check">✓</span> <span>Construction corridors — cluster view of where building activity is concentrated week by week.</span></li>
-            <li><span class="check">✓</span> <span>Approval-ready DAs flagged for immediate tender — know what's construction-ready now.</span></li>
-            <li><span class="check">✓</span> <span>Filter by project type: new builds, commercial, multi-residential, major extensions.</span></li>
-            <li><span class="check">✓</span> <span>Track repeat developers and consultants — build relationships with the highest-volume clients.</span></li>
+            <li><span class="check"></span> <span>Construction corridors — cluster view of where building activity is concentrated week by week.</span></li>
+            <li><span class="check"></span> <span>Approval-ready DAs flagged for immediate tender — know what's construction-ready now.</span></li>
+            <li><span class="check"></span> <span>Filter by project type: new builds, commercial, multi-residential, major extensions.</span></li>
+            <li><span class="check"></span> <span>Track repeat developers and consultants — build relationships with the highest-volume clients.</span></li>
           </ul>
         </div>
         <div class="icp-dash-card">
@@ -1542,58 +1554,58 @@
             <div class="mini-lead">
               <span class="street">23 Stanley St, West End</span>
               <span class="status">New Build</span>
-              <span class="hot-badge">🔥 HOT</span>
+              <span class="hot-badge"> HOT</span>
             </div>
             <div class="mini-lead">
               <span class="street">Lot 12 Sunshine Ave, Mooloolaba</span>
               <span class="status">Commercial</span>
-              <span class="hot-badge">🔥 HOT</span>
+              <span class="hot-badge"> HOT</span>
             </div>
             <div class="mini-lead">
               <span class="street">4 Frew St, Albion</span>
               <span class="status">Multi-Res</span>
-              <span class="warm-badge">🟡 WARM</span>
+              <span class="warm-badge"> WARM</span>
             </div>
           </div>
           <div style="margin-top:16px;padding:12px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:8px;font-size:0.72rem;color:var(--text-sec);">
-            📍 <strong style="color:var(--text);">Corridor:</strong> West End — 18 DAs approved last 30 days. High construction activity cluster.
+             <strong style="color:var(--text);">Corridor:</strong> West End — 18 DAs approved last 30 days. High construction activity cluster.
           </div>
         </div>
       </div>
 
-      <!-- Real Estate -->
+      <!-- Development Opportunities -->
       <div class="icp-panel" id="tab-realestate">
         <div class="icp-card">
-          <div class="icp-role">Real Estate Agents</div>
+          <div class="icp-role">Development Opportunities</div>
           <h3>List new properties before they hit the market</h3>
           <ul class="icp-list">
-            <li><span class="check">✓</span> <span>Plan sealing applications — properties completing DA process signal imminent sales activity.</span></li>
-            <li><span class="check">✓</span> <span>Subdivision completions alert you when new lots are about to become listable.</span></li>
-            <li><span class="check">✓</span> <span>New build completions — perfect window for developer sales mandates and settlements.</span></li>
-            <li><span class="check">✓</span> <span>Suburb heat maps — know where demand is outpacing supply before your competition does.</span></li>
+            <li><span class="check"></span> <span>Plan sealing applications — properties completing DA process signal imminent sales activity.</span></li>
+            <li><span class="check"></span> <span>Subdivision completions alert you when new lots are about to become listable.</span></li>
+            <li><span class="check"></span> <span>New build completions — perfect window for developer sales mandates and settlements.</span></li>
+            <li><span class="check"></span> <span>Suburb heat maps — know where demand is outpacing supply before your competition does.</span></li>
           </ul>
         </div>
         <div class="icp-dash-card">
-          <div class="icp-dash-title">Your filtered view — Real Estate</div>
+          <div class="icp-dash-title">Your filtered view — Development Opportunities</div>
           <div class="mini-lead-row">
             <div class="mini-lead">
               <span class="street">Lots 1–4 Cedar Crt, Noosa</span>
               <span class="status">Plan Seal</span>
-              <span class="hot-badge">🔥 HOT</span>
+              <span class="hot-badge"> HOT</span>
             </div>
             <div class="mini-lead">
               <span class="street">18 Montague Rd, West End</span>
               <span class="status">Subdivision</span>
-              <span class="warm-badge">🟡 WARM</span>
+              <span class="warm-badge"> WARM</span>
             </div>
             <div class="mini-lead">
               <span class="street">55 Shafston Ave, Kangaroo Pt</span>
               <span class="status">Completion</span>
-              <span class="hot-badge">🔥 HOT</span>
+              <span class="hot-badge"> HOT</span>
             </div>
           </div>
           <div style="margin-top:16px;padding:12px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:8px;font-size:0.72rem;color:var(--text-sec);">
-            🏡 <strong style="color:var(--text);">Insight:</strong> Noosa — 12 plan sealings this month. Peak listing window: next 6–10 weeks.
+             <strong style="color:var(--text);">Insight:</strong> Noosa — 12 plan sealings this month. Peak listing window: next 6–10 weeks.
           </div>
         </div>
       </div>
@@ -1606,13 +1618,13 @@
 <section id="testimonials">
   <div class="container">
     <div class="testimonials-header reveal">
-      <div class="section-tag">✦ Social Proof</div>
+      <div class="section-tag"> Social Proof</div>
       <h2 class="section-h2">Property professionals love myFindr</h2>
       <p class="section-sub">Early users seeing real results — more conversations, better timing, stronger pipelines.</p>
     </div>
     <div class="testimonials-grid">
       <div class="testimonial-card reveal">
-        <div class="stars">★★★★★</div>
+        <div class="stars"></div>
         <p class="testimonial-quote">I used to spend hours trawling through applications to find renovation leads. myFindr gives me exactly what I need before I've even had my morning coffee. Game changer.</p>
         <div class="testimonial-author">
           <div class="author-avatar">SL</div>
@@ -1623,7 +1635,7 @@
         </div>
       </div>
       <div class="testimonial-card reveal">
-        <div class="stars">★★★★★</div>
+        <div class="stars"></div>
         <p class="testimonial-quote">The timing intelligence is what sets this apart. I know exactly when a project is in the right window for a builder conversation — not too early, not when someone else has already won it.</p>
         <div class="testimonial-author">
           <div class="author-avatar">MT</div>
@@ -1634,7 +1646,7 @@
         </div>
       </div>
       <div class="testimonial-card reveal">
-        <div class="stars">★★★★★</div>
+        <div class="stars"></div>
         <p class="testimonial-quote">I caught three plan sealings before they even reached the market last month. Listed two of them. This pays for itself ten times over if you're serious about your suburb.</p>
         <div class="testimonial-author">
           <div class="author-avatar">JW</div>
@@ -1652,12 +1664,12 @@
 <section id="cta">
   <div class="container">
     <div class="cta-card reveal">
-      <div class="section-tag" style="display:inline-flex; margin-bottom:20px;">✦ Get Started</div>
+      <div class="section-tag" style="display:inline-flex; margin-bottom:20px;"> Get Started</div>
       <h2>Ready to get ahead of<br>every project?</h2>
       <p>Book a 30-minute demo and see your suburbs, your trade, your leads.<br>
-      Early bird pricing: <strong style="color:#FA7734;">$100/week</strong> until end of March. $200/week after.</p>
+       pricing: <strong style="color:#FA7734;">week</strong> until end of March. week after.</p>
       <a href="https://meetings-ap1.hubspot.com/meetings/jsanto" target="_blank" class="btn-primary">
-        🗓 Book Your Demo
+         Book Your Demo
       </a>
       <p class="cta-note">Limited spots per suburb per ICP &nbsp;·&nbsp; No lock-in &nbsp;·&nbsp; Cancel anytime</p>
     </div>
@@ -1666,7 +1678,7 @@
 
 <!-- FOOTER -->
 <footer>
-  <a href="#" class="footer-logo">my<strong>Findr</strong><span style="color:var(--orange);">●</span></a>
+  <a href="#" class="footer-logo">my<strong>Findr</strong><span style="color:var(--orange);"></span></a>
   <ul class="footer-links">
     <li><a href="#features">Features</a></li>
     <li><a href="#product">Product</a></li>

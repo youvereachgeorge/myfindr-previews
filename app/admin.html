@@ -248,7 +248,7 @@
 <!-- MAIN APP -->
 <div id="app">
   <div class="topbar">
-    <div class="brand">myFindr <span>ADMIN</span></div>
+    <div class="brand"><img src="./myfindr-logo-white.svg" alt="myFindr" style="height:24px;vertical-align:middle"> <span style="font-size:10px;font-weight:700;letter-spacing:2px;color:#888;margin-left:6px;vertical-align:middle">ADMIN</span></div>
     <div class="nav-tabs">
       <div class="nav-tab active" onclick="showSection('clients', this)">👥 Clients</div>
       <div class="nav-tab" onclick="showSection('financials', this)">💰 Financials</div>
@@ -263,6 +263,32 @@
 
     <!-- SECTION 1: CLIENTS -->
     <div class="section active" id="section-clients">
+      <!-- ICP DASHBOARD TILES -->
+      <div style="margin-bottom:20px">
+        <div style="font-size:10px;font-weight:700;color:#607080;letter-spacing:1px;text-transform:uppercase;margin-bottom:12px">🎯 ICP DASHBOARDS — QUICK ACCESS</div>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px">
+          <a href="./dashboard-id.html" target="_blank" style="text-decoration:none;background:rgba(230,69,0,.1);border:1px solid rgba(230,69,0,.3);border-radius:10px;padding:14px;display:block">
+            <div style="font-size:10px;font-weight:700;color:#E64500;letter-spacing:.8px;text-transform:uppercase;margin-bottom:4px">🎨 Interior Designers</div>
+            <div style="font-size:12px;color:#aaa;line-height:1.5">Reno leads, multi-dwelling pipeline, consultant leaderboard</div>
+            <div style="font-size:11px;font-weight:600;color:#E64500;margin-top:8px">Open Dashboard →</div>
+          </a>
+          <a href="./dashboard-architects.html" target="_blank" style="text-decoration:none;background:rgba(124,77,255,.1);border:1px solid rgba(124,77,255,.3);border-radius:10px;padding:14px;display:block">
+            <div style="font-size:10px;font-weight:700;color:#b39ddb;letter-spacing:.8px;text-transform:uppercase;margin-bottom:4px">🏛️ Architects</div>
+            <div style="font-size:12px;color:#aaa;line-height:1.5">New builds, structural DAs, multi-dwelling approvals</div>
+            <div style="font-size:11px;font-weight:600;color:#b39ddb;margin-top:8px">Open Dashboard →</div>
+          </a>
+          <a href="./dashboard-builders.html" target="_blank" style="text-decoration:none;background:rgba(33,150,243,.1);border:1px solid rgba(33,150,243,.3);border-radius:10px;padding:14px;display:block">
+            <div style="font-size:10px;font-weight:700;color:#64b5f6;letter-spacing:.8px;text-transform:uppercase;margin-bottom:4px">🔨 Builders / Trades</div>
+            <div style="font-size:12px;color:#aaa;line-height:1.5">Hot corridors, velocity surge, new build starts</div>
+            <div style="font-size:11px;font-weight:600;color:#64b5f6;margin-top:8px">Open Dashboard →</div>
+          </a>
+          <a href="./dashboard-re.html" target="_blank" style="text-decoration:none;background:rgba(76,175,80,.1);border:1px solid rgba(76,175,80,.3);border-radius:10px;padding:14px;display:block">
+            <div style="font-size:10px;font-weight:700;color:#81c784;letter-spacing:.8px;text-transform:uppercase;margin-bottom:4px">🏠 Real Estate Agents</div>
+            <div style="font-size:12px;color:#aaa;line-height:1.5">Development alerts, plan sealings, commission estimates</div>
+            <div style="font-size:11px;font-weight:600;color:#81c784;margin-top:8px">Open Dashboard →</div>
+          </a>
+        </div>
+      </div>
       <div class="section-header">
         <div class="section-title">Client <span>Management</span></div>
         <div style="display:flex;align-items:center;gap:12px;">
@@ -790,6 +816,10 @@ function renderClientsTable(clients) {
     const actionBtn = c.active
       ? `<button class="btn btn-danger btn-sm" onclick="deactivateClient('${c.id}', this)">Deactivate</button>`
       : `<button class="btn btn-ghost btn-sm" onclick="activateClient('${c.id}', this)">Activate</button>`;
+    const dashMap = {'interior_designer':'./dashboard-id.html','builder':'./dashboard-builders.html','real_estate':'./dashboard-re.html','architect':'./dashboard-architects.html'};
+    const dashUrl = dashMap[c.icp_type] || './dashboard-id.html';
+    const subStr = Array.isArray(c.target_suburbs) ? c.target_suburbs.join(',') : '';
+    const viewDashBtn = c.active ? `<a href="${dashUrl}?suburbs=${subStr}&icp=${c.icp_type}" target="_blank" class="btn btn-primary btn-sm">View Dashboard →</a>` : '—';
     return `<tr>
       <td style="font-weight:600;">${c.full_name || '—'}</td>
       <td style="color:var(--text-dim)">${c.email || '—'}</td>
@@ -799,6 +829,7 @@ function renderClientsTable(clients) {
       <td>${statusBadge}</td>
       <td style="color:var(--text-muted)">${fmtDate(c.created_at)}</td>
       <td>${actionBtn}</td>
+      <td>${viewDashBtn}</td>
     </tr>`;
   }).join('');
 }

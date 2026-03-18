@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>myFindr — Architects Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0f0f0f; --card: rgba(26,26,26,0.85); --card-border: rgba(255,255,255,0.06);
+      --accent: #E64500; --accent2: #FA5914; --green: #4CAF50; --pink: #E91E63;
+      --orange: #FF9800; --purple: #7C4DFF; --text: #FFFFFF; --text2: #8899AA; --text3: #607080;
+      --radius: 10px; --radius-lg: 14px;
+    }
+    html,body { font-family:'Inter',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; }
+    ::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:rgba(255,255,255,.12);border-radius:3px}
+    header { background:rgba(15,15,15,.96); border-bottom:1px solid var(--card-border); padding:0 1.5rem; display:flex; align-items:center; justify-content:space-between; height:56px; position:sticky; top:0; z-index:200; backdrop-filter:blur(12px); }
+    .header-left { display:flex; align-items:center; gap:1rem; }
+    .header-logo { height:28px; }
+    .icp-badge { background:rgba(124,77,255,.15); border:1px solid rgba(124,77,255,.3); color:#b39ddb; font-size:.72rem; font-weight:700; padding:4px 10px; border-radius:20px; letter-spacing:.5px; text-transform:uppercase; }
+    .suburb-badges { display:flex; gap:6px; flex-wrap:wrap; }
+    .suburb-tag { background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.1); color:var(--text2); font-size:.68rem; font-weight:600; padding:3px 8px; border-radius:12px; }
+    .btn-back { display:flex; align-items:center; gap:6px; background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.1); color:var(--text2); font-size:.78rem; font-weight:600; padding:6px 14px; border-radius:8px; text-decoration:none; transition:all .2s; font-family:inherit; cursor:pointer; }
+    .btn-back:hover { background:rgba(255,255,255,.1); color:var(--text); }
+    main { max-width:1400px; margin:0 auto; padding:1.5rem; }
+    .section-title { font-size:.7rem; font-weight:700; color:var(--text3); letter-spacing:1px; text-transform:uppercase; margin-bottom:.75rem; }
+    .kpi-row { display:grid; grid-template-columns:repeat(4,1fr); gap:1rem; margin-bottom:1.5rem; }
+    .kpi-card { background:var(--card); border:1px solid var(--card-border); border-radius:var(--radius-lg); padding:1.2rem 1.4rem; backdrop-filter:blur(8px); }
+    .kpi-label { font-size:.68rem; font-weight:700; color:var(--text2); letter-spacing:.8px; text-transform:uppercase; margin-bottom:.5rem; }
+    .kpi-value { font-size:2rem; font-weight:800; color:var(--text); line-height:1; }
+    .kpi-value.hot{color:var(--pink)} .kpi-value.accent{color:var(--accent)} .kpi-value.purple{color:var(--purple)} .kpi-value.warm{color:var(--orange)}
+    .kpi-sub { font-size:.72rem; color:var(--text3); margin-top:4px; }
+    .grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:1.5rem; margin-bottom:1.5rem; }
+    .full-row { margin-bottom:1.5rem; }
+    .card { background:var(--card); border:1px solid var(--card-border); border-radius:var(--radius-lg); padding:1.25rem; backdrop-filter:blur(8px); }
+    .card-title { font-size:.8rem; font-weight:700; color:var(--text); margin-bottom:1rem; display:flex; align-items:center; gap:8px; }
+    .card-title .dot { width:8px; height:8px; border-radius:50%; background:var(--purple); }
+    .chart-wrap { position:relative; height:220px; }
+    .tbl { width:100%; border-collapse:collapse; font-size:.78rem; }
+    .tbl th { text-align:left; font-size:.64rem; font-weight:700; color:var(--text3); letter-spacing:.8px; text-transform:uppercase; padding:8px 10px; border-bottom:1px solid var(--card-border); }
+    .tbl td { padding:10px; border-bottom:1px solid rgba(255,255,255,.03); vertical-align:middle; }
+    .tbl tr:last-child td { border-bottom:none; }
+    .tbl tr:hover td { background:rgba(255,255,255,.03); }
+    .badge { display:inline-block; font-size:.65rem; font-weight:700; padding:3px 8px; border-radius:20px; }
+    .badge-hot { background:rgba(233,30,99,.15); color:var(--pink); }
+    .badge-warm { background:rgba(255,152,0,.15); color:var(--orange); }
+    .badge-cold { background:rgba(255,255,255,.06); color:var(--text3); }
+    .badge-purple { background:rgba(124,77,255,.15); color:#b39ddb; }
+    .badge-green { background:rgba(76,175,80,.15); color:var(--green); }
+    .timeline { display:flex; align-items:flex-start; gap:0; margin-top:.5rem; }
+    .tl-step { flex:1; position:relative; }
+    .tl-dot { width:12px; height:12px; border-radius:50%; background:var(--purple); margin:0 auto 6px; }
+    .tl-dot.active { background:var(--accent); box-shadow:0 0 8px rgba(230,69,0,.5); }
+    .tl-line { position:absolute; top:6px; left:50%; right:-50%; height:2px; background:rgba(255,255,255,.1); }
+    .tl-step:last-child .tl-line { display:none; }
+    .tl-label { font-size:.62rem; font-weight:600; color:var(--text3); text-align:center; }
+    .tl-days { font-size:.68rem; font-weight:700; color:var(--accent); text-align:center; }
+    .a-link { color:var(--accent); text-decoration:none; font-size:.72rem; font-weight:600; }
+    .a-link:hover { text-decoration:underline; }
+    @media(max-width:768px){.kpi-row{grid-template-columns:1fr 1fr}.grid-2{grid-template-columns:1fr}.tbl{font-size:.72rem}}
+  </style>
+</head>
+<body>
+<header>
+  <div class="header-left">
+    <img src="./myfindr-logo-white.svg" alt="myFindr" class="header-logo">
+    <span class="icp-badge">🏛️ Architects</span>
+    <div class="suburb-badges" id="suburb-badges"></div>
+  </div>
+  <button class="btn-back" onclick="window.location.href='./index.html'">← Back to Dashboard</button>
+</header>
+
+<main>
+  <div class="kpi-row">
+    <div class="kpi-card"><div class="kpi-label">New Structural DAs</div><div class="kpi-value hot" id="k-hot">—</div><div class="kpi-sub">HOT leads (act now)</div></div>
+    <div class="kpi-card"><div class="kpi-label">New Builds (30d)</div><div class="kpi-value accent" id="k-builds">—</div><div class="kpi-sub">Residential + commercial</div></div>
+    <div class="kpi-card"><div class="kpi-label">Multi-Dwelling DAs</div><div class="kpi-value purple" id="k-multi">—</div><div class="kpi-sub">Design-heavy projects</div></div>
+    <div class="kpi-card"><div class="kpi-label">Avg Approval Time</div><div class="kpi-value warm" id="k-days">140d</div><div class="kpi-sub">Building permit avg</div></div>
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title"><span class="dot"></span>New Build Starts by Suburb</div>
+      <div class="chart-wrap"><canvas id="chart-builds"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-title"><span class="dot"></span>Project Type Breakdown</div>
+      <div class="chart-wrap"><canvas id="chart-types"></canvas></div>
+    </div>
+  </div>
+
+  <div class="full-row">
+    <div class="card">
+      <div class="card-title"><span class="dot"></span>Lead Rankings — Architects</div>
+      <div style="overflow-x:auto">
+      <table class="tbl" id="leads-tbl">
+        <thead><tr>
+          <th>#</th><th>Address</th><th>Project Type</th><th>Stage</th>
+          <th>Signal</th><th>Recommended Action</th><th>Est. Fee Range</th><th>DA</th>
+        </tr></thead>
+        <tbody id="leads-body"><tr><td colspan="8" style="color:var(--text3);text-align:center;padding:2rem">Loading leads...</td></tr></tbody>
+      </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title"><span class="dot"></span>Multi-Dwelling Pipeline</div>
+      <table class="tbl" id="multi-tbl">
+        <thead><tr><th>Type</th><th>Council</th><th>Total</th><th>30d</th><th>Signal</th></tr></thead>
+        <tbody id="multi-body"><tr><td colspan="5" style="color:var(--text3)">Loading...</td></tr></tbody>
+      </table>
+    </div>
+    <div class="card">
+      <div class="card-title"><span class="dot"></span>Engagement Timing — When to Contact</div>
+      <div style="padding:1rem 0">
+        <p style="font-size:.78rem;color:var(--text2);margin-bottom:1.25rem">Architects should engage at DA lodgement — before structural decisions are finalised.</p>
+        <div class="timeline">
+          <div class="tl-step"><div class="tl-dot active"></div><div class="tl-line"></div><div class="tl-label">DA Lodged</div><div class="tl-days">Day 0</div></div>
+          <div class="tl-step"><div class="tl-dot active"></div><div class="tl-line"></div><div class="tl-label">Contact Now</div><div class="tl-days">Week 1</div></div>
+          <div class="tl-step"><div class="tl-dot"></div><div class="tl-line"></div><div class="tl-label">Council Review</div><div class="tl-days">Wks 4–8</div></div>
+          <div class="tl-step"><div class="tl-dot"></div><div class="tl-line"></div><div class="tl-label">Approval</div><div class="tl-days">~140d</div></div>
+          <div class="tl-step"><div class="tl-dot"></div><div class="tl-line"></div><div class="tl-label">Design Lock</div><div class="tl-days">~180d</div></div>
+          <div class="tl-step"><div class="tl-dot"></div><div class="tl-label">Build Starts</div><div class="tl-days">~270d</div></div>
+        </div>
+        <div style="margin-top:1.5rem;padding:1rem;background:rgba(124,77,255,.08);border:1px solid rgba(124,77,255,.2);border-radius:8px">
+          <div style="font-size:.72rem;font-weight:700;color:#b39ddb;margin-bottom:4px">💡 The Golden Window</div>
+          <div style="font-size:.72rem;color:var(--text2);line-height:1.6">A building permit lodged today means structural decisions are being made right now. Architects who engage in Week 1 shape the design. Those who wait until approval are redesigning around someone else's decisions.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script>
+  const SUPABASE_URL = 'https://ieqbavwzydlxiaclzcjl.supabase.co';
+  const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImllcWJhdnd6eWRseGlhY2x6Y2psIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3MzM4NDEwMCwiZXhwIjoyMDg4OTYwMTAwfQ.8FqHSTp-FxwIiiZWBpzAiYRkL5WdSNETn2ICAo-1DOE';
+
+  const params = new URLSearchParams(window.location.search);
+  const suburbsParam = params.get('suburbs') || '';
+  const suburbs = suburbsParam ? suburbsParam.split(',').map(s=>s.trim().toUpperCase()).filter(Boolean) : [];
+
+  // Show suburb badges
+  const badgeWrap = document.getElementById('suburb-badges');
+  if (suburbs.length) {
+    suburbs.forEach(s => {
+      const el = document.createElement('span');
+      el.className = 'suburb-tag';
+      el.textContent = s;
+      badgeWrap.appendChild(el);
+    });
+  }
+
+  async function sbGet(view, qparams={}) {
+    const url = new URL(`${SUPABASE_URL}/rest/v1/${view}`);
+    Object.entries(qparams).forEach(([k,v]) => url.searchParams.set(k,v));
+    url.searchParams.set('Prefer','count=exact');
+    const res = await fetch(url.toString(), {
+      headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY,'Prefer':'count=exact'}
+    });
+    return res.json();
+  }
+
+  function badge(sig) {
+    const cls = sig==='HOT'?'badge-hot':sig==='WARM'?'badge-warm':'badge-cold';
+    return `<span class="badge ${cls}">${sig}</span>`;
+  }
+
+  function fmtAddr(addr) {
+    if (!addr) return '—';
+    const parts = addr.split(',');
+    if (parts.length >= 2) return `<div style="font-weight:600">${parts[0].trim()}</div><div style="font-size:.7rem;color:var(--text3)">${parts.slice(1).join(',').trim()}</div>`;
+    return `<div style="font-weight:600">${addr}</div>`;
+  }
+
+  async function loadAll() {
+    const orFilter = suburbs.length ? suburbs.map(s=>`address.ilike.*${s}*`).join(',') : null;
+    const baseParams = { limit:'100', order:'rank.asc' };
+    const subParams = orFilter ? {...baseParams, or: orFilter} : baseParams;
+
+    try {
+      const [leads, builds, multi] = await Promise.all([
+        sbGet('vw_icp_lead_rankings_id', subParams),
+        sbGet('vw_builder_starts_count', {order:'starts_30d.desc', limit:'10', ...(orFilter?{or:orFilter.replace(/address/g,'suburb')}:{})}),
+        sbGet('vw_id_multi_count', {limit:'20'})
+      ]);
+
+      // KPIs
+      const hotLeads = Array.isArray(leads) ? leads.filter(r=>r.icp_signal==='HOT') : [];
+      const totalBuilds = Array.isArray(builds) ? builds.reduce((s,r)=>s+(r.starts_30d||0),0) : 0;
+      const multiTotal = Array.isArray(multi) ? multi.reduce((s,r)=>s+(r.last_30d||0),0) : 0;
+      document.getElementById('k-hot').textContent = hotLeads.length || '0';
+      document.getElementById('k-builds').textContent = totalBuilds || '—';
+      document.getElementById('k-multi').textContent = multiTotal || '—';
+
+      // Leads table
+      const tbody = document.getElementById('leads-body');
+      if (Array.isArray(leads) && leads.length) {
+        tbody.innerHTML = leads.slice(0,30).map((r,i) => `<tr>
+          <td style="color:var(--text3);font-weight:700">${r.rank||i+1}</td>
+          <td>${fmtAddr(r.address)}</td>
+          <td style="font-size:.72rem;color:var(--text2)">${(r.application_type||'—').substring(0,35)}</td>
+          <td>${badge(r.icp_signal||'COLD')}</td>
+          <td>${badge(r.icp_signal||'COLD')}</td>
+          <td style="font-size:.72rem;color:var(--text2);max-width:200px">${r.recommended_action||'—'}</td>
+          <td style="font-size:.72rem;color:var(--green)">${r.est_project_value||'—'}</td>
+          <td>${r.da_link?`<a href="${r.da_link}" target="_blank" class="a-link">View →</a>`:'—'}</td>
+        </tr>`).join('');
+      } else {
+        tbody.innerHTML = '<tr><td colspan="8" style="color:var(--text3);text-align:center;padding:2rem">No leads found for your suburbs yet</td></tr>';
+      }
+
+      // New builds chart
+      if (Array.isArray(builds) && builds.length) {
+        const ctx = document.getElementById('chart-builds').getContext('2d');
+        new Chart(ctx, {
+          type:'bar',
+          data:{
+            labels: builds.slice(0,8).map(r=>r.suburb||'?'),
+            datasets:[{
+              label:'New Build Starts (30d)',
+              data: builds.slice(0,8).map(r=>r.starts_30d||0),
+              backgroundColor:'rgba(230,69,0,0.7)',
+              borderColor:'#E64500',
+              borderWidth:1,
+              borderRadius:4
+            }]
+          },
+          options:{
+            responsive:true, maintainAspectRatio:false,
+            plugins:{legend:{display:false}},
+            scales:{
+              x:{ticks:{color:'#8899AA',font:{size:10}},grid:{color:'rgba(255,255,255,0.04)'}},
+              y:{ticks:{color:'#8899AA',font:{size:10}},grid:{color:'rgba(255,255,255,0.04)'}}
+            }
+          }
+        });
+      }
+
+      // Types donut
+      if (Array.isArray(builds) && builds.length) {
+        const typeCounts = {};
+        builds.forEach(r=>{const t=r.project_type||'other';typeCounts[t]=(typeCounts[t]||0)+(r.starts_30d||0);});
+        const ctx2 = document.getElementById('chart-types').getContext('2d');
+        const colors = ['#E64500','#FA5914','#7C4DFF','#4CAF50','#FF9800'];
+        new Chart(ctx2, {
+          type:'doughnut',
+          data:{
+            labels: Object.keys(typeCounts),
+            datasets:[{data: Object.values(typeCounts), backgroundColor:colors, borderWidth:0, hoverOffset:4}]
+          },
+          options:{
+            responsive:true, maintainAspectRatio:false, cutout:'68%',
+            plugins:{legend:{position:'right',labels:{color:'#8899AA',font:{size:11},boxWidth:12}}}
+          }
+        });
+      }
+
+      // Multi-dwelling table
+      const mtbody = document.getElementById('multi-body');
+      if (Array.isArray(multi) && multi.length) {
+        mtbody.innerHTML = multi.map(r=>`<tr>
+          <td style="font-weight:600">${r.dwelling_type||'?'}</td>
+          <td style="font-size:.72rem;color:var(--text2)">${r.council==='brisbane'?'Brisbane':'Sunshine Coast'}</td>
+          <td>${r.project_count||0}</td>
+          <td><strong>${r.last_30d||0}</strong></td>
+          <td>${badge((r.last_30d||0)>2?'HOT':(r.last_30d||0)>0?'WARM':'COLD')}</td>
+        </tr>`).join('');
+      } else {
+        mtbody.innerHTML = '<tr><td colspan="5" style="color:var(--text3)">No multi-dwelling data</td></tr>';
+      }
+
+    } catch(e) {
+      console.error('Load error:', e);
+      document.getElementById('leads-body').innerHTML = `<tr><td colspan="8" style="color:var(--pink)">Error loading data: ${e.message}</td></tr>`;
+    }
+  }
+
+  loadAll();
+</script>
+</body>
+</html>

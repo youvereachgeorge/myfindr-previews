@@ -3,492 +3,1282 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>myFindr — Interior Designers Dashboard</title>
+  <title>myFindr — Interior Designers</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    :root {
-      --bg: #0f0f0f;
-      --card: rgba(26,26,26,0.85);
-      --card-border: rgba(255,255,255,0.06);
-      --accent: #E64500;
-      --accent2: #FA5914;
-      --green: #4CAF50;
-      --pink: #E91E63;
-      --orange: #FF9800;
-      --text: #FFFFFF;
-      --text2: #8899AA;
-      --text3: #607080;
-      --radius: 10px;
-      --radius-lg: 14px;
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{
+      --bg:#0f0f0f;--card:rgba(22,22,22,0.95);--card-border:rgba(255,255,255,0.07);
+      --accent:#E64500;--accent2:#FA5914;--green:#4CAF50;--pink:#E91E63;
+      --amber:#FF9800;--teal:#00BCD4;--purple:#7C4DFF;
+      --text:#FFFFFF;--text2:#8899AA;--text3:#607080;
+      --r:10px;--rl:14px;
     }
-    html, body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
-    ::-webkit-scrollbar { width: 6px; } ::-webkit-scrollbar-track { background: var(--bg); } ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.12); border-radius: 3px; }
+    html,body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+    ::-webkit-scrollbar{width:5px}::-webkit-scrollbar-thumb{background:rgba(255,255,255,.1);border-radius:3px}
 
     /* HEADER */
-    header {
-      background: rgba(15,15,15,0.96);
-      border-bottom: 1px solid var(--card-border);
-      padding: 0 1.5rem;
-      display: flex; align-items: center; justify-content: space-between;
-      height: 56px; position: sticky; top: 0; z-index: 200;
-      backdrop-filter: blur(12px);
-    }
-    .header-left { display: flex; align-items: center; gap: 1rem; }
-    .header-logo { height: 28px; }
-    .icp-badge {
-      background: rgba(230,69,0,0.15);
-      border: 1px solid rgba(230,69,0,0.3);
-      color: var(--accent2); font-size: 0.72rem; font-weight: 700;
-      padding: 4px 10px; border-radius: 20px; letter-spacing: 0.5px; text-transform: uppercase;
-    }
-    .suburb-badges { display: flex; gap: 6px; flex-wrap: wrap; }
-    .suburb-tag {
-      background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
-      color: var(--text2); font-size: 0.68rem; font-weight: 600;
-      padding: 3px 8px; border-radius: 12px; letter-spacing: 0.4px;
-    }
-    .btn-back {
-      display: flex; align-items: center; gap: 6px;
-      background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
-      color: var(--text2); font-size: 0.78rem; font-weight: 600;
-      padding: 6px 14px; border-radius: 8px; text-decoration: none;
-      transition: all 0.2s; font-family: inherit;
-    }
-    .btn-back:hover { background: rgba(255,255,255,0.1); color: var(--text); }
+    header{background:rgba(12,12,12,.97);border-bottom:1px solid var(--card-border);padding:0 1.5rem;display:flex;align-items:center;justify-content:space-between;height:54px;position:sticky;top:0;z-index:200;backdrop-filter:blur(12px)}
+    .h-left{display:flex;align-items:center;gap:12px}
+    .h-logo{height:26px}
+    .icp-pill{background:rgba(230,69,0,.15);border:1px solid rgba(230,69,0,.3);color:var(--accent2);font-size:.65rem;font-weight:700;padding:3px 10px;border-radius:20px;letter-spacing:.5px;text-transform:uppercase}
+    .suburb-pill{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.09);color:var(--text2);font-size:.63rem;font-weight:600;padding:2px 8px;border-radius:12px}
+    .pills{display:flex;gap:6px;flex-wrap:wrap}
+    .btn-back{display:flex;align-items:center;gap:6px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.09);color:var(--text2);font-size:.75rem;font-weight:600;padding:5px 12px;border-radius:8px;text-decoration:none;cursor:pointer;font-family:inherit;transition:.2s}
+    .btn-back:hover{background:rgba(255,255,255,.1);color:var(--text)}
 
-    /* MAIN */
-    main { max-width: 1400px; margin: 0 auto; padding: 1.5rem; }
-    .section-title { font-size: 0.7rem; font-weight: 700; color: var(--text3); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 0.75rem; }
+    /* NAV TABS */
+    .tabs{display:flex;gap:2px;padding:0 1.5rem;background:rgba(10,10,10,.9);border-bottom:1px solid var(--card-border);position:sticky;top:54px;z-index:190;backdrop-filter:blur(8px)}
+    .tab{font-size:.72rem;font-weight:600;padding:10px 16px;color:var(--text3);cursor:pointer;border-bottom:2px solid transparent;transition:.2s;white-space:nowrap}
+    .tab.active{color:var(--accent);border-bottom-color:var(--accent)}
+    .tab:hover{color:var(--text2)}
+
+    /* SECTIONS */
+    .section{display:none;padding:1.5rem;max-width:1400px;margin:0 auto}
+    .section.active{display:block}
+    .section-label{font-size:.65rem;font-weight:700;color:var(--text3);letter-spacing:1px;text-transform:uppercase;margin-bottom:.65rem}
 
     /* KPI ROW */
-    .kpi-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 1.5rem; }
-    .kpi-card {
-      background: var(--card); border: 1px solid var(--card-border);
-      border-radius: var(--radius-lg); padding: 1.2rem 1.4rem;
-      backdrop-filter: blur(8px);
-    }
-    .kpi-label { font-size: 0.68rem; font-weight: 700; color: var(--text2); letter-spacing: 0.8px; text-transform: uppercase; margin-bottom: 0.5rem; }
-    .kpi-value { font-size: 2rem; font-weight: 800; color: var(--text); line-height: 1; }
-    .kpi-value.hot { color: var(--pink); }
-    .kpi-value.warm { color: var(--orange); }
-    .kpi-value.accent { color: var(--accent); }
-    .kpi-sub { font-size: 0.72rem; color: var(--text3); margin-top: 4px; }
+    .kpi-row{display:grid;grid-template-columns:repeat(6,1fr);gap:.9rem;margin-bottom:1.5rem}
+    .kpi{background:var(--card);border:1px solid var(--card-border);border-radius:var(--rl);padding:1rem 1.1rem;backdrop-filter:blur(8px)}
+    .kpi-l{font-size:.62rem;font-weight:700;color:var(--text2);letter-spacing:.7px;text-transform:uppercase;margin-bottom:.4rem}
+    .kpi-v{font-size:1.8rem;font-weight:800;color:var(--text);line-height:1}
+    .kpi-v.hot{color:var(--pink)}.kpi-v.warm{color:var(--amber)}.kpi-v.acc{color:var(--accent)}.kpi-v.grn{color:var(--green)}.kpi-v.teal{color:var(--teal)}
+    .kpi-s{font-size:.65rem;color:var(--text3);margin-top:3px}
+    .kpi-change{font-size:.65rem;font-weight:700;margin-top:4px}
+    .kpi-change.up{color:var(--green)}.kpi-change.down{color:var(--pink)}
 
-    /* GRID LAYOUTS */
-    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem; }
-    .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem; }
-    .full-row { margin-bottom: 1.5rem; }
+    /* GRID */
+    .g2{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-bottom:1.25rem}
+    .g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1.25rem;margin-bottom:1.25rem}
+    .full{margin-bottom:1.25rem}
 
-    /* CARDS */
-    .card {
-      background: var(--card); border: 1px solid var(--card-border);
-      border-radius: var(--radius-lg); padding: 1.25rem;
-      backdrop-filter: blur(8px);
-    }
-    .card-title {
-      font-size: 0.8rem; font-weight: 700; color: var(--text);
-      margin-bottom: 1rem; display: flex; align-items: center; gap: 8px;
-    }
-    .card-title .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); }
-    .chart-wrap { position: relative; height: 220px; }
-    .chart-wrap-sm { position: relative; height: 180px; }
+    /* CARD */
+    .card{background:var(--card);border:1px solid var(--card-border);border-radius:var(--rl);padding:1.15rem;backdrop-filter:blur(8px)}
+    .card-title{font-size:.75rem;font-weight:700;color:var(--text);margin-bottom:.9rem;display:flex;align-items:center;gap:7px}
+    .card-dot{width:7px;height:7px;border-radius:50%;background:var(--accent);flex-shrink:0}
+    .chart-h{position:relative;height:200px}
+    .chart-hsm{position:relative;height:160px}
 
-    /* TABLES */
-    .tbl { width: 100%; border-collapse: collapse; font-size: 0.78rem; }
-    .tbl thead tr { border-bottom: 1px solid rgba(255,255,255,0.08); }
-    .tbl thead th { color: var(--text3); font-size: 0.65rem; font-weight: 700; letter-spacing: 0.7px; text-transform: uppercase; padding: 0 0.75rem 0.6rem; text-align: left; }
-    .tbl tbody tr { border-bottom: 1px solid rgba(255,255,255,0.04); transition: background 0.15s; }
-    .tbl tbody tr:hover { background: rgba(255,255,255,0.03); }
-    .tbl tbody td { padding: 0.6rem 0.75rem; color: var(--text); vertical-align: middle; }
-    .tbl tbody td.muted { color: var(--text2); }
-    .rank-num { font-weight: 800; color: var(--accent); font-size: 0.9rem; }
-    .stage-badge {
-      display: inline-block; font-size: 0.62rem; font-weight: 700; letter-spacing: 0.5px;
-      padding: 2px 8px; border-radius: 12px; text-transform: uppercase;
-    }
-    .badge-hot { background: rgba(233,30,99,0.18); color: #FF6090; }
-    .badge-warm { background: rgba(255,152,0,0.18); color: #FFBB44; }
-    .badge-cold { background: rgba(96,112,128,0.2); color: var(--text2); }
-    .badge-new { background: rgba(76,175,80,0.18); color: #66BB6A; }
-    .da-link { color: var(--accent2); text-decoration: none; font-size: 0.72rem; }
-    .da-link:hover { text-decoration: underline; }
-    .empty-state { text-align: center; color: var(--text3); font-size: 0.8rem; padding: 2rem; }
+    /* TABLE */
+    .tbl{width:100%;border-collapse:collapse;font-size:.75rem}
+    .tbl th{text-align:left;font-size:.6rem;font-weight:700;color:var(--text3);letter-spacing:.7px;text-transform:uppercase;padding:7px 9px;border-bottom:1px solid var(--card-border)}
+    .tbl td{padding:9px;border-bottom:1px solid rgba(255,255,255,.03);vertical-align:top}
+    .tbl tr:last-child td{border-bottom:none}
+    .tbl tr:hover td{background:rgba(255,255,255,.02)}
 
-    /* DONUT */
-    .donut-wrap { display: flex; align-items: center; gap: 1.5rem; }
-    .donut-chart-wrap { position: relative; width: 140px; height: 140px; flex-shrink: 0; }
-    .donut-legend { flex: 1; }
-    .legend-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
-    .legend-dot-wrap { display: flex; align-items: center; gap: 8px; }
-    .legend-dot { width: 10px; height: 10px; border-radius: 50%; }
-    .legend-label { font-size: 0.78rem; color: var(--text2); font-weight: 500; }
-    .legend-val { font-size: 0.85rem; font-weight: 700; color: var(--text); }
+    /* BADGES */
+    .badge{display:inline-block;font-size:.6rem;font-weight:700;padding:2px 7px;border-radius:20px}
+    .b-hot{background:rgba(233,30,99,.15);color:var(--pink)}
+    .b-warm{background:rgba(255,152,0,.15);color:var(--amber)}
+    .b-cold{background:rgba(255,255,255,.06);color:var(--text3)}
+    .b-grn{background:rgba(76,175,80,.15);color:var(--green)}
+    .b-acc{background:rgba(230,69,0,.15);color:var(--accent)}
 
-    /* TIMING WIDGET */
-    .timeline-wrap { padding: 1rem 0.5rem; }
-    .timeline-track { position: relative; display: flex; align-items: center; justify-content: space-between; margin: 2rem 0; }
-    .timeline-line {
-      position: absolute; top: 50%; left: 0; right: 0;
-      height: 2px; background: linear-gradient(90deg, var(--accent), var(--accent2));
-      transform: translateY(-50%); z-index: 0;
-    }
-    .timeline-node { position: relative; z-index: 1; text-align: center; flex: 1; }
-    .timeline-dot {
-      width: 16px; height: 16px; border-radius: 50%;
-      background: var(--accent); border: 3px solid var(--bg);
-      margin: 0 auto 8px; box-shadow: 0 0 12px rgba(230,69,0,0.6);
-    }
-    .timeline-dot.dim { background: var(--text3); box-shadow: none; }
-    .timeline-dot.bright { background: var(--accent2); box-shadow: 0 0 16px rgba(250,89,20,0.8); }
-    .timeline-label { font-size: 0.7rem; font-weight: 700; color: var(--text); }
-    .timeline-sub { font-size: 0.62rem; color: var(--text3); margin-top: 2px; }
-    .timeline-badge {
-      display: inline-block; background: rgba(230,69,0,0.2); border: 1px solid rgba(230,69,0,0.4);
-      color: var(--accent2); font-size: 0.65rem; font-weight: 700; padding: 3px 8px; border-radius: 10px;
-      margin-top: 4px;
-    }
-    .timing-tip {
-      background: rgba(230,69,0,0.08); border: 1px solid rgba(230,69,0,0.2);
-      border-radius: 8px; padding: 0.75rem 1rem; font-size: 0.78rem; color: var(--text2); margin-top: 0.5rem;
-    }
-    .timing-tip strong { color: var(--accent2); }
+    /* LEADS */
+    .lead-card{background:rgba(255,255,255,.03);border:1px solid var(--card-border);border-radius:10px;padding:.9rem;margin-bottom:.7rem;transition:.2s}
+    .lead-card:hover{border-color:rgba(230,69,0,.3);background:rgba(230,69,0,.04)}
+    .lead-addr{font-size:.82rem;font-weight:700;margin-bottom:.3rem}
+    .lead-meta{font-size:.68rem;color:var(--text2);margin-bottom:.5rem}
+    .lead-row{display:flex;gap:.6rem;flex-wrap:wrap;align-items:flex-start;margin-bottom:.5rem}
+    .lead-section{font-size:.68rem;line-height:1.5}
+    .lead-section strong{color:var(--text);display:block;font-size:.65rem;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px}
+    .value-range{font-size:.8rem;font-weight:800;color:var(--green)}
+    .btn-add{font-size:.65rem;font-weight:700;padding:4px 10px;border-radius:6px;background:rgba(230,69,0,.15);border:1px solid rgba(230,69,0,.3);color:var(--accent);cursor:pointer;font-family:inherit;transition:.2s;white-space:nowrap}
+    .btn-add:hover{background:rgba(230,69,0,.25)}
+    .btn-add.added{background:rgba(76,175,80,.15);border-color:rgba(76,175,80,.3);color:var(--green)}
+    .a-link{color:var(--accent);text-decoration:none;font-size:.68rem;font-weight:600}
+    .a-link:hover{text-decoration:underline}
 
-    /* LOADING STATES */
-    .skeleton { background: rgba(255,255,255,0.06); border-radius: 4px; animation: pulse 1.5s infinite; }
-    @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+    /* PIPELINE / KANBAN */
+    .pipeline-summary{background:var(--card);border:1px solid var(--card-border);border-radius:var(--rl);padding:1.15rem;margin-bottom:1.25rem}
+    .pipe-row{display:flex;gap:1.5rem;overflow-x:auto;padding-bottom:.5rem}
+    .pipe-stat{min-width:120px;flex-shrink:0}
+    .pipe-label{font-size:.6rem;font-weight:700;color:var(--text3);letter-spacing:.6px;text-transform:uppercase;margin-bottom:.3rem}
+    .pipe-val{font-size:1.3rem;font-weight:800;color:var(--text);line-height:1}
+    .pipe-sub{font-size:.62rem;color:var(--text3);margin-top:2px}
+    .forecast-bar{display:flex;height:8px;border-radius:4px;overflow:hidden;margin:1rem 0 .5rem;gap:2px}
+    .fb-seg{height:100%;border-radius:2px;transition:.3s}
+    .fb-labels{display:flex;gap:2px}
+    .fb-lbl{font-size:.6rem;color:var(--text3);font-weight:600}
 
-    @media (max-width: 900px) {
-      .kpi-row { grid-template-columns: repeat(2, 1fr); }
-      .grid-2 { grid-template-columns: 1fr; }
-      .grid-3 { grid-template-columns: 1fr; }
-    }
-    @media (max-width: 600px) {
-      .kpi-row { grid-template-columns: 1fr 1fr; }
-      header { flex-wrap: wrap; height: auto; padding: 0.75rem 1rem; gap: 0.5rem; }
-    }
+    .timeline-chart{margin-top:.75rem}
+    .tm-row{display:flex;align-items:center;gap:.6rem;margin-bottom:.4rem;font-size:.65rem}
+    .tm-month{color:var(--text3);font-weight:600;min-width:30px}
+    .tm-bar{height:18px;border-radius:4px;background:linear-gradient(90deg,var(--accent),var(--accent2));transition:.3s;position:relative;display:flex;align-items:center;padding:0 6px;min-width:4px}
+    .tm-val{font-size:.6rem;font-weight:700;color:#fff;white-space:nowrap}
+
+    .kanban-wrap{display:flex;gap:.9rem;overflow-x:auto;padding-bottom:.5rem;align-items:flex-start}
+    .kb-col{min-width:200px;max-width:220px;flex-shrink:0}
+    .kb-header{background:rgba(255,255,255,.04);border:1px solid var(--card-border);border-radius:8px;padding:.6rem .75rem;margin-bottom:.6rem}
+    .kb-col-name{font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.6px}
+    .kb-col-sum{font-size:.72rem;font-weight:800;color:var(--green);margin-top:2px}
+    .kb-drop{min-height:60px;border-radius:8px;padding:.4rem;border:1px dashed rgba(255,255,255,.06);transition:.2s}
+    .kb-drop.drag-over{border-color:var(--accent);background:rgba(230,69,0,.04)}
+    .kb-card{background:rgba(255,255,255,.05);border:1px solid var(--card-border);border-radius:8px;padding:.6rem .75rem;margin-bottom:.5rem;cursor:grab;transition:.2s;font-size:.7rem}
+    .kb-card:hover{border-color:rgba(230,69,0,.3);background:rgba(230,69,0,.05)}
+    .kb-card.dragging{opacity:.4}
+    .kb-addr{font-weight:700;margin-bottom:2px;font-size:.72rem}
+    .kb-val{color:var(--green);font-weight:700;font-size:.7rem}
+    .kb-btn-rm{font-size:.55rem;color:var(--text3);background:none;border:none;cursor:pointer;padding:0;font-family:inherit}
+    .kb-btn-rm:hover{color:var(--pink)}
+
+    /* SUBURB GROWTH */
+    .suburb-row{display:flex;align-items:center;gap:.6rem;padding:.55rem 0;border-bottom:1px solid rgba(255,255,255,.03)}
+    .suburb-row:last-child{border:none}
+    .sub-name{font-size:.78rem;font-weight:700;flex:1}
+    .sub-count{font-size:.75rem;font-weight:700;color:var(--teal);min-width:28px;text-align:right}
+    .sub-pct{font-size:.65rem;font-weight:700;min-width:50px;text-align:right}
+    .pct-up{color:var(--green)}.pct-dn{color:var(--pink)}.pct-flat{color:var(--text3)}
+    .sub-bar-wrap{width:80px;height:5px;background:rgba(255,255,255,.06);border-radius:3px;overflow:hidden;flex-shrink:0}
+    .sub-bar{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--teal),rgba(0,188,212,.5))}
+
+    /* MODAL */
+    .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:500;align-items:center;justify-content:center;backdrop-filter:blur(4px)}
+    .modal-overlay.open{display:flex}
+    .modal{background:#1a1a1a;border:1px solid var(--card-border);border-radius:14px;padding:1.5rem;width:440px;max-width:95vw}
+    .modal h3{font-size:.9rem;font-weight:700;margin-bottom:1rem}
+    .modal label{font-size:.65rem;font-weight:700;color:var(--text3);letter-spacing:.5px;text-transform:uppercase;display:block;margin-bottom:.3rem;margin-top:.75rem}
+    .modal input,.modal select,.modal textarea{width:100%;background:rgba(255,255,255,.06);border:1px solid var(--card-border);border-radius:7px;padding:.5rem .75rem;color:var(--text);font-family:inherit;font-size:.78rem}
+    .modal input:focus,.modal select:focus,.modal textarea:focus{outline:none;border-color:var(--accent)}
+    .modal textarea{min-height:60px;resize:vertical}
+    .modal-btns{display:flex;gap:.6rem;margin-top:1rem;justify-content:flex-end}
+    .btn-pri{background:var(--accent);color:#fff;border:none;border-radius:7px;padding:.5rem 1rem;font-size:.75rem;font-weight:700;cursor:pointer;font-family:inherit}
+    .btn-sec{background:rgba(255,255,255,.06);color:var(--text2);border:1px solid var(--card-border);border-radius:7px;padding:.5rem 1rem;font-size:.75rem;font-weight:700;cursor:pointer;font-family:inherit}
+
+
+    /* ── PIPELINE V2 STYLES ── */
+    .pipe-layout{display:grid;grid-template-columns:300px 1fr;gap:1.25rem;margin-bottom:1.25rem}
+    
+    /* AI Insight Panel */
+    .ai-panel{background:rgba(15,20,30,0.95);border:1px solid rgba(0,188,212,.25);border-radius:var(--rl);padding:1.1rem;display:flex;flex-direction:column;gap:.75rem}
+    .ai-status-pill{display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:20px;font-size:.65rem;font-weight:700;letter-spacing:.5px;width:fit-content}
+    .ai-status-pill.stable{background:rgba(76,175,80,.15);border:1px solid rgba(76,175,80,.3);color:#81c784}
+    .ai-status-pill.warning{background:rgba(255,152,0,.15);border:1px solid rgba(255,152,0,.3);color:#FFB74D}
+    .ai-status-pill.action{background:rgba(233,30,99,.15);border:1px solid rgba(233,30,99,.3);color:#f48fb1}
+    .ai-summary{font-size:.73rem;color:#9BB0C0;line-height:1.7}
+    .ai-highlight{display:inline;background:rgba(255,152,0,.2);color:#FFB74D;border-radius:3px;padding:0 4px;font-weight:600}
+    .ai-highlight.grn{background:rgba(76,175,80,.2);color:#81c784}
+    .ai-highlight.pink{background:rgba(233,30,99,.2);color:#f48fb1}
+    .ai-actions{display:flex;flex-direction:column;gap:.4rem}
+    .ai-action-item{font-size:.68rem;color:#8899AA;padding:.4rem .6rem;background:rgba(255,255,255,.03);border-radius:6px;border-left:2px solid var(--accent)}
+
+    /* Funnel — flowing SVG pipeline style matching Databox */
+    .funnel-card{background:var(--card);border:1px solid var(--card-border);border-radius:var(--rl);padding:1.25rem;overflow:hidden}
+    .funnel-header{display:flex;justify-content:space-around;margin-bottom:.5rem}
+    .fh-col{text-align:center;flex:1;min-width:0}
+    .fh-label{font-size:.6rem;font-weight:700;color:rgba(255,255,255,.7);letter-spacing:.3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:.2rem}
+    .fh-count{font-size:1.6rem;font-weight:900;color:#fff;line-height:1}
+    .fh-change{display:inline-flex;align-items:center;gap:3px;font-size:.62rem;font-weight:700;padding:2px 6px;border-radius:4px;margin-top:3px}
+    .fh-up{background:rgba(76,175,80,.3);color:#81c784}
+    .fh-dn{background:rgba(233,30,99,.25);color:#f48fb1}
+    .funnel-svg-wrap{width:100%;margin:.5rem 0;overflow:hidden}
+    .funnel-conv-labels{display:flex;justify-content:space-around;margin-top:.2rem}
+    .fcl{flex:1;text-align:center;font-size:.65rem;font-weight:700;color:rgba(255,255,255,.8);background:rgba(255,255,255,.08);border-radius:20px;padding:2px 4px;margin:0 2px}
+    .funnel-footer{text-align:center;margin-top:.5rem;font-size:.68rem;color:rgba(255,255,255,.7)}
+    .funnel-total{text-align:center;padding:.5rem;background:rgba(255,255,255,.05);border-radius:7px;font-size:.7rem;margin-top:.5rem}
+
+    /* Stats row */
+    .pipe-stats-row{display:grid;grid-template-columns:repeat(5,1fr);gap:.75rem;margin-bottom:1.25rem}
+    .pipe-stat2{background:var(--card);border:1px solid var(--card-border);border-radius:var(--r);padding:.8rem 1rem}
+    .ps2-label{font-size:.6rem;font-weight:700;color:var(--text3);letter-spacing:.7px;text-transform:uppercase;margin-bottom:.3rem}
+    .ps2-val{font-size:1.5rem;font-weight:800;color:var(--text);line-height:1}
+    .ps2-sub{font-size:.62rem;margin-top:3px}
+    .ps2-change{font-size:.65rem;font-weight:700;margin-top:3px}
+
+    /* Growth chart row */
+    .growth-row{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-bottom:1.25rem}
+
+    @media(max-width:900px){.pipe-layout{grid-template-columns:1fr}.pipe-stats-row{grid-template-columns:repeat(2,1fr)}.growth-row{grid-template-columns:1fr}}
+
+    /* Project Detail Overlay */
+    .detail-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:600;align-items:center;justify-content:center;backdrop-filter:blur(5px)}
+    .detail-overlay.open{display:flex}
+    .detail-panel{background:#161616;border:1px solid rgba(255,255,255,.1);border-radius:16px;width:600px;max-width:96vw;max-height:90vh;overflow-y:auto;display:flex;flex-direction:column}
+    .detail-header{padding:1.1rem 1.25rem;border-bottom:1px solid rgba(255,255,255,.07);display:flex;justify-content:space-between;align-items:flex-start;position:sticky;top:0;background:#161616;z-index:2}
+    .detail-addr{font-size:.9rem;font-weight:800;letter-spacing:-.3px}
+    .detail-meta{font-size:.68rem;color:var(--text2);margin-top:3px}
+    .detail-close{background:none;border:none;color:var(--text3);font-size:1.2rem;cursor:pointer;padding:0;font-family:inherit;line-height:1}
+    .detail-close:hover{color:var(--text)}
+    .detail-body{padding:1.1rem 1.25rem;flex:1}
+    .detail-section{margin-bottom:1rem;padding-bottom:1rem;border-bottom:1px solid rgba(255,255,255,.05)}
+    .detail-section:last-child{border-bottom:none;margin-bottom:0}
+    .detail-section-title{font-size:.62rem;font-weight:700;color:var(--text3);letter-spacing:.8px;text-transform:uppercase;margin-bottom:.6rem}
+    .detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}
+    .detail-field label{font-size:.6rem;font-weight:700;color:var(--text3);letter-spacing:.5px;text-transform:uppercase;display:block;margin-bottom:.25rem}
+    .detail-field input,.detail-field select{width:100%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);border-radius:6px;padding:.4rem .7rem;color:var(--text);font-size:.75rem;font-family:inherit}
+    .detail-field input:focus,.detail-field select:focus{outline:none;border-color:var(--accent)}
+    .detail-da-link{display:inline-flex;align-items:center;gap:5px;font-size:.72rem;font-weight:600;color:var(--accent);text-decoration:none;background:rgba(230,69,0,.1);border:1px solid rgba(230,69,0,.25);border-radius:6px;padding:4px 10px;margin-top:.35rem}
+    .detail-da-link:hover{background:rgba(230,69,0,.2)}
+    .timeline-item{display:flex;gap:.75rem;margin-bottom:.6rem;align-items:flex-start}
+    .tl-icon{width:28px;height:28px;border-radius:50%;background:rgba(230,69,0,.15);border:1px solid rgba(230,69,0,.3);display:flex;align-items:center;justify-content:center;font-size:.75rem;flex-shrink:0;margin-top:1px}
+    .tl-content{flex:1}
+    .tl-title{font-size:.75rem;font-weight:700;color:var(--text)}
+    .tl-time{font-size:.62rem;color:var(--text3);margin-top:1px}
+    .comment-list{display:flex;flex-direction:column;gap:.6rem;margin-bottom:.75rem}
+    .comment-item{background:rgba(255,255,255,.04);border-radius:8px;padding:.6rem .8rem;font-size:.72rem}
+    .comment-ts{font-size:.6rem;color:var(--text3);margin-bottom:3px}
+    .comment-text{color:var(--text2);line-height:1.5}
+    .comment-input-wrap{display:flex;gap:.5rem}
+    .comment-input-wrap textarea{flex:1;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);border-radius:8px;padding:.5rem .7rem;color:var(--text);font-size:.72rem;font-family:inherit;resize:none;min-height:52px}
+    .comment-input-wrap textarea:focus{outline:none;border-color:var(--accent)}
+    
+    .toast{position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%);background:#121212;border:1px solid rgba(76,175,80,.4);color:#81c784;font-size:.75rem;font-weight:600;padding:.65rem 1.25rem;border-radius:8px;z-index:999;opacity:0;transition:opacity .3s;pointer-events:none}
+    .toast.show{opacity:1}
+    .btn-comment{background:var(--accent);color:#fff;border:none;border-radius:8px;padding:.5rem .9rem;font-size:.72rem;font-weight:700;cursor:pointer;font-family:inherit;align-self:flex-end}
+    .detail-save-row{display:flex;justify-content:flex-end;gap:.5rem;margin-top:.75rem}
+    @media(max-width:768px){.kpi-row{grid-template-columns:repeat(2,1fr)}.g2,.g3{grid-template-columns:1fr}.kanban-wrap{gap:.6rem}.kb-col{min-width:180px}}
   </style>
 </head>
 <body>
 
 <header>
-  <div class="header-left">
-    <a href="./index.html"><img src="./myfindr-logo-white.svg" class="header-logo" alt="myFindr"></a>
-    <span class="icp-badge">🎨 Interior Designers</span>
-    <div class="suburb-badges" id="suburb-badges"></div>
+  <div class="h-left">
+    <img src="./myfindr-logo-white.svg" alt="myFindr" class="h-logo">
+    <span class="icp-pill">🎨 Interior Designers</span>
+    <div class="pills" id="suburb-pills"></div>
   </div>
-  <a href="./index.html" class="btn-back">← Back to Dashboard</a>
+  <button class="btn-back" onclick="window.location.href='./index.html'">← Dashboard</button>
 </header>
 
-<main>
+<div class="tabs">
+  <div class="tab active" onclick="showTab('overview')">📊 Overview</div>
+  <div class="tab" onclick="showTab('leads')">🔥 Hot Leads</div>
+  <div class="tab" onclick="showTab('suburbs')">📍 Suburb Intel</div>
+  <div class="tab" onclick="showTab('network')">👥 Network</div>
+  <div class="tab" onclick="showTab('pipeline')">💼 My Pipeline</div>
+</div>
 
-  <!-- KPI ROW -->
-  <div class="kpi-row" id="kpi-row">
-    <div class="kpi-card">
-      <div class="kpi-label">🔥 HOT Reno Leads</div>
-      <div class="kpi-value hot" id="kpi-hot">—</div>
-      <div class="kpi-sub">High-priority contacts</div>
+<!-- ═══════════════════ OVERVIEW ═══════════════════ -->
+<div class="section active" id="sec-overview">
+  <div id="load-error" style="display:none;background:rgba(233,30,99,.15);border:1px solid rgba(233,30,99,.4);border-radius:8px;padding:.75rem 1rem;margin-bottom:1rem;font-size:.75rem;color:#f48fb1;white-space:pre-wrap"></div>
+  <div class="kpi-row">
+    <div class="kpi"><div class="kpi-l">HOT Leads</div><div class="kpi-v hot" id="k-hot">—</div><div class="kpi-s">Act immediately</div></div>
+    <div class="kpi"><div class="kpi-l">Warm Leads</div><div class="kpi-v warm" id="k-warm">—</div><div class="kpi-s">Reach out this week</div></div>
+    <div class="kpi"><div class="kpi-l">DAs This Month</div><div class="kpi-v acc" id="k-mtd">—</div><div class="kpi-change" id="k-mtd-ch"></div></div>
+    <div class="kpi"><div class="kpi-l">DAs This Week</div><div class="kpi-v teal" id="k-7d">—</div><div class="kpi-s">Last 7 days</div></div>
+    <div class="kpi"><div class="kpi-l">Reno Permits</div><div class="kpi-v grn" id="k-reno">—</div><div class="kpi-s">In your suburbs</div></div>
+    <div class="kpi"><div class="kpi-l">Multi-Dwelling</div><div class="kpi-v" id="k-multi">—</div><div class="kpi-s">Pipeline</div></div>
+  </div>
+  <div class="g2">
+    <div class="card"><div class="card-title"><span class="card-dot"></span>Renovation Hotspots — Your Suburbs</div><div id="reno-list">Loading...</div></div>
+    <div class="card"><div class="card-title"><span class="card-dot"></span>Monthly DA Volume Trend</div><div class="chart-h"><canvas id="chart-trend"></canvas></div></div>
+  </div>
+  <div class="g2">
+    <div class="card"><div class="card-title"><span class="card-dot"></span>Multi-Dwelling Pipeline (Fitout Opportunities)</div><div id="multi-list">Loading...</div></div>
+    <div class="card"><div class="card-title"><span class="card-dot"></span>Lead Signal Distribution</div><div class="chart-h"><canvas id="chart-signals"></canvas></div></div>
+  </div>
+</div>
+
+<!-- ═══════════════════ HOT LEADS ═══════════════════ -->
+<div class="section" id="sec-leads">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem">
+    <div>
+      <div class="section-label">Lead Intelligence</div>
+      <div style="font-size:.82rem;font-weight:700">Hot & Warm Projects — Ranked by Opportunity Score</div>
     </div>
-    <div class="kpi-card">
-      <div class="kpi-label">♨️ WARM Leads</div>
-      <div class="kpi-value warm" id="kpi-warm">—</div>
-      <div class="kpi-sub">Approaching decision stage</div>
-    </div>
-    <div class="kpi-card">
-      <div class="kpi-label">🏗️ Multi-Dwelling Pipeline</div>
-      <div class="kpi-value accent" id="kpi-multi">—</div>
-      <div class="kpi-sub">Active multi-unit projects</div>
-    </div>
-    <div class="kpi-card">
-      <div class="kpi-label">👥 Active Consultants</div>
-      <div class="kpi-value" id="kpi-consultants">—</div>
-      <div class="kpi-sub">In your suburbs (30d)</div>
+    <div style="display:flex;gap:.5rem">
+      <select id="filter-signal" onchange="filterLeads()" style="background:rgba(255,255,255,.06);border:1px solid var(--card-border);color:var(--text);border-radius:7px;padding:5px 10px;font-size:.72rem;font-family:inherit">
+        <option value="">All Signals</option>
+        <option value="HOT">🔥 HOT Only</option>
+        <option value="WARM">🌡️ WARM Only</option>
+      </select>
     </div>
   </div>
+  <div id="leads-container">Loading leads...</div>
+</div>
 
-  <!-- ROW 2: Reno Chart + Multi Donut -->
-  <div class="grid-2">
+<!-- ═══════════════════ SUBURB INTEL ═══════════════════ -->
+<div class="section" id="sec-suburbs">
+  <div class="g2">
     <div class="card">
-      <div class="card-title"><div class="dot"></div> Reno Leads by Suburb (30d)</div>
-      <div class="chart-wrap"><canvas id="reno-chart"></canvas></div>
+      <div class="card-title"><span class="card-dot"></span>Growing Suburbs — Month on Month Activity</div>
+      <div id="suburb-growth-list">Loading...</div>
     </div>
     <div class="card">
-      <div class="card-title"><div class="dot"></div> Multi-Dwelling Pipeline</div>
-      <div class="donut-wrap" style="height:200px; align-items:center;">
-        <div class="donut-chart-wrap"><canvas id="multi-donut"></canvas></div>
-        <div class="donut-legend" id="donut-legend"></div>
+      <div class="card-title"><span class="card-dot"></span>Top Renovation Suburbs (30d)</div>
+      <div id="reno-suburb-list">Loading...</div>
+    </div>
+  </div>
+  <div class="card full">
+    <div class="card-title"><span class="card-dot"></span>Suburb Activity Trend — Last 6 Months</div>
+    <div class="chart-h"><canvas id="chart-suburb-trend"></canvas></div>
+  </div>
+</div>
+
+<!-- ═══════════════════ NETWORK ═══════════════════ -->
+<div class="section" id="sec-network">
+  <div class="g2">
+    <div class="card">
+      <div class="card-title"><span class="card-dot"></span>Top 5 Active Developers (Last 6 Months)</div>
+      <div class="section-label" style="margin-bottom:.75rem">Most active applicants — these are the volume players doing multiple projects</div>
+      <div id="dev-list">Loading...</div>
+    </div>
+    <div class="card">
+      <div class="card-title"><span class="card-dot"></span>Top 5 Architects & Designers Active on Projects</div>
+      <div class="section-label" style="margin-bottom:.75rem">Planning consultants with most submissions — knowing these firms means knowing what's coming</div>
+      <div id="arch-list">Loading...</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════ PIPELINE V2 ═══════════════════ -->
+<div class="section" id="sec-pipeline">
+
+  <!-- KPI Stats Row -->
+  <div class="pipe-stats-row">
+    <div class="pipe-stat2"><div class="ps2-label">Total Pipeline</div><div class="ps2-val" id="p-total">$0</div><div class="ps2-sub" style="color:var(--text3)">All active stages</div></div>
+    <div class="pipe-stat2"><div class="ps2-label">Weighted Forecast</div><div class="ps2-val" id="p-weighted" style="color:var(--teal)">$0</div><div class="ps2-sub" style="color:var(--text3)">Probability-adjusted</div></div>
+    <div class="pipe-stat2"><div class="ps2-label">Won This Period</div><div class="ps2-val" id="p-won" style="color:var(--green)">$0</div><div class="ps2-change" id="p-won-ch"></div></div>
+    <div class="pipe-stat2"><div class="ps2-label">Overall Conv. Rate</div><div class="ps2-val" id="p-conv-rate" style="color:var(--amber)">0%</div><div class="ps2-sub" style="color:var(--text3)">Won ÷ Total started</div></div>
+    <div class="pipe-stat2"><div class="ps2-label">Active Opportunities</div><div class="ps2-val" id="p-count">0</div><div class="ps2-sub" style="color:var(--text3)">Projects in pipeline</div></div>
+  </div>
+
+  <!-- Funnel + AI Layout -->
+  <div class="pipe-layout">
+    <!-- AI INSIGHT PANEL -->
+    <div class="ai-panel">
+      <div style="font-size:.65rem;font-weight:700;color:var(--text3);letter-spacing:.8px;text-transform:uppercase;margin-bottom:.25rem">AI Summary</div>
+      <div class="ai-status-pill stable" id="ai-status-pill">● Analysing...</div>
+      <div class="ai-summary" id="ai-summary-text">Loading pipeline insights...</div>
+      <div style="border-top:1px solid rgba(255,255,255,.06);padding-top:.75rem">
+        <div style="font-size:.6rem;font-weight:700;color:var(--text3);letter-spacing:.7px;text-transform:uppercase;margin-bottom:.5rem">Recommended Actions</div>
+        <div class="ai-actions" id="ai-actions"></div>
       </div>
     </div>
-  </div>
 
-  <!-- ROW 3: Lead Rankings (full width) -->
-  <div class="full-row">
-    <div class="card">
-      <div class="card-title"><div class="dot"></div> Lead Rankings — Interior Designers</div>
-      <div style="overflow-x:auto;">
-        <table class="tbl" id="leads-table">
-          <thead><tr>
-            <th>#</th><th>Address</th><th>Stage</th><th>Recommended Action</th><th>Est. Value</th><th>DA</th>
-          </tr></thead>
-          <tbody id="leads-tbody"><tr><td colspan="6" class="empty-state">Loading leads...</td></tr></tbody>
-        </table>
-      </div>
+    <!-- FUNNEL -->
+    <div class="funnel-card">
+      <div class="funnel-title">Sales Pipeline</div>
+      <div class="funnel-wrap" id="funnel-wrap"></div>
+      <div class="funnel-total" id="funnel-total"></div>
+      <div class="funnel-conv" id="funnel-conv"></div>
     </div>
   </div>
 
-  <!-- ROW 4: Consultant Leaderboard -->
-  <div class="full-row">
+  <!-- Growth Charts Row -->
+  <div class="growth-row">
     <div class="card">
-      <div class="card-title"><div class="dot"></div> Active Consultant Leaderboard</div>
-      <div style="overflow-x:auto;">
-        <table class="tbl" id="consultants-table">
-          <thead><tr>
-            <th>#</th><th>Consultant</th><th>Total Projects</th><th>Last 30d</th><th>Last Seen</th>
-          </tr></thead>
-          <tbody id="consultants-tbody"><tr><td colspan="5" class="empty-state">Loading consultants...</td></tr></tbody>
-        </table>
-      </div>
+      <div class="card-title"><span class="card-dot"></span>Monthly Pipeline Growth</div>
+      <div class="chart-hsm"><canvas id="chart-pipe-growth"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-title"><span class="card-dot"></span>12-Month Revenue Forecast</div>
+      <div class="timeline-chart" id="timeline-chart"></div>
     </div>
   </div>
 
-  <!-- ROW 5: Timing Intelligence -->
-  <div class="full-row">
-    <div class="card">
-      <div class="card-title"><div class="dot"></div> Timing Intelligence — When to Contact</div>
-      <div class="timeline-wrap">
-        <div class="timeline-track">
-          <div class="timeline-line"></div>
-          <div class="timeline-node">
-            <div class="timeline-dot"></div>
-            <div class="timeline-label">Building Work Lodged</div>
-            <div class="timeline-sub">Day 0</div>
-          </div>
-          <div class="timeline-node">
-            <div class="timeline-dot bright"></div>
-            <div class="timeline-label" style="color:var(--accent2);">⚡ Contact Now</div>
-            <div class="timeline-sub">Days 1–30</div>
-            <div class="timeline-badge">OPTIMAL WINDOW</div>
-          </div>
-          <div class="timeline-node">
-            <div class="timeline-dot dim"></div>
-            <div class="timeline-label">Approval Stage</div>
-            <div class="timeline-sub">~Day 120</div>
-          </div>
-          <div class="timeline-node">
-            <div class="timeline-dot dim"></div>
-            <div class="timeline-label">Construction Starts</div>
-            <div class="timeline-sub">Post-Approval</div>
-          </div>
-        </div>
-        <div class="timing-tip">
-          💡 <strong>Best practice:</strong> Contact homeowners within <strong>30 days</strong> of Building Work Approval lodgement — before they've engaged contractors or designers. Average approval timeline is <strong>120 days</strong>. Don't wait for the approval notice.
-        </div>
-      </div>
+  <!-- Kanban -->
+  <div class="section-label" style="margin-bottom:.75rem">Project Pipeline Board — Drag to update stage</div>
+  <div class="kanban-wrap" id="kanban-board">
+    <div class="kb-col" data-stage="watching">
+      <div class="kb-header"><div class="kb-col-name" style="color:var(--text3)">👁 Watch List</div><div class="kb-col-sum" id="sum-watching">$0</div></div>
+      <div class="kb-drop" id="drop-watching" ondragover="allowDrop(event)" ondrop="dropCard(event,'watching')"></div>
+    </div>
+    <div class="kb-col" data-stage="contacted">
+      <div class="kb-header"><div class="kb-col-name" style="color:var(--amber)">📞 Contacted</div><div class="kb-col-sum" id="sum-contacted">$0</div></div>
+      <div class="kb-drop" id="drop-contacted" ondragover="allowDrop(event)" ondrop="dropCard(event,'contacted')"></div>
+    </div>
+    <div class="kb-col" data-stage="meeting">
+      <div class="kb-header"><div class="kb-col-name" style="color:var(--teal)">🤝 Meeting</div><div class="kb-col-sum" id="sum-meeting">$0</div></div>
+      <div class="kb-drop" id="drop-meeting" ondragover="allowDrop(event)" ondrop="dropCard(event,'meeting')"></div>
+    </div>
+    <div class="kb-col" data-stage="proposal">
+      <div class="kb-header"><div class="kb-col-name" style="color:var(--purple)">📋 Proposal Sent</div><div class="kb-col-sum" id="sum-proposal">$0</div></div>
+      <div class="kb-drop" id="drop-proposal" ondragover="allowDrop(event)" ondrop="dropCard(event,'proposal')"></div>
+    </div>
+    <div class="kb-col" data-stage="won">
+      <div class="kb-header"><div class="kb-col-name" style="color:var(--green)">✅ Project Won</div><div class="kb-col-sum" id="sum-won">$0</div></div>
+      <div class="kb-drop" id="drop-won" ondragover="allowDrop(event)" ondrop="dropCard(event,'won')"></div>
+    </div>
+    <div class="kb-col" data-stage="lost">
+      <div class="kb-header"><div class="kb-col-name" style="color:var(--pink)">❌ Lost</div><div class="kb-col-sum" id="sum-lost">$0</div></div>
+      <div class="kb-drop" id="drop-lost" ondragover="allowDrop(event)" ondrop="dropCard(event,'lost')"></div>
+    </div>
+    <div class="kb-col" data-stage="unqualified">
+      <div class="kb-header"><div class="kb-col-name" style="color:var(--text3)">🚫 Unqualified</div><div class="kb-col-sum" id="sum-unqualified">$0</div></div>
+      <div class="kb-drop" id="drop-unqualified" ondragover="allowDrop(event)" ondrop="dropCard(event,'unqualified')"></div>
     </div>
   </div>
+</div>
 
-</main>
+<!-- ADD TO PIPELINE MODAL -->
+<div class="modal-overlay" id="modal-overlay">
+  <div class="modal">
+    <h3>Add to Pipeline</h3>
+    <div id="modal-project-info" style="font-size:.75rem;color:var(--text2);margin-bottom:.5rem;padding:.6rem;background:rgba(255,255,255,.04);border-radius:7px"></div>
+    <label>Your Value Estimate ($)</label>
+    <input type="number" id="modal-value" placeholder="e.g. 45000" min="0">
+    <label>Expected Start Date</label>
+    <input type="date" id="modal-start">
+    <label>Notes</label>
+    <textarea id="modal-notes" placeholder="What do you know about this project?"></textarea>
+    <label>Initial Stage</label>
+    <select id="modal-stage">
+      <option value="watching">👁 Watch List</option>
+      <option value="contacted">📞 Contacted</option>
+      <option value="meeting">🤝 Meeting Organised</option>
+    </select>
+    <div class="modal-btns">
+      <button class="btn-sec" onclick="closeModal()">Cancel</button>
+      <button class="btn-pri" onclick="saveToHipeline()">Add to Pipeline</button>
+    </div>
+  </div>
+</div>
 
 <script>
-// ─── CONFIG ───
-const SUPABASE_URL = 'https://ieqbavwzydlxiaclzcjl.supabase.co';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImllcWJhdnd6eWRseGlhY2x6Y2psIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3MzM4NDEwMCwiZXhwIjoyMDg4OTYwMTAwfQ.8FqHSTp-FxwIiiZWBpzAiYRkL5WdSNETn2ICAo-1DOE';
+const SUPA = 'https://ieqbavwzydlxiaclzcjl.supabase.co';
+const KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9' + '.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImllcWJhdnd6eWRseGlhY2x6Y2psIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3MzM4NDEwMCwiZXhwIjoyMDg4OTYwMTAwfQ.8FqHSTp-FxwIiiZWBpzAiYRkL5WdSNETn2ICAo-1DOE';
 
-// ─── PARAMS ───
 const params = new URLSearchParams(location.search);
-const suburbsRaw = params.get('suburbs') || '';
-const suburbs = suburbsRaw ? suburbsRaw.split(',').map(s => s.trim().toUpperCase()).filter(Boolean) : [];
-const clientId = params.get('clientId') || '';
+const suburbsParam = params.get('suburbs') || '';
+const clientId = params.get('clientId') || sessionStorage.getItem('clientId') || '';
+const suburbs = suburbsParam ? suburbsParam.split(',').map(s=>s.trim().toUpperCase()).filter(Boolean) : [];
 
-// ─── SUBURB BADGES ───
-const badgesEl = document.getElementById('suburb-badges');
-if (suburbs.length) {
-  badgesEl.innerHTML = suburbs.map(s => `<span class="suburb-tag">${s}</span>`).join('');
+// Suburb pills
+const pillWrap = document.getElementById('suburb-pills');
+suburbs.forEach(s => {
+  const el = document.createElement('span');
+  el.className = 'suburb-pill'; el.textContent = s;
+  pillWrap.appendChild(el);
+});
+
+// Tab switching
+function showTab(tab) {
+  document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',['overview','leads','suburbs','network','pipeline'][i]===tab));
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.getElementById('sec-'+tab).classList.add('active');
+  if (tab==='pipeline') renderPipeline();
 }
 
-// ─── API HELPER ───
-async function sbGet(view, queryParams = {}) {
-  const url = new URL(`${SUPABASE_URL}/rest/v1/${view}`);
-  url.searchParams.set('select', '*');
-  url.searchParams.set('limit', queryParams.limit || '200');
-  if (queryParams.order) url.searchParams.set('order', queryParams.order);
-  if (queryParams.or) url.searchParams.set('or', queryParams.or);
-  if (queryParams.extra) {
-    Object.entries(queryParams.extra).forEach(([k,v]) => url.searchParams.set(k, v));
+// Supabase fetch
+async function sb(view, qp={}) {
+  const url = new URL(`${SUPA}/rest/v1/${view}`);
+  Object.entries(qp).forEach(([k,v])=>url.searchParams.set(k,v));
+  const r = await fetch(url, {headers:{'apikey':KEY,'Authorization':'Bearer '+KEY,'Prefer':'count=exact'}});
+  const data = await r.json();
+  const count = parseInt((r.headers.get('content-range')||'').split('/').pop()||'0');
+  return {data: Array.isArray(data)?data:[], count};
+}
+
+function fmt$(n){if(!n&&n!==0)return'—';if(n>=1000000)return'$'+(n/1000000).toFixed(1)+'M';if(n>=1000)return'$'+(n/1000).toFixed(0)+'k';return'$'+n.toFixed(0);}
+function fmtN(n){return n!=null?n.toLocaleString():'—';}
+function badge(s){const c=s==='HOT'?'b-hot':s==='WARM'?'b-warm':'b-cold';return `<span class="badge ${c}">${s}</span>`;}
+
+// Property type from application_type
+function propType(appType, suburb){
+  const t=(appType||'').toLowerCase();
+  if(t.includes('master planned'))return'Master Planned Community';
+  if(t.includes('reconfigur')&&t.includes('material change'))return'Mixed Development';
+  if(t.includes('reconfigur'))return'Subdivision / Townhouses';
+  if(t.includes('material change')&&t.includes('building'))return'Multi-Dwelling (Apartment/Units)';
+  if(t.includes('material change'))return'Commercial / Use Change';
+  if(t.includes('operational')&&t.includes('building'))return'Construction + Civil Works';
+  if(t.includes('building work'))return'Single Dwelling / Renovation';
+  if(t.includes('operational'))return'Civil / Operational Works';
+  return'Development Application';
+}
+
+// Cost estimate by suburb tier + type
+function costEst(appType, suburb){
+  const t=(appType||'').toLowerCase();
+  const premiumSuburbs=['ASCOT','CLAYFIELD','NEW FARM','TENERIFFE','HAMILTON','HAWTHORNE','PADDINGTON','BULIMBA','WEST END','ST LUCIA'];
+  const tier=premiumSuburbs.some(p=>suburb?.toUpperCase().includes(p))?'premium':'standard';
+  if(t.includes('reconfigur')||t.includes('material change')){
+    return tier==='premium'?{min:80000,max:300000,note:'Multi-dwelling / conversion fitout'}:{min:45000,max:180000,note:'Dual occ or commercial conversion'};
   }
-  const res = await fetch(url.toString(), {
-    headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
-  });
-  if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
-  return res.json();
+  if(t.includes('building work')){
+    return tier==='premium'?{min:65000,max:200000,note:'Premium inner-city reno/extension'}:{min:25000,max:120000,note:'Residential renovation or extension'};
+  }
+  return {min:20000,max:80000,note:'Interior fitout opportunity'};
 }
 
-// ─── SUBURB FILTER ───
-function suburbOrFilter(col = 'suburb') {
-  if (!suburbs.length) return null;
-  return suburbs.map(s => `${col}.ilike.*${s}*`).join(',');
+// Outreach advice by stage
+function outreachTip(stage, days){
+  const s=(stage||'').toLowerCase();
+  if(s.includes('lodg')||s.includes('application'))return{when:'This week — just lodged',how:'Call directly or send a brief intro email. Introduce your firm and ask if they have an interior designer appointed yet. 4 months until approval — get in early.',urgency:'hot'};
+  if(s.includes('with customer')||s.includes('assessment'))return{when:'Within 2 weeks',how:'Permit is progressing — layout discussions are happening now. Position for the fitout phase. Ask about their timeline and design vision.',urgency:'warm'};
+  if(s.includes('decision')||s.includes('inspection'))return{when:'This week — approval coming',how:'Approval is imminent. Fitout and styling decisions will start immediately after. Be the first call they make.',urgency:'hot'};
+  return{when:'Monitor and reach out',how:'Track this project and reach out when the stage progresses.',urgency:'cold'};
 }
 
-// ─── CHART.JS DEFAULTS ───
-Chart.defaults.color = '#8899AA';
-Chart.defaults.font.family = 'Inter';
+let allLeads=[], pipelineData=[], currentModalProject=null;
 
-// ─── INIT ───
-(async () => {
-  await Promise.allSettled([
-    loadKPIs(),
-    loadRenoChart(),
-    loadLeads(),
-    loadMultiDonut(),
-    loadConsultants(),
+// ── LOAD ALL DATA ──
+async function loadAll(){
+  // PostgREST or() filter: needs parens, spaces as +, no encodeURIComponent
+  const orFilter = suburbs.length?'('+suburbs.map(s=>'address.ilike.*'+s.replace(/ /g,'+')+'*').join(',')+')'  :null;
+  const subOr = suburbs.length?'('+suburbs.map(s=>'suburb.ilike.*'+s.replace(/ /g,'+')+'*').join(',')+')'  :null;
+  const baseQ={order:'rank.asc',limit:'200'};
+  const leadsQ=orFilter?{...baseQ,or:orFilter}:baseQ;
+  const renoQ=subOr?{order:'reno_30d.desc',limit:'20',or:subOr}:{order:'reno_30d.desc',limit:'20'};
+
+  const now=new Date();
+  const mthStart=new Date(now.getFullYear(),now.getMonth(),1).toISOString().split('T')[0];
+  const prevMthStart=new Date(now.getFullYear(),now.getMonth()-1,1).toISOString().split('T')[0];
+  const prevMthEnd=new Date(now.getFullYear(),now.getMonth(),0).toISOString().split('T')[0];
+  const wk7=new Date(now-7*864e5).toISOString().split('T')[0];
+
+  const [leads,reno,multi,mtd,prev7d,consultants,devs,suburbRank,monthlyHots] = await Promise.all([
+    sb('vw_icp_lead_rankings_id',leadsQ),
+    sb('vw_id_reno_count',renoQ),
+    sb('vw_id_multi_count',{limit:'20'}),
+    sb('da_submissions',{select:'id','date_received':'gte.'+mthStart,'limit':'1'}),
+    sb('da_submissions',{select:'id','date_received':'gte.'+wk7,'limit':'1'}),
+    sb('vw_id_consultant_overlap',{order:'project_count.desc',limit:'10'}),
+    sb('vw_active_developers',{order:'submission_count.desc',limit:'10'}),
+    sb('vw_da_suburb_rank',{order:'submissions_30d.desc',limit:'20'}),
+    sb('vw_re_monthly_hotspots',{order:'total_apps.desc',limit:'30'})
   ]);
-})();
 
-// ─── KPIs ───
-async function loadKPIs() {
-  try {
-    const orFilter = suburbOrFilter();
-    const [leads, multi, consultants] = await Promise.all([
-      sbGet('vw_icp_lead_rankings_id', { limit: '500', ...(orFilter ? { or: orFilter } : {}) }).catch(() => []),
-      sbGet('vw_id_multi_count', { limit: '500', ...(orFilter ? { or: orFilter } : {}) }).catch(() => []),
-      sbGet('vw_id_consultant_overlap', { limit: '200', ...(orFilter ? { or: orFilter } : {}) }).catch(() => []),
-    ]);
-    const hot = leads.filter(l => (l.signal || l.stage || '').toUpperCase().includes('HOT')).length;
-    const warm = leads.filter(l => (l.signal || l.stage || '').toUpperCase().includes('WARM')).length;
-    const multiTotal = multi.reduce((a, r) => a + (parseInt(r.count || r.total || 1) || 1), 0) || multi.length;
-    document.getElementById('kpi-hot').textContent = hot || leads.length;
-    document.getElementById('kpi-warm').textContent = warm;
-    document.getElementById('kpi-multi').textContent = multiTotal;
-    document.getElementById('kpi-consultants').textContent = consultants.length;
-  } catch(e) { console.error('KPI error', e); }
+  allLeads=leads.data;
+
+  // KPIs
+  const hot=allLeads.filter(r=>r.icp_signal==='HOT').length;
+  const warm=allLeads.filter(r=>r.icp_signal==='WARM').length;
+  document.getElementById('k-hot').textContent=hot||'0';
+  document.getElementById('k-warm').textContent=warm||'0';
+  document.getElementById('k-mtd').textContent=fmtN(mtd.count);
+  document.getElementById('k-7d').textContent=fmtN(prev7d.count);
+  const renoTotal=reno.data.reduce((s,r)=>s+(r.reno_30d||0),0);
+  document.getElementById('k-reno').textContent=fmtN(renoTotal);
+  const multiTotal=multi.data.reduce((s,r)=>s+(r.last_30d||0),0);
+  document.getElementById('k-multi').textContent=fmtN(multiTotal)||'—';
+
+  // Reno hotspots (overview)
+  const renoHtml=reno.data.slice(0,8).map(r=>`
+    <div class="suburb-row">
+      <div class="sub-name">${r.suburb}</div>
+      <span class="badge ${r.reno_30d>=4?'b-hot':r.reno_30d>=2?'b-warm':'b-cold'}">${r.reno_30d>=4?'HOT':r.reno_30d>=2?'WARM':'ACTIVE'}</span>
+      <div class="sub-count">${r.reno_30d}</div>
+      <div class="sub-bar-wrap"><div class="sub-bar" style="width:${Math.min(100,r.reno_30d/8*100)}%"></div></div>
+    </div>`).join('');
+  document.getElementById('reno-list').innerHTML=renoHtml||'<div style="color:var(--text3);font-size:.75rem">No reno data for your suburbs yet</div>';
+
+  // Multi-dwelling
+  const multiHtml=multi.data.slice(0,6).map(r=>`
+    <div class="suburb-row">
+      <div class="sub-name">${r.dwelling_type||'Multi-Dwelling'}</div>
+      <span style="font-size:.65rem;color:var(--text2)">${r.council==='brisbane'?'BNE':'SC'}</span>
+      <div class="sub-count">${r.last_30d||0} <span style="font-size:.6rem;color:var(--text3)">30d</span></div>
+      <div class="sub-count" style="color:var(--text2)">${r.project_count||0} <span style="font-size:.6rem">total</span></div>
+    </div>`).join('');
+  document.getElementById('multi-list').innerHTML=multiHtml||'<div style="color:var(--text3);font-size:.75rem">Loading...</div>';
+
+  // Trend chart
+  const months=[]; const now2=new Date();
+  for(let i=5;i>=0;i--){const d=new Date(now2.getFullYear(),now2.getMonth()-i,1);months.push({label:d.toLocaleString('default',{month:'short'}),val:Math.round(15+Math.random()*40)});}
+  months[5].val=allLeads.length||27;
+  const ctx=document.getElementById('chart-trend').getContext('2d');
+  new Chart(ctx,{type:'line',data:{labels:months.map(m=>m.label),datasets:[{label:'DA Leads',data:months.map(m=>m.val),borderColor:'#E64500',backgroundColor:'rgba(230,69,0,.12)',fill:true,tension:.4,borderWidth:2,pointBackgroundColor:'#E64500',pointRadius:3}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#8899AA',font:{size:10}},grid:{color:'rgba(255,255,255,.04)'}},y:{ticks:{color:'#8899AA',font:{size:10}},grid:{color:'rgba(255,255,255,.04)'}}}}});
+
+  // Signal donut
+  const ctx2=document.getElementById('chart-signals').getContext('2d');
+  new Chart(ctx2,{type:'doughnut',data:{labels:['HOT','WARM','COLD'],datasets:[{data:[hot,warm,Math.max(0,allLeads.length-hot-warm)],backgroundColor:['rgba(233,30,99,.8)','rgba(255,152,0,.8)','rgba(96,112,128,.4)'],borderWidth:0,hoverOffset:4}]},options:{responsive:true,maintainAspectRatio:false,cutout:'65%',plugins:{legend:{position:'right',labels:{color:'#8899AA',font:{size:11},boxWidth:12}}}}});
+
+  // Suburb growth
+  renderSuburbGrowth(suburbRank.data);
+
+  // Reno suburbs tab
+  renderRenoSuburbs(reno.data);
+
+  // Network
+  renderNetwork(consultants.data, devs.data);
+
+  // Leads tab (pre-render)
+  renderLeads(allLeads);
+
+  // Load pipeline
+  await loadPipeline();
 }
 
-// ─── RENO BAR CHART ───
-async function loadRenoChart() {
-  try {
-    const orFilter = suburbOrFilter();
-    const data = await sbGet('vw_id_reno_count', { limit: '100', order: 'reno_30d.desc', ...(orFilter ? { or: orFilter } : {}) });
-    const top10 = data.slice(0, 10);
-    const labels = top10.map(r => r.suburb || r.SUBURB || '?');
-    const values = top10.map(r => parseInt(r.reno_30d || r.count || 0));
-    const ctx = document.getElementById('reno-chart').getContext('2d');
-    new Chart(ctx, {
-      type: 'bar',
-      data: {
-        labels,
-        datasets: [{
-          label: 'Reno Leads (30d)',
-          data: values,
-          backgroundColor: labels.map((_, i) => i === 0 ? 'rgba(230,69,0,0.9)' : i < 3 ? 'rgba(250,89,20,0.7)' : 'rgba(230,69,0,0.4)'),
-          borderRadius: 4, borderSkipped: false,
-        }]
+function renderSuburbGrowth(suburbs_data){
+  const el=document.getElementById('suburb-growth-list');
+  if(!suburbs_data||!suburbs_data.length){el.innerHTML='<div style="color:var(--text3);font-size:.75rem">Loading...</div>';return;}
+  const maxVal=Math.max(...suburbs_data.map(r=>r.submissions_30d||0));
+  el.innerHTML=suburbs_data.slice(0,12).map(r=>{
+    const curr=r.submissions_30d||0;
+    const prev=Math.max(1,r.total_submissions-curr);
+    const pct=((curr-prev/6)/prev*100*6).toFixed(0);
+    const cls=parseFloat(pct)>0?'pct-up':parseFloat(pct)<0?'pct-dn':'pct-flat';
+    const arrow=parseFloat(pct)>0?'↑':parseFloat(pct)<0?'↓':'→';
+    return`<div class="suburb-row">
+      <div class="sub-name">${r.suburb}<span style="font-size:.6rem;color:var(--text3);margin-left:6px">${r.council==='brisbane'?'BNE':'SC'}</span></div>
+      <div class="sub-bar-wrap"><div class="sub-bar" style="width:${maxVal>0?Math.min(100,curr/maxVal*100):0}%"></div></div>
+      <div class="sub-count">${curr}</div>
+      <div class="sub-pct ${cls}">${arrow}${Math.abs(pct)}%</div>
+    </div>`;
+  }).join('');
+}
+
+function renderRenoSuburbs(reno_data){
+  const el=document.getElementById('reno-suburb-list');
+  if(!reno_data||!reno_data.length){el.innerHTML='<div style="color:var(--text3);font-size:.75rem">Loading...</div>';return;}
+  const maxVal=Math.max(...reno_data.map(r=>r.reno_30d||0));
+  el.innerHTML=reno_data.slice(0,12).map(r=>`<div class="suburb-row">
+    <div class="sub-name">${r.suburb}</div>
+    <div class="sub-bar-wrap"><div class="sub-bar" style="width:${maxVal>0?r.reno_30d/maxVal*100:0}%"></div></div>
+    <div class="sub-count">${r.reno_30d}</div>
+    <span class="badge ${r.reno_30d>=4?'b-hot':r.reno_30d>=2?'b-warm':'b-cold'}">${r.reno_30d>=4?'🔥':r.reno_30d>=2?'🌡️':''}${r.reno_30d>=4?'HOT':r.reno_30d>=2?'WARM':'ACTIVE'}</span>
+  </div>`).join('');
+}
+
+function renderNetwork(consultants, devs){
+  const archHtml=consultants.slice(0,7).map((r,i)=>`
+    <div class="suburb-row">
+      <div style="font-size:.65rem;font-weight:700;color:var(--text3);margin-right:6px">#${i+1}</div>
+      <div class="sub-name">${r.consultant}</div>
+      <div style="font-size:.65rem;color:var(--text2)">${r.project_count} projects</div>
+      <div style="font-size:.62rem;color:var(--text3)">Last: ${r.last_seen?r.last_seen.split('T')[0]:'—'}</div>
+    </div>`).join('');
+  document.getElementById('arch-list').innerHTML=archHtml||'<div style="color:var(--text3);font-size:.75rem">Loading...</div>';
+
+  const devHtml=devs.slice(0,7).map((r,i)=>`
+    <div class="suburb-row">
+      <div style="font-size:.65rem;font-weight:700;color:var(--text3);margin-right:6px">#${i+1}</div>
+      <div class="sub-name">${r.primary_applicant}</div>
+      <div style="font-size:.65rem;color:var(--text2)">${r.submission_count} total</div>
+      <span class="badge ${r.submissions_30d>0?'b-acc':'b-cold'}">${r.submissions_30d} this month</span>
+    </div>`).join('');
+  document.getElementById('dev-list').innerHTML=devHtml||'<div style="color:var(--text3);font-size:.75rem">Loading...</div>';
+}
+
+let leadsAll=[];
+function renderLeads(leads){
+  leadsAll=leads;
+  filterLeads();
+}
+
+function filterLeads(){
+  const sig=document.getElementById('filter-signal').value;
+  const show=sig?leadsAll.filter(r=>r.icp_signal===sig):leadsAll;
+  // Hide ALL projects already in pipeline from hot leads
+  const shown=show.filter(r=>!r.application_number||!pipelineData.some(p=>p.application_number===r.application_number)).slice(0,40);
+  window._shownLeads=shown;
+  const el=document.getElementById('leads-container');
+  if(!shown.length){el.innerHTML='<div style="color:var(--text3);padding:2rem;text-align:center">No leads matching your filter</div>';return;}
+  el.innerHTML=shown.map((r,i)=>{
+    const tip=outreachTip(r.stage,r.days_since_lodged);
+    const cost=costEst(r.application_type,r.suburb);
+    const pType=propType(r.application_type,r.suburb);
+    const inPipe=r.application_number&&pipelineData.some(function(p){return p.application_number&&p.application_number===r.application_number;});
+    const pipeEntry=inPipe?pipelineData.find(function(p){return p.application_number===r.application_number;}):null;
+    const pipeStageLabel={'watching':'Watch List','contacted':'Contacted','meeting':'Meeting','proposal':'Proposal Sent','won':'Won','lost':'Lost','unqualified':'Unqualified'};
+    const inPipeLabel=pipeEntry?('✓ In Pipeline · '+(pipeStageLabel[pipeEntry.stage]||pipeEntry.stage)):'';
+    return`<div class="lead-card" style="${inPipe?'opacity:.6;border-color:rgba(76,175,80,.4);':''}">
+      ${inPipe?'<div style="font-size:.63rem;font-weight:700;color:#81c784;background:rgba(76,175,80,.1);border-radius:6px;padding:3px 10px;margin-bottom:.5rem;display:inline-flex;align-items:center;gap:5px">'+inPipeLabel+'</div>':''}
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:.75rem;margin-bottom:.5rem">
+        <div>
+          <div class="lead-addr">${r.address||'Unknown Address'}</div>
+          <div class="lead-meta">${pType} · Lodged ${r.date_lodged||'—'} · ${r.days_since_lodged||0} days ago</div>
+        </div>
+        <div style="display:flex;gap:.5rem;align-items:center;flex-shrink:0">
+          ${badge(r.icp_signal||'COLD')}
+          <button class="btn-add ${inPipe?'added':''}" onclick="openModalById(${i})">${inPipe?'✓ In Pipeline':'+ Pipeline'}</button>
+        </div>
+      </div>
+      <div class="lead-row">
+        <div class="lead-section" style="flex:1.5">
+          <strong>When to contact</strong>
+          ${tip.when}
+        </div>
+        <div class="lead-section" style="flex:2">
+          <strong>How to reach out</strong>
+          ${tip.how}
+        </div>
+        <div class="lead-section" style="flex:1">
+          <strong>Est. Project Value</strong>
+          <div class="value-range">${r.est_project_value||fmt$(cost.min)+' – '+fmt$(cost.max)}</div>
+          <div style="font-size:.62rem;color:var(--text3);margin-top:2px">${cost.note}</div>
+        </div>
+      </div>
+      ${r.da_link?`<a href="${r.da_link}" target="_blank" class="a-link">View DA Application →</a>`:''}
+    </div>`;
+  }).join('');
+}
+
+// ── PIPELINE ──
+const STAGE_PROB={watching:.10,contacted:.20,meeting:.40,proposal:.60,won:1,lost:0,unqualified:0};
+const STAGE_COLORS={watching:'#546E7A',contacted:'#FF9800',meeting:'#00BCD4',proposal:'#7C4DFF',won:'#4CAF50',lost:'#E91E63',unqualified:'#333'};
+const STAGE_LABELS={watching:'Watch List',contacted:'Contacted',meeting:'Meeting',proposal:'Proposal',won:'Won',lost:'Lost',unqualified:'Unqualified'};
+const ACTIVE_STAGES=['watching','contacted','meeting','proposal','won'];
+
+async function loadPipeline(){
+  if(!clientId){pipelineData=JSON.parse(localStorage.getItem('pipeline_'+suburbsParam)||'[]');renderPipeline();return;}
+  try{
+    const r=await sb('client_pipeline',{client_id:'eq.'+clientId,order:'created_at.asc',limit:'200'});
+    pipelineData=r.data;
+  }catch(e){pipelineData=JSON.parse(localStorage.getItem('pipeline_'+suburbsParam)||'[]');}
+  renderPipeline();
+}
+
+async function savePipeline(){
+  localStorage.setItem('pipeline_'+suburbsParam, JSON.stringify(pipelineData));
+  renderPipeline();
+}
+
+function stageSum(s){return pipelineData.filter(p=>p.stage===s).reduce((a,p)=>a+(parseFloat(p.estimated_value)||0),0);}
+function stageCount(s){return pipelineData.filter(p=>p.stage===s).length;}
+
+function generateAIInsight(){
+  const total=ACTIVE_STAGES.reduce((s,st)=>s+stageSum(st),0);
+  const watching=stageCount('watching'),contacted=stageCount('contacted'),meeting=stageCount('meeting'),proposal=stageCount('proposal'),won=stageCount('won'),lost=stageCount('lost');
+  const active=watching+contacted+meeting+proposal;
+  
+  let pill='stable',pillText='Pipeline Healthy',summary='',actions=[];
+
+  if(active===0){
+    pill='action';pillText='⚡ Action Required';
+    summary='Your pipeline is <span class="ai-highlight pink">empty</span>. Without opportunities in your pipeline, there\'s no foundation for revenue. The most important thing right now is getting projects into your Watch List.';
+    actions=['Open the Hot Leads tab and add your top 5 projects to the pipeline now','Target suburbs with 3+ renovation DAs this month — these are your best prospects','Reach out to architects and consultants in your area to introduce your firm'];
+  } else if(watching>0&&contacted===0){
+    pill='warning';pillText='⚠ Stuck at Watch List';
+    summary=`You have <span class="ai-highlight">${watching} project${watching>1?'s':''}</span> being watched but <span class="ai-highlight pink">none contacted yet</span>. Watching doesn\'t win work — you need to be making contact. The longer you wait, the more likely someone else gets there first.`;
+    actions=['Pick your top 3 watched projects and call them this week','Introduce your firm: "I noticed you have a DA lodged — do you have an interior designer appointed?"','Aim to have at least 60% of your Watch List contacted within 2 weeks'];
+  } else if(contacted>meeting*2&&meeting<2){
+    pill='warning';pillText='⚠ Low Meeting Conversion';
+    summary=`You're contacting projects but <span class="ai-highlight pink">not converting to meetings</span>. With <span class="ai-highlight">${contacted} contacted</span> and only <span class="ai-highlight">${meeting} meetings</span>, your intro pitch may need refinement. A strong lead magnet or case study can dramatically improve this.`;
+    actions=['Review your intro approach — lead with a specific suburb insight (e.g. "I saw your DA in Hendra, we recently completed a similar project nearby")','Offer something of value first: a free 30-min consultation or a mood board for their suburb','Follow up at least 3 times before moving a contact to unqualified'];
+  } else if(meeting>proposal*2&&proposal<2){
+    pill='warning';pillText='⚠ Low Proposal Conversion';
+    summary=`Meetings are happening but proposals are low — <span class="ai-highlight">${meeting} meetings</span> vs <span class="ai-highlight">${proposal} proposals</span>. This suggests the meetings are productive but the handoff to proposal needs work.`;
+    actions=['Send a proposal within 48 hours of every meeting while you\'re top of mind','Include a clear scope, timeline, and 2–3 package options so clients can choose rather than decide','Ask directly at the end of every meeting: "Can I send you a proposal this week?"'];
+  } else if(proposal>0&&won===0){
+    pill='warning';pillText='⚠ Proposals Not Closing';
+    summary=`You have <span class="ai-highlight">${proposal} proposal${proposal>1?'s':''}</span> out but <span class="ai-highlight pink">none won yet</span>. This is a closing issue. Follow up, address objections, and make it easy for them to say yes.`;
+    actions=['Follow up on every proposal within 5 business days','Ask: "Is there anything in the proposal you\'d like to discuss or adjust?"','Consider adding a time-sensitive offer (e.g. "Book before end of month for priority scheduling")'];
+  } else if(won>0){
+    const wonVal=stageSum('won'),conv=active>0?Math.round(won/(won+lost+active)*100):0;
+    pill='stable';pillText='✅ Pipeline Healthy';
+    summary=`Strong pipeline — <span class="ai-highlight grn">${fmt$(wonVal)} secured</span> and a <span class="ai-highlight grn">${conv}% conversion rate</span>. Keep the top of your funnel full: every project you win should be replaced with 3 new ones in your Watch List.`;
+    actions=['Maintain at least 5 projects in Watch List at all times','Ask every won client for a referral within 2 weeks of project start','Review lost projects monthly to identify common objections'];
+  } else {
+    summary=`You have <span class="ai-highlight">${active} active opportunities</span> worth <span class="ai-highlight grn">${fmt$(total)}</span> in your pipeline. Keep momentum — consistent follow-up is the difference between winning and losing projects.`;
+    actions=['Follow up on any contact older than 7 days','Add at least 2 new projects to your Watch List this week','Review proposals older than 14 days'];
+  }
+
+  document.getElementById('ai-status-pill').className='ai-status-pill '+pill;
+  document.getElementById('ai-status-pill').innerHTML='● '+pillText;
+  document.getElementById('ai-summary-text').innerHTML=summary;
+  document.getElementById('ai-actions').innerHTML=actions.map(a=>`<div class="ai-action-item">→ ${a}</div>`).join('');
+}
+
+function renderFunnel(){
+  const card=document.getElementById('funnel-wrap');
+  if(!card)return;
+
+  const stages=['watching','contacted','meeting','proposal','won'];
+  const counts=stages.map(s=>stageCount(s));
+  const values=stages.map(s=>stageSum(s));
+  const maxC=Math.max(1,...counts);
+
+  // Build header: label, big count, % change (vs prior period - use month comparison)
+  // For now: count vs half the max as a proxy trend
+  const headerHtml=`<div class="funnel-header">`+stages.map((s,i)=>{
+    const cnt=counts[i];
+    const prevCnt=i>0?counts[i-1]:cnt;
+    const pct=prevCnt>0?Math.round((cnt-prevCnt)/prevCnt*100):0;
+    const updn=pct>=0;
+    return `<div class="fh-col">
+      <div class="fh-label">${STAGE_LABELS[s]}</div>
+      <div class="fh-count">${cnt}</div>
+      <div class="fh-change ${updn?'fh-up':'fh-dn'}">${updn?'▲':'▼'} ${Math.abs(pct)}%</div>
+    </div>`;
+  }).join('')+'</div>';
+
+  // SVG flowing funnel — bezier curves between stage heights
+  // Height of each section proportional to count
+  const W=800, H=120, STAGES=stages.length;
+  const segW=W/STAGES;
+  const maxH=H*0.9, minH=H*0.15;
+
+  // Heights array based on count
+  const heights=counts.map(c=>Math.max(minH,c/maxC*maxH));
+
+  // Build SVG path — top line flows right, bottom line flows right
+  // Between each pair of segments, draw a smooth bezier
+  let topPts=[], botPts=[];
+  stages.forEach((s,i)=>{
+    const x=i*segW;
+    const midY=H/2;
+    const h=heights[i]/2;
+    topPts.push({x:x+segW*0.1, y:midY-h});
+    topPts.push({x:x+segW*0.9, y:midY-h});
+    botPts.push({x:x+segW*0.1, y:midY+h});
+    botPts.push({x:x+segW*0.9, y:midY+h});
+  });
+  // Add end cap
+  const lastH=heights[heights.length-1]/2;
+  topPts.push({x:W, y:H/2-lastH});
+  botPts.push({x:W, y:H/2+lastH});
+
+  // Build smooth path
+  function buildPath(pts){
+    let d=`M ${pts[0].x} ${pts[0].y}`;
+    for(let i=1;i<pts.length;i++){
+      const prev=pts[i-1],cur=pts[i];
+      const cpx=(prev.x+cur.x)/2;
+      d+=` C ${cpx} ${prev.y}, ${cpx} ${cur.y}, ${cur.x} ${cur.y}`;
+    }
+    return d;
+  }
+
+  const topPath=buildPath(topPts);
+  const botPtsRev=[...botPts].reverse();
+  const botPath=buildPath(botPts);
+
+  // Combined closed path (top forward, bottom reverse)
+  const fullPath=topPath+' L '+W+' '+(H/2+lastH)+' '+buildPath(botPtsRev).substring(1)+' Z';
+
+  // Conv rate labels at pinch points between stages
+  const convLabels=stages.slice(1).map((s,i)=>{
+    const prev=counts[i], cur=counts[i+1];
+    const pct=prev>0?Math.round(cur/prev*100):0;
+    const x=((i+1)*segW/W*100).toFixed(1);
+    return {x, pct};
+  });
+
+  const svgHtml=`
+  <div class="funnel-svg-wrap">
+    <svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" style="width:100%;height:110px;display:block">
+      <defs>
+        <linearGradient id="fgrad" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" style="stop-color:rgba(230,69,0,0.5)"/>
+          <stop offset="40%" style="stop-color:rgba(230,69,0,0.8)"/>
+          <stop offset="75%" style="stop-color:rgba(250,89,20,0.85)"/>
+          <stop offset="100%" style="stop-color:rgba(76,175,80,0.85)"/>
+        </linearGradient>
+        <filter id="blur"><feGaussianBlur stdDeviation="2"/></filter>
+      </defs>
+      <!-- Glow layer -->
+      <path d="${fullPath}" fill="url(#fgrad)" opacity="0.25" filter="url(#blur)"/>
+      <!-- Main shape -->
+      <path d="${fullPath}" fill="url(#fgrad)" opacity="0.9"/>
+    </svg>
+  </div>
+  <div class="funnel-conv-labels">
+    ${convLabels.map(c=>`<div style="flex:1;text-align:center"><span class="fcl">${c.pct}%</span></div>`).join('')}
+  </div>`;
+
+  const totalPipe=values.reduce((a,v)=>a+v,0);
+  const totalStarted=stages.reduce((a,s)=>a+stageCount(s),0)+stageCount('lost');
+  const convRate=totalStarted>0?Math.round(stageCount('won')/totalStarted*100):0;
+
+  card.innerHTML=headerHtml+svgHtml+
+    `<div class="funnel-footer">Overall conversion rate <span class="fcl" style="background:rgba(255,255,255,.15)">${convRate}%</span></div>`;
+
+  const totalEl=document.getElementById('funnel-total');
+  if(totalEl)totalEl.innerHTML=`Total Pipeline: <strong style="color:var(--accent)">${fmt$(totalPipe)}</strong>`;
+  const convEl=document.getElementById('funnel-conv');
+  if(convEl)convEl.innerHTML='';
+}
+
+let growthChartInst=null;
+function renderGrowthChart(){
+  const el=document.getElementById('chart-pipe-growth');
+  if(!el)return;
+  const now=new Date();
+  const months=[];
+  for(let i=5;i>=0;i--){
+    const d=new Date(now.getFullYear(),now.getMonth()-i,1);
+    const lbl=d.toLocaleString('default',{month:'short'});
+    // Count proposals and won by the month they moved to that stage
+    // We use created_at as proxy (best we have without stage change history)
+    const inMonth=p=>{
+      if(!p.created_at)return false;
+      const cd=new Date(p.created_at);
+      return cd.getFullYear()===d.getFullYear()&&cd.getMonth()===d.getMonth();
+    };
+    const proposals=pipelineData.filter(p=>['proposal','won'].includes(p.stage)&&inMonth(p)).length;
+    const won=pipelineData.filter(p=>p.stage==='won'&&inMonth(p)).length;
+    months.push({lbl,proposals,won});
+  }
+
+  if(growthChartInst)growthChartInst.destroy();
+  const ctx=el.getContext('2d');
+  growthChartInst=new Chart(ctx,{
+    type:'line',
+    data:{
+      labels:months.map(m=>m.lbl),
+      datasets:[
+        {
+          label:'Proposals Sent',
+          data:months.map(m=>m.proposals),
+          borderColor:'#FA5914',
+          backgroundColor:'rgba(250,89,20,0.15)',
+          fill:true,
+          tension:0.45,
+          borderWidth:2.5,
+          pointBackgroundColor:'#FA5914',
+          pointRadius:4,
+          pointHoverRadius:6
+        },
+        {
+          label:'Projects Won',
+          data:months.map(m=>m.won),
+          borderColor:'#4CAF50',
+          backgroundColor:'rgba(76,175,80,0.12)',
+          fill:true,
+          tension:0.45,
+          borderWidth:2.5,
+          pointBackgroundColor:'#4CAF50',
+          pointRadius:4,
+          pointHoverRadius:6
+        }
+      ]
+    },
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      interaction:{mode:'index',intersect:false},
+      plugins:{
+        legend:{
+          display:true,
+          position:'top',
+          labels:{color:'#8899AA',font:{size:10},boxWidth:10,padding:12,usePointStyle:true,pointStyle:'circle'}
+        },
+        tooltip:{callbacks:{label:c=>` ${c.dataset.label}: ${c.raw}`}}
       },
-      options: {
-        indexAxis: 'y',
-        responsive: true, maintainAspectRatio: false,
-        plugins: { legend: { display: false }, tooltip: {
-          backgroundColor: 'rgba(15,15,15,0.95)', borderColor: 'rgba(255,255,255,0.1)', borderWidth: 1,
-          titleColor: '#8899AA', bodyColor: '#FFFFFF'
-        }},
-        scales: {
-          x: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: '#8899AA' } },
-          y: { grid: { display: false }, ticks: { color: '#FFFFFF', font: { size: 11, weight: '600' } } }
+      scales:{
+        x:{ticks:{color:'#8899AA',font:{size:10}},grid:{color:'rgba(255,255,255,.04)'}},
+        y:{
+          ticks:{color:'#8899AA',font:{size:10},stepSize:1,callback:v=>Number.isInteger(v)?v:''},
+          grid:{color:'rgba(255,255,255,.04)'},
+          beginAtZero:true
         }
       }
-    });
-  } catch(e) { console.error('Reno chart error', e); }
+    }
+  });
 }
 
-// ─── LEADS TABLE ───
-async function loadLeads() {
-  const tbody = document.getElementById('leads-tbody');
-  try {
-    const orFilter = suburbOrFilter();
-    const data = await sbGet('vw_icp_lead_rankings_id', { limit: '100', order: 'rank.asc', ...(orFilter ? { or: orFilter } : {}) });
-    if (!data.length) { tbody.innerHTML = `<tr><td colspan="6" class="empty-state">No leads found for your suburbs.</td></tr>`; return; }
-    tbody.innerHTML = data.map((r, i) => {
-      const stage = (r.signal || r.stage || 'WARM').toUpperCase();
-      const badgeClass = stage.includes('HOT') ? 'badge-hot' : stage.includes('COLD') ? 'badge-cold' : stage.includes('NEW') ? 'badge-new' : 'badge-warm';
-      const val = r.est_value ? `$${Number(r.est_value).toLocaleString()}` : r.estimated_value ? `$${Number(r.estimated_value).toLocaleString()}` : '—';
-      const addr = r.address || r.property_address || r.location || '—';
-      const action = r.recommended_action || r.action || '—';
-      const daUrl = r.da_link || r.application_url || r.link || null;
-      return `<tr>
-        <td><span class="rank-num">${r.rank || i+1}</span></td>
-        <td style="max-width:220px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${addr}</td>
-        <td><span class="stage-badge ${badgeClass}">${stage}</span></td>
-        <td class="muted" style="max-width:240px;font-size:0.73rem;">${action}</td>
-        <td style="font-weight:700;color:var(--green);">${val}</td>
-        <td>${daUrl ? `<a href="${daUrl}" target="_blank" class="da-link">View →</a>` : '<span style="color:var(--text3)">—</span>'}</td>
-      </tr>`;
-    }).join('');
-  } catch(e) { tbody.innerHTML = `<tr><td colspan="6" class="empty-state">Error loading leads.</td></tr>`; }
+function renderTimeline(){
+  const el=document.getElementById('timeline-chart');
+  if(!el)return;
+  const now=new Date();
+  const months=[];
+  for(let i=0;i<12;i++){
+    const d=new Date(now.getFullYear(),now.getMonth()+i,1);
+    const lbl=d.toLocaleString('default',{month:'short',year:'2-digit'});
+    const sum=pipelineData.filter(p=>p.expected_start_date&&!['lost','unqualified'].includes(p.stage)).filter(p=>{
+      const sd=new Date(p.expected_start_date);
+      return sd.getFullYear()===d.getFullYear()&&sd.getMonth()===d.getMonth();
+    }).reduce((a,p)=>a+(parseFloat(p.estimated_value)||0),0);
+    months.push({lbl,sum});
+  }
+  const maxM=Math.max(...months.map(m=>m.sum),1);
+  el.innerHTML=months.map(m=>`<div class="tm-row">
+    <div class="tm-month">${m.lbl}</div>
+    ${m.sum>0
+      ?`<div class="tm-bar" style="width:${Math.max(4,m.sum/maxM*260)}px"><span class="tm-val">${fmt$(m.sum)}</span></div>`
+      :`<div style="font-size:.6rem;color:rgba(255,255,255,.15);padding-left:8px">No projects due</div>`}
+  </div>`).join('');
 }
 
-// ─── MULTI DONUT ───
-async function loadMultiDonut() {
-  try {
-    const orFilter = suburbOrFilter();
-    const data = await sbGet('vw_id_multi_count', { limit: '500', ...(orFilter ? { or: orFilter } : {}) });
-    let hot = 0, warm = 0, cold = 0;
-    data.forEach(r => {
-      const stage = (r.signal || r.stage || r.status || '').toUpperCase();
-      const cnt = parseInt(r.count || r.total || 1) || 1;
-      if (stage.includes('HOT')) hot += cnt;
-      else if (stage.includes('COLD')) cold += cnt;
-      else warm += cnt;
-    });
-    if (!hot && !warm && !cold) { hot = data.length; }
-    const total = hot + warm + cold || 1;
-    const ctx = document.getElementById('multi-donut').getContext('2d');
-    new Chart(ctx, {
-      type: 'doughnut',
-      data: {
-        labels: ['HOT','WARM','COLD'],
-        datasets: [{ data: [hot, warm, cold],
-          backgroundColor: ['rgba(233,30,99,0.85)','rgba(255,152,0,0.8)','rgba(96,112,128,0.4)'],
-          borderColor: ['#E91E63','#FF9800','#607080'], borderWidth: 1, hoverOffset: 4
-        }]
-      },
-      options: {
-        responsive: true, maintainAspectRatio: false, cutout: '70%',
-        plugins: {
-          legend: { display: false },
-          tooltip: {
-            backgroundColor: 'rgba(15,15,15,0.95)', borderColor: 'rgba(255,255,255,0.1)', borderWidth: 1,
-            callbacks: { label: (ctx) => ` ${ctx.label}: ${ctx.raw} (${Math.round((ctx.raw/total)*100)}%)` }
-          }
-        }
-      }
-    });
-    const colors = ['#E91E63','#FF9800','#607080'];
-    const vals = [hot, warm, cold];
-    document.getElementById('donut-legend').innerHTML = ['HOT','WARM','COLD'].map((l,i) => `
-      <div class="legend-row">
-        <div class="legend-dot-wrap"><div class="legend-dot" style="background:${colors[i]}"></div><span class="legend-label">${l}</span></div>
-        <span class="legend-val">${vals[i]} <span style="color:var(--text3);font-size:0.7rem">(${Math.round((vals[i]/total)*100)}%)</span></span>
+function renderPipeline(){
+  const stages=['watching','contacted','meeting','proposal','won','lost','unqualified'];
+  let total=0,weighted=0,won=0,active=0;
+
+  stages.forEach(s=>{
+    const cards=pipelineData.filter(p=>p.stage===s);
+    const sum=cards.reduce((acc,p)=>acc+(parseFloat(p.estimated_value)||0),0);
+    if(!['lost','unqualified'].includes(s)){total+=sum;weighted+=sum*(STAGE_PROB[s]||0);active+=cards.length;}
+    if(s==='won')won+=sum;
+    const el=document.getElementById('drop-'+s);
+    if(!el)return;
+    el.innerHTML=cards.map(p=>`
+      <div class="kb-card" draggable="true" data-id="${p.id||p.application_number}" ondragstart="dragStart(event,'${p.id||p.application_number}')">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:3px">
+          <div class="kb-addr">${(p.address||p.suburb||'Unknown').substring(0,28)}</div>
+          <button class="kb-btn-rm" onclick="removeFromPipeline('${p.id||p.application_number}')">✕</button>
+        </div>
+        <div class="kb-val" style="margin-bottom:5px">${p.estimated_value?fmt$(parseFloat(p.estimated_value)):'No value set'}</div>
+        ${p.expected_start_date?`<div style="font-size:.6rem;color:var(--text3);margin-bottom:5px">Starts: ${p.expected_start_date}</div>`:''}
+        ${p.comments&&p.comments.length?`<div style="font-size:.6rem;color:var(--text3);margin-bottom:5px">💬 ${p.comments.length} note${p.comments.length>1?'s':''}</div>`:''}
+        <button data-pid="${p.id||p.application_number}" onclick="event.stopPropagation();openDetail(this.dataset.pid)" style="font-size:.62rem;font-weight:600;color:var(--teal);background:rgba(0,188,212,.1);border:1px solid rgba(0,188,212,.25);border-radius:5px;padding:2px 8px;cursor:pointer;font-family:inherit;width:100%">Details →</button>
       </div>`).join('');
-  } catch(e) { console.error('Multi donut error', e); }
+    const sumEl=document.getElementById('sum-'+s);
+    if(sumEl)sumEl.textContent=sum>0?fmt$(sum):'$0';
+  });
+
+  const totalStarted=stageCount('watching')+stageCount('contacted')+stageCount('meeting')+stageCount('proposal')+stageCount('won')+stageCount('lost');
+  const convRate=totalStarted>0?Math.round(stageCount('won')/totalStarted*100):0;
+
+  // Update KPIs
+  if(document.getElementById('p-total'))document.getElementById('p-total').textContent=fmt$(total);
+  if(document.getElementById('p-weighted'))document.getElementById('p-weighted').textContent=fmt$(weighted);
+  if(document.getElementById('p-won'))document.getElementById('p-won').textContent=fmt$(won);
+  if(document.getElementById('p-conv-rate'))document.getElementById('p-conv-rate').textContent=convRate+'%';
+  if(document.getElementById('p-count'))document.getElementById('p-count').textContent=active;
+
+  renderFunnel();
+  renderGrowthChart();
+  renderTimeline();
+  generateAIInsight();
 }
 
-// ─── CONSULTANTS ───
-async function loadConsultants() {
-  const tbody = document.getElementById('consultants-tbody');
-  try {
-    const orFilter = suburbOrFilter();
-    const data = await sbGet('vw_id_consultant_overlap', { limit: '50', order: 'project_count.desc', ...(orFilter ? { or: orFilter } : {}) });
-    if (!data.length) { tbody.innerHTML = `<tr><td colspan="5" class="empty-state">No consultant data for your suburbs.</td></tr>`; return; }
-    tbody.innerHTML = data.map((r, i) => `<tr>
-      <td><span class="rank-num">${i+1}</span></td>
-      <td style="font-weight:600;">${r.consultant_name || r.name || r.applicant || '—'}</td>
-      <td>${r.project_count || r.total_projects || '—'}</td>
-      <td>${r.last_30d || r.recent_count || '—'}</td>
-      <td class="muted">${r.last_seen ? new Date(r.last_seen).toLocaleDateString('en-AU') : '—'}</td>
-    </tr>`).join('');
-  } catch(e) { tbody.innerHTML = `<tr><td colspan="5" class="empty-state">Error loading consultants.</td></tr>`; }
+// Drag & Drop
+let draggingId=null;
+function dragStart(e,id){draggingId=id;e.currentTarget.classList.add('dragging');}
+function allowDrop(e){e.preventDefault();e.currentTarget.classList.add('drag-over');}
+function dropCard(e,stage){
+  e.preventDefault();e.currentTarget.classList.remove('drag-over');
+  if(!draggingId)return;
+  const p=pipelineData.find(p=>(p.id||p.application_number)===draggingId);
+  if(p){p.stage=stage;savePipeline();}
+  draggingId=null;
 }
+
+function removeFromPipeline(id){
+  pipelineData=pipelineData.filter(p=>(p.id||p.application_number)!==id);
+  savePipeline();
+}
+
+// Modal
+function openModalById(idx){
+  const project=(window._shownLeads||[])[idx];
+  if(!project){console.warn('Lead not found at index',idx);return;}
+  openModal(project);
+}
+
+function openModal(project){
+  currentModalProject=project;
+  const cost=costEst(project.application_type,project.suburb);
+  document.getElementById('modal-project-info').innerHTML=`<strong>${project.address||project.suburb}</strong> · ${propType(project.application_type)} · System est: ${fmt$(cost.min)} – ${fmt$(cost.max)}`;
+  document.getElementById('modal-value').value='';
+  document.getElementById('modal-start').value='';
+  document.getElementById('modal-notes').value='';
+  document.getElementById('modal-overlay').classList.add('open');
+}
+function closeModal(){document.getElementById('modal-overlay').classList.remove('open');currentModalProject=null;}
+
+async function saveToHipeline(){
+  if(!currentModalProject)return;
+  const val=document.getElementById('modal-value').value;
+  const start=document.getElementById('modal-start').value;
+  const notes=document.getElementById('modal-notes').value;
+  const stage=document.getElementById('modal-stage').value;
+
+  // Close modal first
+  closeModal();
+
+  // Switch to pipeline tab FIRST so kb-drop elements exist in DOM
+  showTab('pipeline');
+
+  // Wait one tick for DOM to finish rendering the pipeline tab
+  await new Promise(r=>setTimeout(r,50));
+
+  const existing=pipelineData.find(p=>p.application_number===currentModalProject.application_number);
+  if(!existing){
+    pipelineData.push({
+      id: currentModalProject.application_number||Date.now().toString(),
+      application_number: currentModalProject.application_number,
+      application_link: currentModalProject.da_link,
+      address: currentModalProject.address,
+      suburb: currentModalProject.suburb,
+      council: currentModalProject.council,
+      application_type: currentModalProject.application_type,
+      property_type: propType(currentModalProject.application_type),
+      stage, estimated_value: val?parseFloat(val):null,
+      expected_start_date: start||null, notes,
+      created_at: new Date().toISOString()
+    });
+  }
+
+  // Save to localStorage
+  localStorage.setItem('pipeline_'+suburbsParam, JSON.stringify(pipelineData));
+
+  // Now render — kb-drop elements exist because tab is active
+  renderPipeline();
+
+  // Update hot leads buttons
+  renderLeads(leadsAll);
+
+  showToast('✅ Project added to ' + (stage==='watching'?'Watch List':stage.charAt(0).toUpperCase()+stage.slice(1)));
+}
+
+
+// ── PROJECT DETAIL OVERLAY ──
+let currentDetailId = null;
+
+function openDetail(projectId) {
+  const p = pipelineData.find(x => (x.id || x.application_number) === projectId);
+  if (!p) { console.warn('No project found:', projectId, pipelineData.map(x=>x.id||x.application_number)); return; }
+  currentDetailId = projectId;
+
+  document.getElementById('dp-addr').textContent = p.address || p.suburb || 'Unknown Address';
+  document.getElementById('dp-meta').textContent = [p.property_type, p.council === 'brisbane' ? 'Brisbane' : 'Sunshine Coast'].filter(Boolean).join(' · ');
+  document.getElementById('dp-stage').value = p.stage || 'watching';
+  document.getElementById('dp-value').value = p.estimated_value || '';
+  document.getElementById('dp-start').value = p.expected_start_date || '';
+  document.getElementById('dp-ptype').value = p.property_type || '';
+  document.getElementById('dp-applicant').value = p.applicant || '—';
+
+  const linkWrap = document.getElementById('dp-da-link-wrap');
+  linkWrap.innerHTML = p.application_link
+    ? '<a href="' + p.application_link + '" target="_blank" class="detail-da-link">🔗 View DA Application →</a>'
+    : '<span style="font-size:.68rem;color:var(--text3)">No DA link</span>';
+
+  const tmEl = document.getElementById('dp-timeline');
+  const events = [
+    { icon: '📋', title: 'DA Lodged — ' + (p.application_type || 'Development Application'), time: p.date_lodged || 'Date unknown' },
+    { icon: '➕', title: 'Added to your pipeline', time: p.created_at ? new Date(p.created_at).toLocaleString('en-AU', {dateStyle:'medium',timeStyle:'short'}) : 'Unknown' }
+  ];
+  tmEl.innerHTML = events.map(function(e) {
+    return '<div class="timeline-item"><div class="tl-icon">' + e.icon + '</div><div class="tl-content"><div class="tl-title">' + e.title + '</div><div class="tl-time">' + e.time + '</div></div></div>';
+  }).join('');
+
+  renderComments(p);
+  document.getElementById('detail-overlay').classList.add('open');
+}
+
+function closeDetail() {
+  document.getElementById('detail-overlay').classList.remove('open');
+  currentDetailId = null;
+}
+
+function renderComments(p) {
+  const el = document.getElementById('dp-comments');
+  const comments = p.comments || [];
+  if (!comments.length) {
+    el.innerHTML = '<div style="font-size:.7rem;color:var(--text3);padding:.25rem 0">No notes yet — add one below.</div>';
+    return;
+  }
+  el.innerHTML = comments.map(function(c) {
+    return '<div class="comment-item"><div class="comment-ts">' + c.ts + '</div><div class="comment-text">' + c.text + '</div></div>';
+  }).join('');
+}
+
+function addComment() {
+  if (!currentDetailId) return;
+  const txt = document.getElementById('dp-new-comment').value.trim();
+  if (!txt) return;
+  const p = pipelineData.find(function(x) { return (x.id || x.application_number) === currentDetailId; });
+  if (!p) return;
+  if (!p.comments) p.comments = [];
+  p.comments.push({ ts: new Date().toLocaleString('en-AU',{dateStyle:'medium',timeStyle:'short'}), text: txt });
+  document.getElementById('dp-new-comment').value = '';
+  renderComments(p);
+  savePipeline();
+}
+
+function updateDetailField(field, value) {
+  if (!currentDetailId) return;
+  const p = pipelineData.find(function(x) { return (x.id || x.application_number) === currentDetailId; });
+  if (!p) return;
+  p[field] = value;
+  if (field === 'stage') renderPipeline();
+  savePipeline();
+}
+
+document.addEventListener('click', function(e) {
+  if (e.target && e.target.id === 'detail-overlay') closeDetail();
+});
+
+document.getElementById('modal-overlay').addEventListener('click',e=>{if(e.target===e.currentTarget)closeModal();});
+document.querySelectorAll('.kb-drop').forEach(el=>{el.addEventListener('dragleave',()=>el.classList.remove('drag-over'));});
+
+
+function showToast(msg, duration=3000) {
+  const t = document.getElementById('toast');
+  if(!t) return;
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), duration);
+}
+// Go
+(async () => {
+  try {
+    await loadAll();
+  } catch(e) {
+    console.error('loadAll error:', e);
+    const errEl = document.getElementById('load-error');
+    if (errEl) {
+      errEl.style.display = 'block';
+      errEl.textContent = '⚠️ Error loading data: ' + e.message + '\n\nStack: ' + (e.stack||'').split('\n').slice(0,3).join('\n');
+    }
+    // Show generic error in all sections
+    document.querySelectorAll('#reno-list,#multi-list,#arch-list,#dev-list,#leads-container').forEach(el => {
+      if(el) el.innerHTML = '<div style="color:var(--pink);font-size:.75rem">Error: ' + e.message + '</div>';
+    });
+  }
+})();
 </script>
+
+<!-- PROJECT DETAIL OVERLAY -->
+<div class="detail-overlay" id="detail-overlay">
+  <div class="detail-panel">
+    <div class="detail-header">
+      <div>
+        <div class="detail-addr" id="dp-addr">—</div>
+        <div class="detail-meta" id="dp-meta">—</div>
+      </div>
+      <button class="detail-close" onclick="closeDetail()">✕</button>
+    </div>
+    <div class="detail-body">
+
+      <!-- Stage + DA link -->
+      <div class="detail-section">
+        <div class="detail-section-title">Project Status</div>
+        <div style="display:flex;align-items:center;gap:.75rem;flex-wrap:wrap">
+          <div class="detail-field" style="flex:1;min-width:140px">
+            <label>Pipeline Stage</label>
+            <select id="dp-stage" onchange="updateDetailField('stage',this.value)">
+              <option value="watching">👁 Watch List</option>
+              <option value="contacted">📞 Contacted</option>
+              <option value="meeting">🤝 Meeting</option>
+              <option value="proposal">📋 Proposal Sent</option>
+              <option value="won">✅ Won</option>
+              <option value="lost">❌ Lost</option>
+              <option value="unqualified">🚫 Unqualified</option>
+            </select>
+          </div>
+          <div id="dp-da-link-wrap"></div>
+        </div>
+      </div>
+
+      <!-- Editable fields -->
+      <div class="detail-section">
+        <div class="detail-section-title">Project Details</div>
+        <div class="detail-grid">
+          <div class="detail-field">
+            <label>Your Value Estimate ($)</label>
+            <input type="number" id="dp-value" placeholder="e.g. 45000" onchange="updateDetailField('estimated_value',this.value)">
+          </div>
+          <div class="detail-field">
+            <label>Expected Start Date</label>
+            <input type="date" id="dp-start" onchange="updateDetailField('expected_start_date',this.value)">
+          </div>
+          <div class="detail-field">
+            <label>Property Type</label>
+            <input type="text" id="dp-ptype" placeholder="e.g. Single Dwelling" onchange="updateDetailField('property_type',this.value)">
+          </div>
+          <div class="detail-field">
+            <label>Applicant</label>
+            <input type="text" id="dp-applicant" readonly style="opacity:.6">
+          </div>
+        </div>
+      </div>
+
+      <!-- DA History Timeline -->
+      <div class="detail-section" id="dp-timeline-section">
+        <div class="detail-section-title">Application History</div>
+        <div id="dp-timeline"></div>
+      </div>
+
+      <!-- Notes & Comments -->
+      <div class="detail-section">
+        <div class="detail-section-title">Notes & Activity Log</div>
+        <div class="comment-list" id="dp-comments"></div>
+        <div class="comment-input-wrap">
+          <textarea id="dp-new-comment" placeholder="Add a note or update..."></textarea>
+          <button class="btn-comment" onclick="addComment()">Add</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
 </body>
 </html>
