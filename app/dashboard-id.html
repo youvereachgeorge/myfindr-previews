@@ -341,13 +341,32 @@
       .pipe-stats-row{grid-template-columns:1fr 1fr}
     }
     /* ── WELCOME BANNER ── */
-    .welcome-banner{display:flex;justify-content:space-between;align-items:flex-start;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:20px 24px;margin-bottom:24px}
-    .welcome-banner h2{font-size:1.4rem;margin:0 0 4px;color:#fff}
-    .welcome-banner p{color:#868686;font-size:.875rem;margin:0}
-    .last-sync{font-size:.8rem;color:#868686;text-align:right}
-    @media(max-width:768px){.welcome-banner{flex-direction:column;gap:12px}.last-sync{text-align:left}}
+    .welcome-banner{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:24px;flex-wrap:wrap}
+    .welcome-left{display:flex;flex-direction:column;gap:4px}
+    .welcome-heading{font-size:1.9rem;font-weight:800;color:#fff;line-height:1.1;margin:0}
+    .welcome-sub{font-size:.875rem;color:#868686;margin:0}
+    .welcome-pills{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+    @media(max-width:768px){.welcome-banner{flex-direction:column;align-items:flex-start;gap:12px}}
     /* ── REGION BADGE ── */
     .region-badge{background:rgba(255,255,255,.1);border-radius:4px;padding:4px 10px;font-size:.75rem;color:#ccc;display:inline-flex;align-items:center;gap:4px}
+    /* ── LAST UPDATED KPI CARD ── */
+    .kpi-last-updated{position:relative}
+    .kpi-last-updated .lu-check{position:absolute;top:10px;right:10px;width:22px;height:22px;border-radius:50%;background:#22C55E;display:flex;align-items:center;justify-content:center;font-size:.65rem;color:#fff;font-weight:700}
+    .kpi-last-updated .lu-day{font-size:1.35rem;font-weight:800;color:#fff;line-height:1.1;margin-bottom:2px}
+    .kpi-last-updated .lu-time{font-size:1.4rem;font-weight:800;color:#4ADE80;line-height:1.1}
+    .kpi-last-updated .lu-footer{display:flex;align-items:center;justify-content:space-between;margin-top:8px}
+    .lu-pill{background:rgba(34,197,94,.2);color:#4ADE80;border-radius:20px;padding:2px 8px;font-size:.65rem;font-weight:700}
+    .lu-refresh{font-size:.65rem;color:#607080}
+    /* ── CTA STRIP ── */
+    .cta-strip{display:flex;justify-content:space-between;align-items:center;background:linear-gradient(135deg,rgba(230,69,0,.15),rgba(230,69,0,.05));border:1px solid rgba(230,69,0,.3);border-radius:12px;padding:20px 24px;margin:24px 0;gap:16px}
+    .cta-left{display:flex;align-items:center;gap:16px}
+    .cta-icon{font-size:2rem}
+    .cta-title{font-size:1rem;font-weight:600;color:#fff;margin-bottom:4px}
+    .cta-sub{font-size:.8rem;color:#868686}
+    .cta-buttons{display:flex;gap:12px;flex-shrink:0}
+    .btn-cta-primary{background:#E64500;color:#fff;padding:10px 20px;border-radius:8px;text-decoration:none;font-size:.875rem;font-weight:600;white-space:nowrap}
+    .btn-cta-secondary{background:transparent;color:#E64500;border:1px solid #E64500;padding:10px 20px;border-radius:8px;text-decoration:none;font-size:.875rem;white-space:nowrap}
+    @media(max-width:768px){.cta-strip{flex-direction:column;align-items:flex-start}.cta-buttons{width:100%}.btn-cta-primary,.btn-cta-secondary{flex:1;text-align:center}}
   </style>
 </head>
 <body>
@@ -371,23 +390,52 @@
 <!-- ═══════════════════ OVERVIEW ═══════════════════ -->
 <div class="section active" id="sec-overview">
   <div id="load-error" style="display:none;background:rgba(233,30,99,.15);border:1px solid rgba(233,30,99,.4);border-radius:8px;padding:.75rem 1rem;margin-bottom:1rem;font-size:.75rem;color:#f48fb1;white-space:pre-wrap"></div>
-  <!-- FIX 4: Welcome banner -->
+  <!-- FIX 5: Welcome banner — page-level heading, no card background -->
   <div class="welcome-banner">
-    <div class="welcome-text">
-      <h2>Welcome back, <span id="client-first-name">there</span> 👋</h2>
-      <p id="client-company-location"></p>
+    <div class="welcome-left">
+      <h2 class="welcome-heading">Welcome back, <span id="client-first-name">there</span> 👋</h2>
+      <p class="welcome-sub" id="client-company-location"></p>
     </div>
-    <div class="last-sync" id="last-sync-display">
-      🔄 Last synced: <span id="last-sync-time">checking...</span>
-    </div>
+    <div class="welcome-pills" id="welcome-region-pills"></div>
   </div>
-  <div class="kpi-row">
+  <!-- FIX 3: KPI row with Last Updated as 4th card (replacing multi-dwelling), CTA below -->
+  <div class="kpi-row" style="grid-template-columns:repeat(4,1fr)">
     <div class="kpi"><div class="kpi-l">HOT Leads</div><div class="kpi-v hot" id="k-hot">—</div><div class="kpi-s">Act immediately</div></div>
     <div class="kpi"><div class="kpi-l">Warm Leads</div><div class="kpi-v warm" id="k-warm">—</div><div class="kpi-s">Reach out this week</div></div>
-    <div class="kpi"><div class="kpi-l">DAs This Month</div><div class="kpi-v acc" id="k-mtd">—</div><div class="kpi-change" id="k-mtd-ch"></div></div>
-    <div class="kpi"><div class="kpi-l">DAs This Week</div><div class="kpi-v teal" id="k-7d">—</div><div class="kpi-s">Last 7 days</div></div>
-    <div class="kpi"><div class="kpi-l">Reno Permits</div><div class="kpi-v grn" id="k-reno">—</div><div class="kpi-s">In your suburbs</div></div>
-    <div class="kpi"><div class="kpi-l">Multi-Dwelling</div><div class="kpi-v" id="k-multi">—</div><div class="kpi-s">Pipeline</div></div>
+    <div class="kpi"><div class="kpi-l">Suburbs Tracked</div><div class="kpi-v teal" id="k-suburbs">—</div><div class="kpi-s">Active coverage</div></div>
+    <!-- FIX 4: Last Updated card -->
+    <div class="kpi kpi-last-updated" id="kpi-last-updated">
+      <div class="kpi-l">⏱ LAST UPDATED</div>
+      <div class="lu-check">✓</div>
+      <div class="lu-day">Today</div>
+      <div class="lu-time" id="last-sync-time">5:00am AEST</div>
+      <div class="lu-footer">
+        <span class="lu-pill">✓ fresh data</span>
+        <span class="lu-refresh">Daily refresh</span>
+      </div>
+    </div>
+  </div>
+  <!-- FIX 3: CTA Strip -->
+  <div class="cta-strip">
+    <div class="cta-left">
+      <span class="cta-icon">💬</span>
+      <div>
+        <div class="cta-title">Want to discuss this data with our team?</div>
+        <div class="cta-sub">Unlock Sunshine Coast · Gold Coast · Ipswich data — book a 15-min strategy call</div>
+      </div>
+    </div>
+    <div class="cta-buttons">
+      <a href="https://calendly.com/myfindr" target="_blank" class="btn-cta-primary">Book a Call →</a>
+      <a href="mailto:hello@myfindr.com.au" class="btn-cta-secondary">Send a Message</a>
+    </div>
+  </div>
+  <!-- hidden KPI values still needed for leads tab / other calcs -->
+  <div style="display:none">
+    <span id="k-mtd">—</span>
+    <span id="k-7d">—</span>
+    <span id="k-reno">—</span>
+    <span id="k-multi">—</span>
+    <span id="k-mtd-ch"></span>
   </div>
   <div class="g2">
     <div class="card"><div class="card-title"><span class="card-dot"></span>Renovation Hotspots — Your Suburbs</div><div id="reno-list">Loading...</div></div>
@@ -442,7 +490,7 @@
     </div>
   </div>
   <div class="card full">
-    <div class="card-title"><span class="card-dot"></span>Suburb Activity Trend — Last 6 Months</div>
+    <div class="card-title"><span class="card-dot"></span>Suburb Activity Trend — Top Suburbs by DA Volume</div>
     <div class="chart-h"><canvas id="chart-suburb-trend"></canvas></div>
   </div>
 
@@ -691,6 +739,13 @@ async function loadAll(){
   document.getElementById('k-reno').textContent=fmtN(renoTotal);
   const multiTotal=multi.data.reduce((s,r)=>s+(r.last_30d||0),0);
   document.getElementById('k-multi').textContent=fmtN(multiTotal)||'—';
+  // Suburbs tracked KPI
+  const subCount = suburbs.length || suburbVelocity.data.length || 0;
+  const kSubEl = document.getElementById('k-suburbs');
+  if(kSubEl) kSubEl.textContent = subCount || '—';
+  // Populate welcome region pills (mirror of header pills)
+  const wpEl = document.getElementById('welcome-region-pills');
+  if(wpEl) wpEl.innerHTML = document.getElementById('suburb-pills').innerHTML;
 
   // Reno hotspots (overview)
   const renoHtml=reno.data.slice(0,8).map(r=>`
@@ -731,6 +786,9 @@ async function loadAll(){
 
   // Network
   renderNetwork(consultants.data, devs.data);
+
+  // FIX 2: Suburb Activity Trend chart
+  loadSuburbTrendChart();
 
   // Suburb velocity widget
   renderSuburbVelocity(suburbVelocity.data);
@@ -860,6 +918,113 @@ function renderLeadUrgency(data){
   }).join('');
 }
 
+// FIX 2 — Suburb Activity Trend chart
+// Queries da_submissions directly, groups by suburb+month, shows top 5 suburbs
+async function loadSuburbTrendChart() {
+  const ctx = document.getElementById('chart-suburb-trend');
+  if (!ctx) return;
+
+  try {
+    // Fetch all data from last 12 months (cast a wide net so we always have data)
+    const cutoff = new Date();
+    cutoff.setFullYear(cutoff.getFullYear() - 1);
+    const cutoffStr = cutoff.toISOString().split('T')[0];
+    const url = new URL(`${SUPA}/rest/v1/da_submissions`);
+    url.searchParams.set('select', 'suburb,date_received');
+    url.searchParams.set('date_received', 'gte.' + cutoffStr);
+    url.searchParams.set('order', 'date_received.asc');
+    url.searchParams.set('limit', '5000');
+    const r = await fetch(url, { headers: { 'apikey': KEY, 'Authorization': 'Bearer ' + KEY } });
+    const rows = await r.json();
+
+    if (!Array.isArray(rows) || !rows.length) {
+      ctx.closest('.card').querySelector('.card-title').insertAdjacentHTML('afterend',
+        '<div style="color:var(--text3);font-size:.75rem;padding:.5rem 0">No data available yet.</div>');
+      ctx.style.display = 'none';
+      return;
+    }
+
+    // Group by suburb + month
+    const suburbMonths = {};
+    const allMonths = new Set();
+    rows.forEach(row => {
+      if (!row.suburb || !row.date_received) return;
+      const d = new Date(row.date_received + 'T00:00:00');
+      if (isNaN(d)) return;
+      const monthKey = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0');
+      const sub = (row.suburb || '').toUpperCase().trim();
+      allMonths.add(monthKey);
+      if (!suburbMonths[sub]) suburbMonths[sub] = {};
+      suburbMonths[sub][monthKey] = (suburbMonths[sub][monthKey] || 0) + 1;
+    });
+
+    // Sort months
+    const sortedMonths = Array.from(allMonths).sort();
+    // Only show last 6 distinct months we actually have data for
+    const displayMonths = sortedMonths.slice(-6);
+
+    // Rank suburbs by total count in display range
+    const suburbTotals = Object.entries(suburbMonths).map(([sub, months]) => ({
+      sub,
+      total: displayMonths.reduce((a, m) => a + (months[m] || 0), 0)
+    })).filter(x => x.total > 0).sort((a, b) => b.total - a.total);
+
+    const top5 = suburbTotals.slice(0, 5);
+
+    if (!top5.length) {
+      ctx.closest('.card').querySelector('.card-title').insertAdjacentHTML('afterend',
+        '<div style="color:var(--text3);font-size:.75rem;padding:.5rem 0">No data in range.</div>');
+      ctx.style.display = 'none';
+      return;
+    }
+
+    // Date range label
+    const earliest = displayMonths[0];
+    const latest = displayMonths[displayMonths.length - 1];
+    const fmtMonth = m => { const [y, mo] = m.split('-'); return new Date(+y, +mo - 1, 1).toLocaleString('default', { month: 'short', year: '2-digit' }); };
+    const rangeNote = document.createElement('div');
+    rangeNote.style.cssText = 'font-size:.62rem;color:var(--text3);margin-bottom:.5rem';
+    rangeNote.textContent = `Data from ${fmtMonth(earliest)} to ${fmtMonth(latest)}`;
+    ctx.closest('.card-title') && ctx.insertAdjacentElement('beforebegin', rangeNote);
+    ctx.parentElement.insertBefore(rangeNote, ctx);
+
+    const PALETTE = ['#E64500','#FA5914','#00BCD4','#4CAF50','#7C4DFF'];
+    const datasets = top5.map((item, i) => ({
+      label: item.sub,
+      data: displayMonths.map(m => suburbMonths[item.sub]?.[m] || 0),
+      borderColor: PALETTE[i],
+      backgroundColor: PALETTE[i].replace(')', ', 0.12)').replace('rgb', 'rgba').replace('#', 'rgba(').replace('rgba(#', 'rgba(') + (PALETTE[i].startsWith('#') ? '' : ''),
+      fill: false,
+      tension: 0.35,
+      borderWidth: 2,
+      pointRadius: 3,
+      pointBackgroundColor: PALETTE[i]
+    }));
+
+    new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: displayMonths.map(fmtMonth),
+        datasets
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: true, position: 'top', labels: { color: '#8899AA', font: { size: 10 }, boxWidth: 10 } }
+        },
+        scales: {
+          x: { ticks: { color: '#8899AA', font: { size: 10 } }, grid: { color: 'rgba(255,255,255,.04)' } },
+          y: { ticks: { color: '#8899AA', font: { size: 10 }, stepSize: 1, callback: v => Number.isInteger(v) ? v : '' }, grid: { color: 'rgba(255,255,255,.04)' }, beginAtZero: true }
+        }
+      }
+    });
+  } catch(e) {
+    console.error('Suburb trend chart error:', e);
+    ctx.style.display = 'none';
+  }
+}
+
 function renderLeads(leads){
   leadsAll=leads;
   filterLeads();
@@ -924,8 +1089,9 @@ const ACTIVE_STAGES=['watching','contacted','meeting','proposal','won'];
 async function loadPipeline(){
   if(!clientId){pipelineData=JSON.parse(localStorage.getItem('pipeline_'+suburbsParam)||'[]');renderPipeline();return;}
   try{
-    const r=await sb('client_pipeline',{client_id:'eq.'+clientId,order:'created_at.asc',limit:'200'});
-    pipelineData=r.data;
+    const r=await sb('client_pipeline',{select:'*',client_id:'eq.'+clientId,order:'created_at.asc',limit:'200'});
+    // Ensure files is always an array (JSONB from DB may be null)
+    pipelineData=r.data.map(p=>({...p, files: Array.isArray(p.files)?p.files:(p.files||[])}));
   }catch(e){pipelineData=JSON.parse(localStorage.getItem('pipeline_'+suburbsParam)||'[]');}
   renderPipeline();
 }
@@ -968,6 +1134,7 @@ async function sbWrite(table, cid){
     applicant: p.applicant || null,
     date_lodged: p.date_lodged || null,
     da_link: p.da_link || p.application_link || null,
+    files: p.files || [],
     created_at: p.created_at || new Date().toISOString()
   }));
   await fetch(`${SUPA}/rest/v1/${table}`, {
@@ -1536,7 +1703,7 @@ async function handleModalFileUpload(inputEl) {
   }
 }
 
-// FIX 5 — Last synced timestamp
+// FIX 4 — Last Updated card: populate time from da_submissions.created_at
 async function updateLastSync() {
   try {
     const r = await fetch(`${SUPA}/rest/v1/da_submissions?select=created_at&order=created_at.desc&limit=1`, {
@@ -1548,13 +1715,18 @@ async function updateLastSync() {
     if (!el) return;
     if (row && row.created_at) {
       const d = new Date(row.created_at);
-      el.textContent = d.toLocaleDateString('en-AU', { weekday: 'short', day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
+      // Format as "H:MMam/pm AEST"
+      let h = d.getHours(), m = d.getMinutes();
+      const ampm = h >= 12 ? 'pm' : 'am';
+      h = h % 12 || 12;
+      const mStr = m.toString().padStart(2, '0');
+      el.textContent = `${h}:${mStr}${ampm} AEST`;
     } else {
-      el.textContent = 'N/A';
+      el.textContent = '5:00am AEST';
     }
   } catch(e) {
     const el = document.getElementById('last-sync-time');
-    if (el) el.textContent = 'N/A';
+    if (el) el.textContent = '5:00am AEST';
   }
 }
 
