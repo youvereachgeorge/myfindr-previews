@@ -369,6 +369,16 @@
     <div class="card"><div class="card-title"><span class="card-dot"></span>Multi-Dwelling Pipeline (Fitout Opportunities)</div><div id="multi-list">Loading...</div></div>
     <div class="card"><div class="card-title"><span class="card-dot"></span>Lead Signal Distribution</div><div class="chart-h"><canvas id="chart-signals"></canvas></div></div>
   </div>
+  <div class="g2">
+    <div class="card">
+      <div class="card-title"><span class="card-dot"></span>⚡ Suburb Velocity — Surging Areas</div>
+      <div id="suburb-velocity-list">Loading...</div>
+    </div>
+    <div class="card">
+      <div class="card-title"><span class="card-dot"></span>🔥 Lead Urgency — Act Now</div>
+      <div id="lead-urgency-list">Loading...</div>
+    </div>
+  </div>
 </div>
 
 <!-- ═══════════════════ HOT LEADS ═══════════════════ -->
@@ -621,7 +631,7 @@ async function loadAll(){
   const prevMthEnd=new Date(now.getFullYear(),now.getMonth(),0).toISOString().split('T')[0];
   const wk7=new Date(now-7*864e5).toISOString().split('T')[0];
 
-  const [leads,reno,multi,mtd,prev7d,consultants,devs,suburbRank,monthlyHots] = await Promise.all([
+  const [leads,reno,multi,mtd,prev7d,consultants,devs,suburbRank,monthlyHots,suburbVelocity,leadUrgency] = await Promise.all([
     sb('vw_icp_lead_rankings_id',leadsQ),
     sb('vw_id_reno_count',renoQ),
     sb('vw_id_multi_count',{limit:'20'}),
@@ -630,7 +640,9 @@ async function loadAll(){
     sb('vw_id_consultant_overlap',{order:'project_count.desc',limit:'10'}),
     sb('vw_active_developers',{order:'submission_count.desc',limit:'10'}),
     sb('vw_da_suburb_rank',{order:'submissions_30d.desc',limit:'20'}),
-    sb('vw_re_monthly_hotspots',{order:'total_apps.desc',limit:'30'})
+    sb('vw_re_monthly_hotspots',{order:'total_apps.desc',limit:'30'}),
+    sb('vw_id_suburb_velocity',{order:'reno_7d.desc',limit:'8'}),
+    sb('vw_id_lead_urgency',{order:'urgency_score.desc',limit:'6'})
   ]);
 
   allLeads=leads.data;
@@ -686,6 +698,12 @@ async function loadAll(){
 
   // Network
   renderNetwork(consultants.data, devs.data);
+
+  // Suburb velocity widget
+  renderSuburbVelocity(suburbVelocity.data);
+
+  // Lead urgency widget
+  renderLeadUrgency(leadUrgency.data);
 
   // Leads tab (pre-render)
   renderLeads(allLeads);
@@ -750,6 +768,43 @@ function renderNetwork(consultants, devs){
 }
 
 let leadsAll=[];
+function renderSuburbVelocity(data){
+  const el=document.getElementById('suburb-velocity-list');
+  if(!el)return;
+  if(!data||!data.length){el.innerHTML='<div style="color:var(--text3);font-size:.75rem">No velocity data yet</div>';return;}
+  const sigColor={'SURGING':'var(--green)','ACTIVE_7D':'var(--teal)','ACTIVE_30D':'var(--amber)','SLOW':'var(--text3)'};
+  const sigLabel={'SURGING':'🚀 Surging','ACTIVE_7D':'🔥 Active 7d','ACTIVE_30D':'🌡️ Active','SLOW':'→ Slow'};
+  el.innerHTML=data.map(r=>{
+    const sig=r.velocity_signal||'SLOW';
+    const pct=r.mom_growth_pct!=null?Math.round(r.mom_growth_pct):null;
+    const pctLabel=pct!=null?(pct>200?`+${Math.min(pct,999)}%<span title="Limited historical data — may not be representative" style="font-size:.55rem;color:var(--text3)"> *</span>`:(pct>=0?`+${pct}%`:`${pct}%`)):'New';
+    return`<div class="suburb-row">
+      <div class="sub-name">${r.suburb}</div>
+      <span class="badge ${sig==='SURGING'?'b-grn':sig==='ACTIVE_7D'?'b-acc':'b-cold'}" style="color:${sigColor[sig]||'var(--text3)'}">${sigLabel[sig]||sig}</span>
+      <div class="sub-count" style="color:var(--teal)">${r.reno_7d||0} <span style="font-size:.58rem;color:var(--text3)">7d</span></div>
+      <div class="sub-pct pct-up" style="font-size:.65rem">${pctLabel}</div>
+    </div>`;
+  }).join('');
+}
+
+function renderLeadUrgency(data){
+  const el=document.getElementById('lead-urgency-list');
+  if(!el)return;
+  if(!data||!data.length){el.innerHTML='<div style="color:var(--text3);font-size:.75rem">No urgent leads right now</div>';return;}
+  const tierColor={'CALL_NOW':'var(--pink)','CALL_THIS_WEEK':'var(--amber)','WATCH':'var(--teal)'};
+  el.innerHTML=data.map(r=>{
+    const tier=r.urgency_tier||'WATCH';
+    const tierLabel={'CALL_NOW':'🔴 Call Now','CALL_THIS_WEEK':'🟡 This Week','WATCH':'👁 Watch'}[tier]||tier;
+    return`<div style="padding:.5rem 0;border-bottom:1px solid rgba(255,255,255,.04)">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:2px">
+        <div style="font-size:.75rem;font-weight:700;color:var(--text)">${(r.address||'Unknown').split(',').slice(0,-1).join(',').trim()||r.suburb||'—'}</div>
+        <span class="badge" style="background:rgba(255,255,255,.05);color:${tierColor[tier]||'var(--text3)'};font-size:.58rem">${tierLabel}</span>
+      </div>
+      <div style="font-size:.65rem;color:var(--text2)">${r.suburb||'—'} · ${r.application_type||'DA'} · ${r.days_since_lodged||0}d ago</div>
+    </div>`;
+  }).join('');
+}
+
 function renderLeads(leads){
   leadsAll=leads;
   filterLeads();
@@ -1211,6 +1266,9 @@ async function saveToHipeline(){
   const notes=document.getElementById('modal-notes').value;
   const stage=document.getElementById('modal-stage').value;
 
+  // Capture project reference BEFORE closing modal (closeModal nulls currentModalProject)
+  const project = currentModalProject;
+
   // Close modal first
   closeModal();
 
@@ -1220,17 +1278,17 @@ async function saveToHipeline(){
   // Wait one tick for DOM to finish rendering the pipeline tab
   await new Promise(r=>setTimeout(r,50));
 
-  const existing=pipelineData.find(p=>p.application_number===currentModalProject.application_number);
+  const existing=pipelineData.find(p=>p.application_number===project.application_number);
   if(!existing){
     pipelineData.push({
-      id: currentModalProject.application_number||Date.now().toString(),
-      application_number: currentModalProject.application_number,
-      application_link: currentModalProject.da_link,
-      address: currentModalProject.address,
-      suburb: currentModalProject.suburb,
-      council: currentModalProject.council,
-      application_type: currentModalProject.application_type,
-      property_type: propType(currentModalProject.application_type),
+      id: project.application_number||Date.now().toString(),
+      application_number: project.application_number,
+      application_link: project.da_link,
+      address: project.address,
+      suburb: project.suburb,
+      council: project.council,
+      application_type: project.application_type,
+      property_type: propType(project.application_type),
       stage, estimated_value: val?parseFloat(val):null,
       expected_start_date: start||null, notes,
       created_at: new Date().toISOString()

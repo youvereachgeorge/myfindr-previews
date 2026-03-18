@@ -431,7 +431,7 @@
               </tr>
             </thead>
             <tbody id="clients-tbody">
-              <tr><td colspan="8" class="loading">Loading clients...</td></tr>
+              <tr><td colspan="10" class="loading">Loading clients...</td></tr>
             </tbody>
           </table>
         </div>
@@ -1005,7 +1005,7 @@ async function loadClientsSection() {
     renderClientsTable(clients);
     clientsLoaded = true;
   } catch(e) {
-    document.getElementById('clients-tbody').innerHTML = `<tr><td colspan="8" style="color:var(--pink)">Error: ${e.message}</td></tr>`;
+    document.getElementById('clients-tbody').innerHTML = `<tr><td colspan="10" style="color:var(--pink)">Error: ${e.message}</td></tr>`;
   }
 }
 
@@ -1014,7 +1014,7 @@ function renderClientsTable(clients) {
   document.getElementById('clients-count').innerHTML = `<span style="color:var(--green);font-weight:700;">${active.length} active</span> / ${clients.length} total`;
 
   if (!clients.length) {
-    document.getElementById('clients-tbody').innerHTML = '<tr><td colspan="8" style="color:var(--text-muted)">No clients yet.</td></tr>';
+    document.getElementById('clients-tbody').innerHTML = '<tr><td colspan="10" style="color:var(--text-muted)">No clients yet.</td></tr>';
     return;
   }
 
@@ -1560,6 +1560,22 @@ function showInstruction() {
 // ============================================================
 let currentProfileId = null;
 
+function openProfileById(clientId) {
+  // Look up full client object from clients list or health map
+  const fromHealth = healthClientMap[clientId];
+  if (fromHealth) {
+    // Health data only has partial fields — need to fetch full profile
+    fetch(`${SUPA_URL}/rest/v1/client_profiles?id=eq.${encodeURIComponent(clientId)}`, {
+      headers: { apikey: SUPA_KEY, Authorization: `Bearer ${SUPA_KEY}` }
+    }).then(r => r.json()).then(data => {
+      if (data && data[0]) openProfile(data[0]);
+      else showToast('Could not load client profile', true);
+    }).catch(e => showToast('Error: ' + e.message, true));
+  } else {
+    showToast('Client not found — try refreshing', true);
+  }
+}
+
 function openProfile(client) {
   currentProfileId = client.id;
   document.getElementById('prof-client-id').value = client.id;
@@ -1638,15 +1654,7 @@ async function saveProfile() {
 function getHealthStatus(client) {
   if (!client.login_count || client.login_count === 0) return 'never';
   const lastLoginDate = client.last_login ? new Date(client.last_login) : null;
-  // Also consider updated_at as a proxy for recent pipeline activity
-  const lastUpdated = client.updated_at ? new Date(client.updated_at) : null;
-  // Use whichever is more recent
-  let latestActivity = null;
-  if (lastLoginDate && lastUpdated) {
-    latestActivity = lastLoginDate > lastUpdated ? lastLoginDate : lastUpdated;
-  } else {
-    latestActivity = lastLoginDate || lastUpdated;
-  }
+  const latestActivity = lastLoginDate;
   const daysSince = latestActivity
     ? Math.floor((Date.now() - latestActivity) / 86400000)
     : 999;
@@ -1685,17 +1693,17 @@ function buildHealthCard(client, status) {
   const daysSince = client.last_login ? daysSinceStr(client.last_login) : null;
   const daysStr = daysSince ? `<span class="health-card-days">Last seen: ${daysSince}</span>` : `<span class="health-card-days">Last seen: Never</span>`;
 
-  const name = (client.name || 'Unknown').replace(/'/g, "\\'");
+  const name = (client.full_name || 'Unknown').replace(/'/g, "\\'");
   const email = client.email || '';
 
-  const followupMsg = `Hi ${client.name || 'there'}, just checking in — we noticed you haven't logged into myFindr recently. Your leads are waiting! Log in at app.myfindr.com.au 🚀`;
+  const followupMsg = `Hi ${client.full_name ? client.full_name.split(' ')[0] : 'there'}, just checking in — we noticed you haven't logged into myFindr recently. Your leads are waiting! Log in at app.myfindr.com.au 🚀`;
 
   // Escape for inline JS attr
   const escapedMsg = followupMsg.replace(/"/g, '&quot;').replace(/'/g, "\\'");
-  const escapedClientId = (client.client_id || client.id || '').toString().replace(/'/g, "\\'");
+  const escapedClientId = (client.id || client.client_id || '').toString().replace(/'/g, "\\'");
 
   return `<div class="health-card ${colorClass}">
-  <div class="health-card-name">${client.name || 'Unknown'}</div>
+  <div class="health-card-name">${client.full_name || 'Unknown'}</div>
   <div class="health-card-email">${email}</div>
   <div class="health-card-meta">
     ${icpBadge}
@@ -1704,7 +1712,7 @@ function buildHealthCard(client, status) {
   <div style="font-size:11px;color:#9ca3af;">Last login: ${lastLogin}</div>
   <div class="health-card-actions">
     <button class="health-btn health-btn-followup" onclick="healthFollowUp('${escapedMsg}', this)">📧 Follow Up</button>
-    <button class="health-btn health-btn-profile" onclick="openProfile('${escapedClientId}')">👤 View Profile</button>
+    <button class="health-btn health-btn-profile" onclick="openProfileById('${escapedClientId}')">👤 View Profile</button>
   </div>
 </div>`;
 }
@@ -1721,6 +1729,7 @@ function healthFollowUp(msg, btn) {
 }
 
 let healthLoaded = false;
+const healthClientMap = {}; // client_id → client object, for profile lookup from health cards
 
 async function loadHealthSection() {
   if (healthLoaded) return;
@@ -1735,7 +1744,7 @@ async function loadHealthSection() {
     const SUPA_URL_B = typeof SUPA_URL !== 'undefined' ? SUPA_URL : '';
     const SUPA_KEY_B = typeof SUPA_KEY !== 'undefined' ? SUPA_KEY : '';
     const res = await fetch(
-      `${SUPA_URL_B}/rest/v1/client_profiles?select=client_id,name,email,icp_type,last_login,login_count,pipeline_items,updated_at&order=last_login.asc`,
+      `${SUPA_URL_B}/rest/v1/client_profiles?select=id,full_name,email,icp_type,last_login,login_count,pipeline_items&order=last_login.asc.nullsfirst`,
       { headers: { apikey: SUPA_KEY_B, Authorization: `Bearer ${SUPA_KEY_B}` } }
     );
     const data = await res.json();
@@ -1744,6 +1753,9 @@ async function loadHealthSection() {
     (data || []).forEach(client => {
       const status = getHealthStatus(client);
       buckets[status].push(client);
+      // Store in map so health cards can open profile overlay by ID
+      const cid = client.id || client.client_id;
+      if (cid) healthClientMap[cid] = client;
     });
 
     ['red','yellow','green','never'].forEach(s => {
