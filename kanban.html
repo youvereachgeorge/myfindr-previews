@@ -395,12 +395,21 @@ async function loadState() {
   }
   setSS('ssaving','Loading...');
   try {
-    const r = await fetch(`https://api.github.com/repos/${REPO}/contents/${FILE}`, {
-      headers: {'Authorization':'Bearer '+GH_TOKEN,'Accept':'application/vnd.github.v3+json'}
-    });
-    const data = await r.json();
-    fileSHA = data.sha;
-    const state = JSON.parse(atob(data.content.replace(/\n/g,'')));
+    let state, data;
+    if (GH_TOKEN) {
+      // Authenticated: use GitHub API (can also save)
+      const r = await fetch(`https://api.github.com/repos/${REPO}/contents/${FILE}`, {
+        headers: {'Authorization':'Bearer '+GH_TOKEN,'Accept':'application/vnd.github.v3+json'}
+      });
+      data = await r.json();
+      fileSHA = data.sha;
+      state = JSON.parse(atob(data.content.replace(/\n/g,'')));
+    } else {
+      // Read-only (mobile/no token): fetch raw file directly — no auth needed on public repo
+      const rawUrl = `https://raw.githubusercontent.com/${REPO}/main/${FILE}?t=${Date.now()}`;
+      const r = await fetch(rawUrl);
+      state = await r.json();
+    }
     window.CARD_PROGRESS = {};
         COLS.forEach(c => document.getElementById('col-'+c).innerHTML = '');
     Object.entries(state.cards).forEach(([id, col]) => {
