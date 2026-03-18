@@ -1026,7 +1026,7 @@
     <button class="btn-login" id="btn-login" onclick="doLogin()">Sign In</button>
     <div class="login-error" id="login-error"></div>
     <div class="demo-hint">
-      Demo: test1@myfindr.com / demo123<br>or test2@myfindr.com / demo123
+      Demo: test1@myfindr.com.au / demo123<br>or test2@myfindr.com.au / demo123
     </div>
   </div>
 </div>
@@ -1353,7 +1353,7 @@ function showDashboard(client) {
   const icpDash = icpDashMap[client.icp_type];
   if (icpDash) {
     const suburbParam = encodeURIComponent(client.target_suburbs.join(','));
-    const redirectUrl = `./${icpDash}?suburbs=${suburbParam}&icp=${encodeURIComponent(client.icp_type)}&clientId=${encodeURIComponent(client.id || '')}`;
+    const redirectUrl = `./${icpDash}?suburbs=${suburbParam}&icp=${encodeURIComponent(client.icp_type)}&clientId=${encodeURIComponent(client.client_id || client.id || '')}`;
     window.location.href = redirectUrl;
     return;
   }

@@ -701,14 +701,18 @@ function renderSuburbGrowth(suburbs_data){
   el.innerHTML=suburbs_data.slice(0,12).map(r=>{
     const curr=r.submissions_30d||0;
     const prev=Math.max(1,r.total_submissions-curr);
-    const pct=((curr-prev/6)/prev*100*6).toFixed(0);
-    const cls=parseFloat(pct)>0?'pct-up':parseFloat(pct)<0?'pct-dn':'pct-flat';
-    const arrow=parseFloat(pct)>0?'↑':parseFloat(pct)<0?'↓':'→';
+    const rawPct=((curr-prev/6)/prev*100*6);
+    const absRaw=Math.abs(rawPct);
+    const limited=absRaw>200;
+    const pct=limited?Math.min(absRaw,500).toFixed(0):rawPct.toFixed(0);
+    const cls=parseFloat(rawPct)>0?'pct-up':parseFloat(rawPct)<0?'pct-dn':'pct-flat';
+    const arrow=parseFloat(rawPct)>0?'↑':parseFloat(rawPct)<0?'↓':'→';
+    const limitedLabel=limited?'<span title="Limited historical data — percentage may not be representative" style="font-size:.55rem;color:var(--text3);margin-left:2px">*</span>':'';
     return`<div class="suburb-row">
       <div class="sub-name">${r.suburb}<span style="font-size:.6rem;color:var(--text3);margin-left:6px">${r.council==='brisbane'?'BNE':'SC'}</span></div>
       <div class="sub-bar-wrap"><div class="sub-bar" style="width:${maxVal>0?Math.min(100,curr/maxVal*100):0}%"></div></div>
       <div class="sub-count">${curr}</div>
-      <div class="sub-pct ${cls}">${arrow}${Math.abs(pct)}%</div>
+      <div class="sub-pct ${cls}">${arrow}${Math.abs(pct)}%${limitedLabel}</div>
     </div>`;
   }).join('');
 }
@@ -926,7 +930,8 @@ function renderFunnel(){
   const headerHtml=`<div class="funnel-header">`+stages.map((s,i)=>{
     const cnt=counts[i];
     const prevCnt=i>0?counts[i-1]:cnt;
-    const pct=prevCnt>0?Math.round((cnt-prevCnt)/prevCnt*100):0;
+    const rawPct=prevCnt>0?Math.round((cnt-prevCnt)/prevCnt*100):0;
+    const pct=Math.max(-100,Math.min(500,rawPct));
     const updn=pct>=0;
     return `<div class="fh-col">
       <div class="fh-label">${STAGE_LABELS[s]}</div>

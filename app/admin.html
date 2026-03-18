@@ -230,6 +230,31 @@
     .kpi-grid { grid-template-columns: repeat(2, 1fr); }
     .form-grid { grid-template-columns: 1fr; }
   }
+
+  /* CLIENT PROFILE OVERLAY */
+  .profile-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.75); z-index: 800; align-items: center; justify-content: center; backdrop-filter: blur(5px); }
+  .profile-overlay.open { display: flex; }
+  .profile-panel { background: #12202f; border: 1px solid var(--card-border); border-radius: 16px; width: 720px; max-width: 96vw; max-height: 90vh; overflow-y: auto; display: flex; flex-direction: column; }
+  .profile-header { padding: 1.1rem 1.4rem; border-bottom: 1px solid var(--card-border); display: flex; justify-content: space-between; align-items: flex-start; position: sticky; top: 0; background: #12202f; z-index: 2; }
+  .profile-name { font-size: 1.1rem; font-weight: 800; color: var(--text); }
+  .profile-meta { font-size: 0.72rem; color: var(--text-dim); margin-top: 3px; }
+  .profile-close { background: none; border: none; color: var(--text-dim); font-size: 1.3rem; cursor: pointer; padding: 0; line-height: 1; }
+  .profile-close:hover { color: var(--pink); }
+  .profile-body { padding: 1.1rem 1.4rem; }
+  .profile-section { margin-bottom: 1.25rem; padding-bottom: 1.25rem; border-bottom: 1px solid rgba(255,255,255,.05); }
+  .profile-section:last-child { border-bottom: none; }
+  .profile-section-title { font-size: 0.62rem; font-weight: 700; color: var(--text-muted); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 0.75rem; }
+  .profile-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+  .profile-field label { display: block; font-size: 0.6rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.3rem; }
+  .profile-field input, .profile-field select, .profile-field textarea { width: 100%; background: rgba(255,255,255,.06); border: 1px solid var(--card-border); border-radius: 7px; padding: 0.5rem 0.75rem; color: var(--text); font-size: 0.78rem; font-family: inherit; }
+  .profile-field input:focus, .profile-field select:focus, .profile-field textarea:focus { outline: none; border-color: var(--orange); }
+  .profile-field input[readonly] { opacity: 0.6; cursor: default; }
+  .profile-field textarea { min-height: 70px; resize: vertical; }
+  .profile-stat-row { display: flex; gap: 1rem; flex-wrap: wrap; }
+  .profile-stat { background: rgba(255,255,255,.04); border: 1px solid var(--card-border); border-radius: 8px; padding: 0.65rem 1rem; min-width: 100px; }
+  .profile-stat-val { font-size: 1.4rem; font-weight: 800; color: var(--orange); line-height: 1; }
+  .profile-stat-label { font-size: 0.6rem; color: var(--text-muted); margin-top: 3px; }
+  .profile-save-row { display: flex; justify-content: flex-end; gap: 0.6rem; margin-top: 0.75rem; }
 </style>
 </head>
 <body>
@@ -352,7 +377,9 @@
                 <th>Council</th>
                 <th>Status</th>
                 <th>Joined</th>
+                <th>Last Login</th>
                 <th>Actions</th>
+                <th>Dashboard</th>
               </tr>
             </thead>
             <tbody id="clients-tbody">
@@ -643,6 +670,103 @@
   </div><!-- /content -->
 </div><!-- /app -->
 
+<!-- CLIENT PROFILE OVERLAY -->
+<div class="profile-overlay" id="profile-overlay" onclick="if(event.target===this)closeProfile()">
+  <div class="profile-panel">
+    <div class="profile-header">
+      <div>
+        <div class="profile-name" id="prof-name">—</div>
+        <div class="profile-meta" id="prof-meta">—</div>
+      </div>
+      <button class="profile-close" onclick="closeProfile()">✕</button>
+    </div>
+    <div class="profile-body">
+
+      <!-- myFindr Activity -->
+      <div class="profile-section">
+        <div class="profile-section-title">📊 myFindr Activity</div>
+        <div class="profile-stat-row" id="prof-stats">
+          <div class="profile-stat"><div class="profile-stat-val" id="prof-logins">—</div><div class="profile-stat-label">Total Logins</div></div>
+          <div class="profile-stat"><div class="profile-stat-val" id="prof-last-login">—</div><div class="profile-stat-label">Last Login</div></div>
+          <div class="profile-stat"><div class="profile-stat-val" id="prof-pipeline">—</div><div class="profile-stat-label">Pipeline Items</div></div>
+          <div class="profile-stat"><div class="profile-stat-val" id="prof-leads-viewed">—</div><div class="profile-stat-label">Leads Viewed</div></div>
+        </div>
+      </div>
+
+      <!-- Basic Info -->
+      <div class="profile-section">
+        <div class="profile-section-title">👤 Basic Info</div>
+        <div class="profile-grid">
+          <div class="profile-field"><label>Full Name</label><input type="text" id="prof-full-name" onchange="updateProfile('full_name',this.value)"></div>
+          <div class="profile-field"><label>Email</label><input type="email" id="prof-email" onchange="updateProfile('email',this.value)"></div>
+          <div class="profile-field"><label>Company</label><input type="text" id="prof-company" placeholder="Company name" onchange="updateProfile('company',this.value)"></div>
+          <div class="profile-field"><label>Phone</label><input type="text" id="prof-phone" placeholder="+61 4XX XXX XXX" onchange="updateProfile('phone',this.value)"></div>
+          <div class="profile-field"><label>ICP Type</label>
+            <select id="prof-icp" onchange="updateProfile('icp_type',this.value)">
+              <option value="interior_designer">Interior Designer</option>
+              <option value="builder">Builder / Trade</option>
+              <option value="real_estate">Real Estate Agent</option>
+              <option value="architect">Architect</option>
+            </select>
+          </div>
+          <div class="profile-field"><label>Council</label>
+            <select id="prof-council" onchange="updateProfile('target_council',this.value)">
+              <option value="brisbane">Brisbane</option>
+              <option value="sunshine_coast">Sunshine Coast</option>
+            </select>
+          </div>
+          <div class="profile-field" style="grid-column:1/-1"><label>Target Suburbs</label><input type="text" id="prof-suburbs" placeholder="Suburb1, Suburb2, Suburb3" onchange="updateProfileSuburbs(this.value)"></div>
+        </div>
+      </div>
+
+      <!-- HubSpot / CRM Fields -->
+      <div class="profile-section">
+        <div class="profile-section-title">💼 CRM / HubSpot Fields</div>
+        <div class="profile-grid">
+          <div class="profile-field"><label>Deal Stage</label>
+            <select id="prof-deal-stage" onchange="updateProfile('deal_stage',this.value)">
+              <option value="">— None —</option>
+              <option value="appointmentscheduled">Appointment Scheduled</option>
+              <option value="qualifiedtobuy">Qualified to Buy</option>
+              <option value="presentationscheduled">Presentation Scheduled</option>
+              <option value="decisionmakerboughtin">Decision Maker Bought In</option>
+              <option value="contractsent">Contract Sent</option>
+              <option value="closedwon">Closed Won</option>
+              <option value="closedlost">Closed Lost</option>
+            </select>
+          </div>
+          <div class="profile-field"><label>Lifecycle Stage</label>
+            <select id="prof-lifecycle" onchange="updateProfile('lifecycle_stage',this.value)">
+              <option value="subscriber">Subscriber</option>
+              <option value="lead">Lead</option>
+              <option value="marketingqualifiedlead">Marketing Qualified Lead</option>
+              <option value="salesqualifiedlead">Sales Qualified Lead</option>
+              <option value="opportunity">Opportunity</option>
+              <option value="customer">Customer</option>
+              <option value="evangelist">Evangelist</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+          <div class="profile-field"><label>Last Contact Date</label><input type="date" id="prof-last-contact" onchange="updateProfile('last_contact_date',this.value)"></div>
+          <div class="profile-field"><label>Account Status</label>
+            <select id="prof-active" onchange="updateProfileActive(this.value)">
+              <option value="true">Active</option>
+              <option value="false">Inactive</option>
+            </select>
+          </div>
+          <div class="profile-field" style="grid-column:1/-1"><label>Notes (CRM)</label><textarea id="prof-notes" placeholder="Internal notes about this client..." onchange="updateProfile('notes',this.value)"></textarea></div>
+        </div>
+      </div>
+
+      <div class="profile-save-row">
+        <input type="hidden" id="prof-client-id">
+        <button class="btn btn-ghost btn-sm" onclick="closeProfile()">Close</button>
+        <button class="btn btn-primary btn-sm" onclick="saveProfile()">💾 Save Changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div id="toast"></div>
 
 <script>
@@ -819,7 +943,8 @@ function renderClientsTable(clients) {
     const dashMap = {'interior_designer':'./dashboard-id.html','builder':'./dashboard-builders.html','real_estate':'./dashboard-re.html','architect':'./dashboard-architects.html'};
     const dashUrl = dashMap[c.icp_type] || './dashboard-id.html';
     const subStr = Array.isArray(c.target_suburbs) ? c.target_suburbs.join(',') : '';
-    const viewDashBtn = c.active ? `<a href="${dashUrl}?suburbs=${subStr}&icp=${c.icp_type}" target="_blank" class="btn btn-primary btn-sm">View Dashboard →</a>` : '—';
+    const viewDashBtn = c.active ? `<a href="${dashUrl}?suburbs=${subStr}&icp=${c.icp_type}&clientId=${c.id}" target="_blank" class="btn btn-primary btn-sm">View Dashboard →</a>` : '—';
+    const lastLoginCell = c.last_login ? `<span style="font-size:11px;color:var(--text-dim)">${timeAgo(c.last_login)}</span>` : '<span style="color:var(--text-muted);font-size:11px">Never</span>';
     return `<tr>
       <td style="font-weight:600;">${c.full_name || '—'}</td>
       <td style="color:var(--text-dim)">${c.email || '—'}</td>
@@ -828,7 +953,8 @@ function renderClientsTable(clients) {
       <td style="color:var(--text-dim)">${c.target_council || '—'}</td>
       <td>${statusBadge}</td>
       <td style="color:var(--text-muted)">${fmtDate(c.created_at)}</td>
-      <td>${actionBtn}</td>
+      <td>${lastLoginCell}</td>
+      <td><button class="btn btn-ghost btn-sm" onclick='openProfile(${JSON.stringify(c)})'>👤 Profile</button> ${actionBtn}</td>
       <td>${viewDashBtn}</td>
     </tr>`;
   }).join('');
@@ -1340,6 +1466,82 @@ async function loadDatabaseSection() {
 function showInstruction() {
   const el = document.getElementById('scraper-instruction');
   el.style.display = el.style.display === 'none' ? 'block' : 'none';
+}
+
+// ============================================================
+// CLIENT PROFILE OVERLAY
+// ============================================================
+let currentProfileId = null;
+
+function openProfile(client) {
+  currentProfileId = client.id;
+  document.getElementById('prof-client-id').value = client.id;
+  document.getElementById('prof-name').textContent = client.full_name || '—';
+  document.getElementById('prof-meta').textContent = [(client.icp_type||'').replace(/_/g,' '), client.email, client.company].filter(Boolean).join(' · ');
+
+  // Activity stats
+  document.getElementById('prof-logins').textContent = client.login_count || '0';
+  document.getElementById('prof-last-login').textContent = client.last_login ? timeAgo(client.last_login) : 'Never';
+  document.getElementById('prof-pipeline').textContent = client.pipeline_items || '0';
+  document.getElementById('prof-leads-viewed').textContent = client.leads_viewed || '0';
+
+  // Basic info
+  document.getElementById('prof-full-name').value = client.full_name || '';
+  document.getElementById('prof-email').value = client.email || '';
+  document.getElementById('prof-company').value = client.company || '';
+  document.getElementById('prof-phone').value = client.phone || '';
+  document.getElementById('prof-icp').value = client.icp_type || 'interior_designer';
+  document.getElementById('prof-council').value = client.target_council || 'brisbane';
+  document.getElementById('prof-suburbs').value = Array.isArray(client.target_suburbs) ? client.target_suburbs.join(', ') : (client.target_suburbs || '');
+
+  // CRM fields
+  document.getElementById('prof-deal-stage').value = client.deal_stage || '';
+  document.getElementById('prof-lifecycle').value = client.lifecycle_stage || 'subscriber';
+  document.getElementById('prof-last-contact').value = client.last_contact_date || '';
+  document.getElementById('prof-active').value = String(client.active !== false);
+  document.getElementById('prof-notes').value = client.notes || '';
+
+  document.getElementById('profile-overlay').classList.add('open');
+}
+
+function closeProfile() {
+  document.getElementById('profile-overlay').classList.remove('open');
+  currentProfileId = null;
+}
+
+// Staged updates — hold changes until save
+let profileChanges = {};
+
+function updateProfile(field, value) {
+  profileChanges[field] = value;
+}
+
+function updateProfileSuburbs(value) {
+  const arr = value.split(',').map(s => s.trim()).filter(Boolean);
+  profileChanges['target_suburbs'] = arr;
+}
+
+function updateProfileActive(value) {
+  profileChanges['active'] = value === 'true';
+}
+
+async function saveProfile() {
+  if (!currentProfileId) return;
+  if (!Object.keys(profileChanges).length) { showToast('No changes to save'); return; }
+  try {
+    await supaPatch('client_profiles', `id=eq.${currentProfileId}`, profileChanges);
+    showToast('✅ Profile saved');
+    profileChanges = {};
+    clientsLoaded = false;
+    loadClientsSection();
+    // Update header meta
+    const name = document.getElementById('prof-full-name').value;
+    const email = document.getElementById('prof-email').value;
+    document.getElementById('prof-name').textContent = name;
+    document.getElementById('prof-meta').textContent = [document.getElementById('prof-icp').value.replace(/_/g,' '), email].join(' · ');
+  } catch(e) {
+    showToast('Error: ' + e.message, true);
+  }
 }
 
 // ============================================================
