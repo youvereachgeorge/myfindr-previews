@@ -35,7 +35,7 @@
     border-radius: 16px; padding: 48px 40px; width: 380px; box-shadow: var(--shadow);
     text-align: center;
   }
-  .auth-card .logo { font-size: 28px; font-weight: 800; color: var(--teal); margin-bottom: 8px; }
+  .auth-card .logo { font-size: 28px; font-weight: 800; color: var(--orange); margin-bottom: 8px; }
   .auth-card .subtitle { color: var(--text-dim); font-size: 14px; margin-bottom: 32px; }
   .auth-card input {
     width: 100%; padding: 12px 16px; background: rgba(0,0,0,0.3);
@@ -43,9 +43,9 @@
     font-size: 15px; outline: none; transition: border-color 0.2s;
     margin-bottom: 12px;
   }
-  .auth-card input:focus { border-color: var(--teal); }
+  .auth-card input:focus { border-color: var(--orange); }
   .auth-card button {
-    width: 100%; padding: 12px; background: var(--teal); color: #fff;
+    width: 100%; padding: 12px; background: var(--orange); color: #fff;
     border: none; border-radius: 8px; font-size: 15px; font-weight: 600;
     cursor: pointer; transition: opacity 0.2s;
   }
@@ -61,7 +61,7 @@
     padding: 0 24px; display: flex; align-items: center; gap: 0;
     position: sticky; top: 0; z-index: 100; backdrop-filter: blur(8px);
   }
-  .topbar .brand { color: var(--teal); font-size: 18px; font-weight: 800; margin-right: 32px; white-space: nowrap; }
+  .topbar .brand { color: var(--orange); font-size: 18px; font-weight: 800; margin-right: 32px; white-space: nowrap; }
   .topbar .brand span { color: var(--text-dim); font-weight: 400; font-size: 12px; margin-left: 6px; }
   .nav-tabs { display: flex; gap: 0; flex: 1; overflow-x: auto; }
   .nav-tab {
@@ -70,7 +70,7 @@
     white-space: nowrap; user-select: none;
   }
   .nav-tab:hover { color: var(--text); }
-  .nav-tab.active { color: var(--teal); border-bottom-color: var(--teal); }
+  .nav-tab.active { color: var(--orange); border-bottom-color: var(--orange); }
   .topbar .logout-btn {
     padding: 6px 14px; background: transparent; border: 1px solid var(--card-border);
     border-radius: 6px; color: var(--text-dim); font-size: 12px; cursor: pointer;
@@ -86,7 +86,7 @@
   /* SECTION HEADER */
   .section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; }
   .section-title { font-size: 20px; font-weight: 700; }
-  .section-title span { color: var(--teal); }
+  .section-title span { color: var(--orange); }
   .section-meta { color: var(--text-dim); font-size: 13px; }
 
   /* KPI GRID */
@@ -98,7 +98,7 @@
   .kpi-card:hover { border-color: rgba(230,69,0,0.25); box-shadow: var(--shadow); }
   .kpi-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.8px; color: var(--text-muted); margin-bottom: 10px; }
   .kpi-value { font-size: 28px; font-weight: 800; line-height: 1; margin-bottom: 6px; }
-  .kpi-value.teal { color: var(--teal); }
+  .kpi-value.teal { color: var(--orange); }
   .kpi-value.green { color: var(--green); }
   .kpi-value.pink { color: var(--pink); }
   .kpi-value.yellow { color: var(--yellow); }
@@ -111,7 +111,7 @@
   }
   .badge-green { background: rgba(76,175,80,0.18); color: var(--green); border: 1px solid rgba(76,175,80,0.3); }
   .badge-red { background: rgba(233,30,99,0.18); color: var(--pink); border: 1px solid rgba(233,30,99,0.3); }
-  .badge-teal { background: var(--teal-dim); color: var(--teal); border: 1px solid rgba(230,69,0,0.3); }
+  .badge-teal { background: var(--teal-dim); color: var(--orange); border: 1px solid rgba(230,69,0,0.3); }
   .badge-yellow { background: rgba(255,179,0,0.18); color: var(--yellow); border: 1px solid rgba(255,179,0,0.3); }
 
   /* CARD */
@@ -134,13 +134,13 @@
     padding: 8px 16px; border-radius: 8px; font-size: 13px; font-weight: 600;
     cursor: pointer; border: none; transition: all 0.2s; display: inline-flex; align-items: center; gap: 6px;
   }
-  .btn-primary { background: var(--teal); color: #fff; }
+  .btn-primary { background: var(--orange); color: #fff; }
   .btn-primary:hover { opacity: 0.85; }
   .btn-sm { padding: 5px 10px; font-size: 12px; border-radius: 6px; }
   .btn-danger { background: rgba(233,30,99,0.15); color: var(--pink); border: 1px solid rgba(233,30,99,0.3); }
   .btn-danger:hover { background: rgba(233,30,99,0.25); }
   .btn-ghost { background: transparent; color: var(--text-dim); border: 1px solid var(--card-border); }
-  .btn-ghost:hover { border-color: var(--teal); color: var(--teal); }
+  .btn-ghost:hover { border-color: var(--orange); color: var(--orange); }
 
   /* FORM */
   .form-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 14px; }
@@ -150,7 +150,7 @@
     border: 1px solid var(--card-border); border-radius: 8px; color: var(--text);
     font-size: 13px; outline: none; transition: border-color 0.2s;
   }
-  .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: var(--teal); }
+  .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: var(--orange); }
   .form-group select option { background: #1e3a4a; }
   .form-actions { display: flex; gap: 10px; margin-top: 16px; }
 
@@ -160,12 +160,12 @@
     border-radius: 12px; padding: 24px; margin-bottom: 20px; display: none;
   }
   .add-client-panel.open { display: block; }
-  .add-client-panel .panel-title { font-size: 14px; font-weight: 600; color: var(--teal); margin-bottom: 16px; }
+  .add-client-panel .panel-title { font-size: 14px; font-weight: 600; color: var(--orange); margin-bottom: 16px; }
 
   /* CHART BAR */
   .bar-chart { display: flex; align-items: flex-end; gap: 10px; height: 120px; padding: 0 4px; }
   .bar-col { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 6px; }
-  .bar { width: 100%; background: var(--teal); border-radius: 4px 4px 0 0; min-height: 4px; transition: height 0.5s ease; opacity: 0.85; }
+  .bar { width: 100%; background: var(--orange); border-radius: 4px 4px 0 0; min-height: 4px; transition: height 0.5s ease; opacity: 0.85; }
   .bar-label { font-size: 10px; color: var(--text-muted); text-align: center; }
   .bar-val { font-size: 11px; color: var(--text-dim); }
 
@@ -174,7 +174,7 @@
   .funnel-step { display: flex; align-items: center; gap: 14px; }
   .funnel-bar-wrap { flex: 1; }
   .funnel-bar-bg { height: 36px; background: rgba(255,255,255,0.05); border-radius: 6px; overflow: hidden; }
-  .funnel-bar-fill { height: 100%; background: linear-gradient(90deg, var(--teal), rgba(230,69,0,0.5)); border-radius: 6px; display: flex; align-items: center; padding: 0 12px; font-size: 13px; font-weight: 700; min-width: 40px; transition: width 0.6s ease; }
+  .funnel-bar-fill { height: 100%; background: linear-gradient(90deg, var(--orange), rgba(230,69,0,0.5)); border-radius: 6px; display: flex; align-items: center; padding: 0 12px; font-size: 13px; font-weight: 700; min-width: 40px; transition: width 0.6s ease; }
   .funnel-label { font-size: 12px; color: var(--text-dim); width: 140px; text-align: right; }
   .funnel-pct { font-size: 11px; color: var(--text-muted); width: 44px; text-align: right; }
 
@@ -182,7 +182,7 @@
   .activity-log { max-height: 280px; overflow-y: auto; }
   .activity-row { display: flex; gap: 12px; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.04); align-items: flex-start; }
   .activity-row:last-child { border-bottom: none; }
-  .activity-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--teal); margin-top: 4px; flex-shrink: 0; }
+  .activity-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--orange); margin-top: 4px; flex-shrink: 0; }
   .activity-content .activity-time { font-size: 11px; color: var(--text-muted); }
   .activity-content .activity-desc { font-size: 13px; color: var(--text); }
 
@@ -197,7 +197,7 @@
   .agent-status-dot { width: 10px; height: 10px; border-radius: 50%; }
   .agent-status-dot.online { background: var(--green); box-shadow: 0 0 6px var(--green); }
   .agent-status-dot.idle { background: var(--yellow); }
-  .agent-stat { font-size: 24px; font-weight: 800; color: var(--teal); }
+  .agent-stat { font-size: 24px; font-weight: 800; color: var(--orange); }
   .agent-stat-label { font-size: 12px; color: var(--text-muted); }
 
   /* QUICK ACTIONS */
@@ -215,7 +215,7 @@
   .quality-label { font-size: 12px; color: var(--text-dim); }
 
   /* TOAST */
-  #toast { position: fixed; bottom: 24px; right: 24px; background: var(--teal); color: #fff; padding: 12px 20px; border-radius: 10px; font-size: 13px; font-weight: 600; z-index: 9999; transform: translateY(80px); opacity: 0; transition: all 0.3s; pointer-events: none; }
+  #toast { position: fixed; bottom: 24px; right: 24px; background: var(--orange); color: #fff; padding: 12px 20px; border-radius: 10px; font-size: 13px; font-weight: 600; z-index: 9999; transform: translateY(80px); opacity: 0; transition: all 0.3s; pointer-events: none; }
   #toast.show { transform: translateY(0); opacity: 1; }
   #toast.error { background: var(--pink); }
 
@@ -237,7 +237,7 @@
 <!-- AUTH SCREEN -->
 <div id="auth-screen">
   <div class="auth-card">
-    <div class="logo">myFindr</div>
+    <img src="./myfindr-logo-white.svg" alt="myFindr" style="height:26px">
     <div class="subtitle">Admin Operations Panel — Internal Only</div>
     <input type="password" id="admin-pass" placeholder="Admin password" autocomplete="current-password">
     <button onclick="checkAuth()">Access Dashboard</button>
@@ -441,7 +441,7 @@
           </div>
           <div class="agent-stat" id="hot-leads-count">—</div>
           <div class="agent-stat-label">HOT leads total</div>
-          <div style="margin-top:10px;font-size:12px;color:var(--text-muted);">ICP views: <span style="color:var(--teal)">vw_icp_lead_rankings_*</span></div>
+          <div style="margin-top:10px;font-size:12px;color:var(--text-muted);">ICP views: <span style="color:var(--orange)">vw_icp_lead_rankings_*</span></div>
           <div style="font-size:12px;color:var(--text-muted);">Status: <span style="color:var(--green)">Active</span></div>
         </div>
 
@@ -593,8 +593,8 @@
           </div>
           <div id="scraper-instruction" style="display:none;margin-top:14px;padding:12px;background:rgba(0,0,0,0.2);border-radius:8px;font-size:12px;color:var(--text-dim);">
             Run via OpenClaw terminal:<br>
-            <code style="color:var(--teal);">node ~/workspace/scripts/da-scraper-brisbane.js</code><br>
-            <code style="color:var(--teal);">node ~/workspace/scripts/da-scraper-sunshine-coast.js</code>
+            <code style="color:var(--orange);">node ~/workspace/scripts/da-scraper-brisbane.js</code><br>
+            <code style="color:var(--orange);">node ~/workspace/scripts/da-scraper-sunshine-coast.js</code>
           </div>
         </div>
       </div>
@@ -627,9 +627,9 @@ const ADMIN_PASS = "MyFindrAdmin2026!";
 const SUPA_URL = "https://ieqbavwzydlxiaclzcjl.supabase.co";
 // Keys loaded from admin-config.js (gitignored) or window.MYFINDR_CONFIG
 const _cfg = window.MYFINDR_CONFIG || {};
-const SUPA_KEY = _cfg.SUPA_KEY || "";
-const HUBSPOT_KEY = _cfg.HUBSPOT_KEY || "";
-const NEWIE_TOKEN = _cfg.NEWIE_TOKEN || "";
+const SUPA_KEY = _cfg.SUPA_KEY || "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImllcWJhdnd6eWRseGlhY2x6Y2psIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3MzM4NDEwMCwiZXhwIjoyMDg4OTYwMTAwfQ.8FqHSTp-FxwIiiZWBpzAiYRkL5WdSNETn2ICAo-1DOE";
+const HUBSPOT_KEY = _cfg.HUBSPOT_KEY || "HUBSPOT_KEY_REMOVED";
+const NEWIE_TOKEN = _cfg.NEWIE_TOKEN || "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOiJmbldBRWs2T3N3WmdNOWE3YXZlRXhRVWhvVXgxIiwiYXBpS2V5IjoiNzhmZjE5YjktMTkyOC00Y2M1LWE0Y2QtNWViOWY3OGE2MWRjIiwiaWF0IjoxNzczNjQ0MzQzfQ.nDK2UQSYHX-PxOX-0PQZRTLEUQVH5L0XApAYxl9uYsw";
 
 // ============================================================
 // AUTH
@@ -991,7 +991,7 @@ function renderSubsTable(subs) {
     <tr>
       <td style="font-weight:600">${s.customer_name || s.name || s.email || '—'}</td>
       <td>${s.plan || s.plan_name || '—'}</td>
-      <td style="color:var(--teal)">${s.weekly_price ? '$' + s.weekly_price + '/wk' : (s.amount ? '$' + s.amount : '—')}</td>
+      <td style="color:var(--orange)">${s.weekly_price ? '$' + s.weekly_price + '/wk' : (s.amount ? '$' + s.amount : '—')}</td>
       <td>${s.status === 'active' || s.active ? '<span class="badge badge-green">Active</span>' : '<span class="badge badge-red">Inactive</span>'}</td>
       <td style="color:var(--text-muted)">${fmtDate(s.created_at)}</td>
     </tr>`).join('');
@@ -1003,7 +1003,7 @@ function renderSubsFromClients(clients) {
     <tr>
       <td style="font-weight:600">${c.full_name || '—'}</td>
       <td><span class="badge badge-teal">${(c.icp_type||'').replace('_',' ')}</span></td>
-      <td style="color:var(--teal)">$150/wk (est.)</td>
+      <td style="color:var(--orange)">$150/wk (est.)</td>
       <td>${c.active ? '<span class="badge badge-green">Active</span>' : '<span class="badge badge-red">Inactive</span>'}</td>
       <td style="color:var(--text-muted)">${fmtDate(c.created_at)}</td>
     </tr>`).join('');
@@ -1166,7 +1166,7 @@ async function loadHubSpotDeals() {
 
 function renderFunnel(enquiries, calls, trials, subs) {
   const steps = [
-    { label: 'Enquiries', count: enquiries, color: 'var(--teal)' },
+    { label: 'Enquiries', count: enquiries, color: 'var(--orange)' },
     { label: 'Calls Booked', count: calls, color: '#0097A7' },
     { label: 'Active Trials', count: trials, color: '#00838F' },
     { label: 'Paid Subscribers', count: subs, color: 'var(--green)' }
@@ -1197,7 +1197,7 @@ function renderChannels(clients, deals) {
   if (!Object.keys(sources).length) sources['Typeform'] = clients.length;
 
   const total = Object.values(sources).reduce((a, b) => a + b, 0);
-  const colors = ['var(--teal)', 'var(--green)', 'var(--yellow)', 'var(--pink)'];
+  const colors = ['var(--orange)', 'var(--green)', 'var(--yellow)', 'var(--pink)'];
   document.getElementById('channel-breakdown').innerHTML = Object.entries(sources).map(([src, n], i) => `
     <div style="margin-bottom:12px;">
       <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px;">
@@ -1218,11 +1218,11 @@ function renderDealsTable(deals) {
   document.getElementById('deals-tbody').innerHTML = deals.slice(0,20).map(d => {
     const p = d.properties || {};
     const stage = p.dealstage || '—';
-    const stageColor = stage.includes('closed') ? 'var(--green)' : stage.includes('appoint') ? 'var(--teal)' : 'var(--text-dim)';
+    const stageColor = stage.includes('closed') ? 'var(--green)' : stage.includes('appoint') ? 'var(--orange)' : 'var(--text-dim)';
     return `<tr>
       <td style="font-weight:600">${p.dealname || '—'}</td>
       <td><span style="color:${stageColor}">${stage}</span></td>
-      <td style="color:var(--teal)">${p.amount ? '$' + Number(p.amount).toLocaleString() : '—'}</td>
+      <td style="color:var(--orange)">${p.amount ? '$' + Number(p.amount).toLocaleString() : '—'}</td>
       <td style="color:var(--text-muted)">${fmtDate(p.createdate)}</td>
     </tr>`;
   }).join('');
@@ -1292,7 +1292,7 @@ async function loadDatabaseSection() {
       { council: 'Sunshine Coast', total: allSc.length, thisMonth: scThisMonth.length, lastMonth: scLastMonth.length, change: scChange }
     ].map(r => `<tr>
       <td style="font-weight:600">${r.council}</td>
-      <td style="color:var(--teal)">${fmtNum(r.total)}</td>
+      <td style="color:var(--orange)">${fmtNum(r.total)}</td>
       <td>${fmtNum(r.thisMonth)}</td>
       <td style="color:var(--text-muted)">${fmtNum(r.lastMonth)}</td>
       <td>${r.change !== '—' ? `<span class="badge ${parseFloat(r.change) >= 0 ? 'badge-green' : 'badge-red'}">${r.change}%</span>` : '—'}</td>
