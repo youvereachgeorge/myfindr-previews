@@ -747,7 +747,7 @@ async function loadAll(){
   // FIX 4: Load client profile for welcome banner
   if (clientId) {
     try {
-      const cr = await fetch(`${SUPA}/rest/v1/clients?id=eq.${clientId}&limit=1`, {
+      const cr = await fetch(`${SUPA}/rest/v1/client_profiles?id=eq.${clientId}&limit=1`, {
         headers: {'apikey':KEY,'Authorization':'Bearer '+KEY,'Accept':'application/json'}
       });
       const cdata = await cr.json();
@@ -868,9 +868,9 @@ function renderLeads(leads){
 function filterLeads(){
   const sig=document.getElementById('filter-signal').value;
   const show=sig?leadsAll.filter(r=>r.icp_signal===sig):leadsAll;
-  // FIX 2: Only hide leads EXACTLY in the pipeline by application_number
+  // FIX 2: Only hide leads EXACTLY in the pipeline by application_number (or id if no application_number)
   const addedIds=new Set((pipelineData||[]).map(p=>p.application_number).filter(Boolean));
-  const shown=show.filter(r=>!r.application_number||!addedIds.has(r.application_number)).slice(0,50);
+  const shown=show.filter(r=>{ const key=r.application_number||r.id; return !key||!addedIds.has(key); }).slice(0,50);
   window._shownLeads=shown;
   const el=document.getElementById('leads-container');
   if(!shown.length){el.innerHTML='<div style="color:var(--text3);padding:2rem;text-align:center">No leads matching your filter</div>';return;}
@@ -878,8 +878,9 @@ function filterLeads(){
     const tip=outreachTip(r.stage,r.days_since_lodged);
     const cost=costEst(r.application_type,r.suburb);
     const pType=propType(r.application_type,r.suburb);
-    const inPipe=r.application_number&&pipelineData.some(function(p){return p.application_number&&p.application_number===r.application_number;});
-    const pipeEntry=inPipe?pipelineData.find(function(p){return p.application_number===r.application_number;}):null;
+    const rKey=r.application_number||r.id;
+    const inPipe=rKey&&pipelineData.some(function(p){return p.application_number&&p.application_number===rKey;});
+    const pipeEntry=inPipe?pipelineData.find(function(p){return p.application_number===rKey;}):null;
     const pipeStageLabel={'watching':'Watch List','contacted':'Contacted','meeting':'Meeting','proposal':'Proposal Sent','won':'Won','lost':'Lost','unqualified':'Unqualified'};
     const inPipeLabel=pipeEntry?('✓ In Pipeline · '+(pipeStageLabel[pipeEntry.stage]||pipeEntry.stage)):'';
     return`<div class="lead-card" style="${inPipe?'opacity:.6;border-color:rgba(76,175,80,.4);':''}">
@@ -1329,8 +1330,9 @@ async function saveToHipeline(){
   // 2. Close modal
   closeModal();
 
-  // 3. Check if already in pipeline
-  const existing = pipelineData.find(p => p.application_number === project.application_number);
+  // 3. Check if already in pipeline (use id field as application_number if no application_number)
+  const projKey = project.application_number || project.id;
+  const existing = pipelineData.find(p => p.application_number === projKey);
   if(existing){
     showToast('\u26a0\ufe0f Already in pipeline \u2014 ' + (existing.stage||'watching'));
     return;
@@ -1338,8 +1340,8 @@ async function saveToHipeline(){
 
   // 4. Build pipeline item
   const newItem = {
-    id: project.application_number || Date.now().toString(),
-    application_number: project.application_number,
+    id: projKey || Date.now().toString(),
+    application_number: projKey,
     application_link: project.da_link,
     address: project.address,
     suburb: project.suburb,
