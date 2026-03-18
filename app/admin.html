@@ -231,6 +231,53 @@
     .form-grid { grid-template-columns: 1fr; }
   }
 
+  /* HEALTH TAB */
+  .health-badge {
+    padding: 14px 20px; border-radius: 12px; text-align: center;
+    font-size: 28px; font-weight: 800; min-width: 110px; line-height: 1.2;
+  }
+  .health-badge small { font-size: 12px; font-weight: 600; }
+  .health-badge-red { background: #fef2f2; color: #ef4444; border: 2px solid #ef4444; }
+  .health-badge-yellow { background: #fefce8; color: #ca8a04; border: 2px solid #eab308; }
+  .health-badge-green { background: #f0fdf4; color: #16a34a; border: 2px solid #22c55e; }
+  .health-badge-never { background: #f9fafb; color: #6b7280; border: 2px solid #9ca3af; }
+
+  .health-columns { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  @media (max-width: 900px) { .health-columns { grid-template-columns: 1fr; } }
+
+  .health-col { background: rgba(0,0,0,0.15); border-radius: 12px; padding: 16px; min-height: 120px; }
+  .health-col-header { font-size: 13px; font-weight: 700; padding: 8px 12px; border-radius: 8px; margin-bottom: 12px; letter-spacing: 0.3px; }
+  .health-col-header-red { background: #fef2f2; color: #ef4444; }
+  .health-col-header-yellow { background: #fefce8; color: #ca8a04; }
+  .health-col-header-green { background: #f0fdf4; color: #16a34a; }
+  .health-col-header-never { background: #f9fafb; color: #6b7280; display: inline-block; padding: 6px 14px; border-radius: 8px; font-size: 13px; font-weight: 700; }
+
+  .health-cards-list { display: flex; flex-direction: column; gap: 10px; }
+  .health-cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; }
+
+  .health-card {
+    border-radius: 10px; padding: 14px; font-size: 13px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  }
+  .health-card-red { border-left: 4px solid #ef4444; background: #fef2f2; color: #1f2937; }
+  .health-card-yellow { border-left: 4px solid #eab308; background: #fefce8; color: #1f2937; }
+  .health-card-green { border-left: 4px solid #22c55e; background: #f0fdf4; color: #1f2937; }
+  .health-card-never { border-left: 4px solid #6b7280; background: #f9fafb; color: #1f2937; }
+
+  .health-card-name { font-weight: 700; font-size: 14px; margin-bottom: 2px; }
+  .health-card-email { font-size: 11px; color: #6b7280; margin-bottom: 6px; }
+  .health-card-meta { display: flex; gap: 6px; align-items: center; margin-bottom: 8px; flex-wrap: wrap; }
+  .health-card-days { font-size: 12px; color: #6b7280; }
+  .health-card-actions { display: flex; gap: 8px; margin-top: 8px; flex-wrap: wrap; }
+  .health-btn {
+    padding: 5px 10px; border-radius: 6px; font-size: 11px; font-weight: 600;
+    cursor: pointer; border: none; transition: opacity 0.2s;
+  }
+  .health-btn-followup { background: #374151; color: #fff; }
+  .health-btn-followup:hover { opacity: 0.8; }
+  .health-btn-profile { background: #e5e7eb; color: #374151; }
+  .health-btn-profile:hover { opacity: 0.8; }
+
   /* CLIENT PROFILE OVERLAY */
   .profile-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.75); z-index: 800; align-items: center; justify-content: center; backdrop-filter: blur(5px); }
   .profile-overlay.open { display: flex; }
@@ -280,6 +327,7 @@
       <div class="nav-tab" onclick="showSection('agents', this)">🤖 Agent Health</div>
       <div class="nav-tab" onclick="showSection('pipeline', this)">📊 Sales Pipeline</div>
       <div class="nav-tab" onclick="showSection('database', this)">🗄️ Database</div>
+      <div class="nav-tab" onclick="showSection('health', this)">🚦 Health</div>
     </div>
     <button class="logout-btn" onclick="logout()">Logout</button>
   </div>
@@ -667,6 +715,44 @@
       </div>
     </div>
 
+    <!-- SECTION 6: CLIENT HEALTH -->
+    <div class="section" id="section-health">
+      <div class="section-header">
+        <div class="section-title">🚦 Client <span>Health</span></div>
+        <div class="section-meta" id="health-updated">—</div>
+      </div>
+
+      <!-- Summary badges -->
+      <div class="health-summary" id="health-summary" style="display:flex;gap:16px;flex-wrap:wrap;margin-bottom:24px;">
+        <div class="health-badge health-badge-red"><span id="health-count-red">—</span><br><small>🔴 At Risk</small></div>
+        <div class="health-badge health-badge-yellow"><span id="health-count-yellow">—</span><br><small>🟡 Watch List</small></div>
+        <div class="health-badge health-badge-green"><span id="health-count-green">—</span><br><small>🟢 Active</small></div>
+        <div class="health-badge health-badge-never"><span id="health-count-never">—</span><br><small>⚫ Never Logged In</small></div>
+      </div>
+
+      <!-- Three columns -->
+      <div class="health-columns" id="health-columns">
+        <div class="health-col" id="health-col-red">
+          <div class="health-col-header health-col-header-red">🔴 At Risk</div>
+          <div id="health-cards-red" class="health-cards-list"></div>
+        </div>
+        <div class="health-col" id="health-col-yellow">
+          <div class="health-col-header health-col-header-yellow">🟡 Watch List</div>
+          <div id="health-cards-yellow" class="health-cards-list"></div>
+        </div>
+        <div class="health-col" id="health-col-green">
+          <div class="health-col-header health-col-header-green">🟢 Active</div>
+          <div id="health-cards-green" class="health-cards-list"></div>
+        </div>
+      </div>
+
+      <!-- Never logged in — separate row -->
+      <div style="margin-top:28px;">
+        <div class="health-col-header health-col-header-never" style="margin-bottom:12px;">⚫ Never Logged In</div>
+        <div id="health-cards-never" class="health-cards-grid"></div>
+      </div>
+    </div>
+
   </div><!-- /content -->
 </div><!-- /app -->
 
@@ -825,7 +911,8 @@ function showSection(name, el) {
     financials: loadFinancialsSection,
     agents: loadAgentsSection,
     pipeline: loadPipelineSection,
-    database: loadDatabaseSection
+    database: loadDatabaseSection,
+    health: loadHealthSection
   };
   if (loaders[name]) loaders[name]();
 }
@@ -1541,6 +1628,141 @@ async function saveProfile() {
     document.getElementById('prof-meta').textContent = [document.getElementById('prof-icp').value.replace(/_/g,' '), email].join(' · ');
   } catch(e) {
     showToast('Error: ' + e.message, true);
+  }
+}
+
+// ============================================================
+// HEALTH SECTION — Traffic Light Client Health Monitoring
+// ============================================================
+
+function getHealthStatus(client) {
+  if (!client.login_count || client.login_count === 0) return 'never';
+  const lastLoginDate = client.last_login ? new Date(client.last_login) : null;
+  // Also consider updated_at as a proxy for recent pipeline activity
+  const lastUpdated = client.updated_at ? new Date(client.updated_at) : null;
+  // Use whichever is more recent
+  let latestActivity = null;
+  if (lastLoginDate && lastUpdated) {
+    latestActivity = lastLoginDate > lastUpdated ? lastLoginDate : lastUpdated;
+  } else {
+    latestActivity = lastLoginDate || lastUpdated;
+  }
+  const daysSince = latestActivity
+    ? Math.floor((Date.now() - latestActivity) / 86400000)
+    : 999;
+  if (daysSince <= 7) return 'green';
+  if (daysSince <= 14) return 'yellow';
+  return 'red';
+}
+
+function formatHealthDate(dateStr) {
+  if (!dateStr) return 'Never';
+  const d = new Date(dateStr);
+  return d.toLocaleDateString('en-AU', { day: 'numeric', month: 'short', year: 'numeric' });
+}
+
+function daysSinceStr(dateStr) {
+  if (!dateStr) return null;
+  const days = Math.floor((Date.now() - new Date(dateStr)) / 86400000);
+  if (days === 0) return 'Today';
+  if (days === 1) return '1 day ago';
+  return `${days} days ago`;
+}
+
+function buildHealthCard(client, status) {
+  const colorClass = {
+    green: 'health-card-green',
+    yellow: 'health-card-yellow',
+    red: 'health-card-red',
+    never: 'health-card-never'
+  }[status];
+
+  const icpBadge = client.icp_type
+    ? `<span class="badge badge-teal" style="font-size:10px;">${(client.icp_type || '').replace(/_/g,' ')}</span>`
+    : '';
+
+  const lastLogin = formatHealthDate(client.last_login);
+  const daysSince = client.last_login ? daysSinceStr(client.last_login) : null;
+  const daysStr = daysSince ? `<span class="health-card-days">Last seen: ${daysSince}</span>` : `<span class="health-card-days">Last seen: Never</span>`;
+
+  const name = (client.name || 'Unknown').replace(/'/g, "\\'");
+  const email = client.email || '';
+
+  const followupMsg = `Hi ${client.name || 'there'}, just checking in — we noticed you haven't logged into myFindr recently. Your leads are waiting! Log in at app.myfindr.com.au 🚀`;
+
+  // Escape for inline JS attr
+  const escapedMsg = followupMsg.replace(/"/g, '&quot;').replace(/'/g, "\\'");
+  const escapedClientId = (client.client_id || client.id || '').toString().replace(/'/g, "\\'");
+
+  return `<div class="health-card ${colorClass}">
+  <div class="health-card-name">${client.name || 'Unknown'}</div>
+  <div class="health-card-email">${email}</div>
+  <div class="health-card-meta">
+    ${icpBadge}
+    ${daysStr}
+  </div>
+  <div style="font-size:11px;color:#9ca3af;">Last login: ${lastLogin}</div>
+  <div class="health-card-actions">
+    <button class="health-btn health-btn-followup" onclick="healthFollowUp('${escapedMsg}', this)">📧 Follow Up</button>
+    <button class="health-btn health-btn-profile" onclick="openProfile('${escapedClientId}')">👤 View Profile</button>
+  </div>
+</div>`;
+}
+
+function healthFollowUp(msg, btn) {
+  navigator.clipboard.writeText(msg).then(() => {
+    const orig = btn.textContent;
+    btn.textContent = '✅ Copied!';
+    setTimeout(() => { btn.textContent = orig; }, 2000);
+    showToast('📋 Follow-up message copied!');
+  }).catch(() => {
+    showToast('Could not copy — check clipboard permissions', true);
+  });
+}
+
+let healthLoaded = false;
+
+async function loadHealthSection() {
+  if (healthLoaded) return;
+
+  document.getElementById('health-updated').textContent = 'Loading…';
+  ['red','yellow','green','never'].forEach(s => {
+    document.getElementById('health-cards-' + s).innerHTML = '<div class="loading">Loading…</div>';
+    document.getElementById('health-count-' + s).textContent = '…';
+  });
+
+  try {
+    const SUPA_URL_B = typeof SUPA_URL !== 'undefined' ? SUPA_URL : '';
+    const SUPA_KEY_B = typeof SUPA_KEY !== 'undefined' ? SUPA_KEY : '';
+    const res = await fetch(
+      `${SUPA_URL_B}/rest/v1/client_profiles?select=client_id,name,email,icp_type,last_login,login_count,pipeline_items,updated_at&order=last_login.asc`,
+      { headers: { apikey: SUPA_KEY_B, Authorization: `Bearer ${SUPA_KEY_B}` } }
+    );
+    const data = await res.json();
+
+    const buckets = { red: [], yellow: [], green: [], never: [] };
+    (data || []).forEach(client => {
+      const status = getHealthStatus(client);
+      buckets[status].push(client);
+    });
+
+    ['red','yellow','green','never'].forEach(s => {
+      document.getElementById('health-count-' + s).textContent = buckets[s].length;
+      const container = document.getElementById('health-cards-' + s);
+      if (buckets[s].length === 0) {
+        container.innerHTML = `<div style="color:#9ca3af;font-size:12px;padding:8px 0;">None</div>`;
+      } else {
+        container.innerHTML = buckets[s].map(c => buildHealthCard(c, s)).join('');
+      }
+    });
+
+    document.getElementById('health-updated').textContent = `Updated ${new Date().toLocaleTimeString('en-AU')} · ${(data||[]).length} clients`;
+    healthLoaded = true;
+  } catch(e) {
+    ['red','yellow','green','never'].forEach(s => {
+      document.getElementById('health-cards-' + s).innerHTML = `<div style="color:#ef4444;font-size:12px;">Error: ${e.message}</div>`;
+    });
+    document.getElementById('health-updated').textContent = 'Error loading data';
   }
 }
 
