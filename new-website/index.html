@@ -4,158 +4,116 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>myFindr — Property Development Intelligence</title>
-  <meta name="description" content="Real-time Development Application data for Brisbane & Sunshine Coast — filtered to your trade, your suburbs, your pipeline." />
+  <meta name="description" content="Real-time Development Application intelligence for Brisbane & Sunshine Coast property professionals. Ranked leads, timing benchmarks, and suburb hotspots — filtered to your trade." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg: #ffffff;
-      --bg-secondary: #f8f8fa;
-      --bg-dark: #0a0b10;
-      --border: #e8e8e9;
-      --accent: #E64500;
-      --accent2: #FA5914;
-      --text: #0a0b10;
-      --text-muted: #7a7a7a;
-      --card-radius: 20px;
-      --max-w: 1200px;
+      --bg: #050810;
+      --bg2: #070c15;
+      --surface: rgba(255,255,255,0.04);
+      --surface-hover: rgba(255,255,255,0.07);
+      --border: rgba(255,255,255,0.08);
+      --border-hover: rgba(255,255,255,0.16);
+      --orange: #E64500;
+      --orange2: #FA5914;
+      --orange-glow: rgba(230,69,0,0.20);
+      --text: #F0F0F0;
+      --text-sec: rgba(255,255,255,0.55);
+      --text-ter: rgba(255,255,255,0.35);
+      --cool: rgba(100,150,255,0.6);
+      --r-card: 16px;
+      --r-btn: 12px;
+      --r-pill: 999px;
     }
 
     html { scroll-behavior: smooth; }
 
     body {
-      font-family: 'Inter', sans-serif;
-      font-size: 15px;
-      color: var(--text);
+      font-family: 'Inter', -apple-system, sans-serif;
       background: var(--bg);
-      line-height: 1.6;
+      color: var(--text);
+      overflow-x: hidden;
       -webkit-font-smoothing: antialiased;
     }
 
-    /* ── UTILITIES ─────────────────────────────────── */
-    .container {
-      max-width: var(--max-w);
-      margin: 0 auto;
-      padding: 0 24px;
+    /* ── SCROLLBAR ── */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.12); border-radius: 99px; }
+
+    /* ── BACKGROUND ORBS ── */
+    .orb-container {
+      position: fixed;
+      inset: 0;
+      overflow: hidden;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(120px);
+      opacity: 0.5;
+    }
+    .orb-1 {
+      width: 700px; height: 700px;
+      background: radial-gradient(circle, rgba(230,69,0,0.35) 0%, transparent 70%);
+      top: -200px; right: -150px;
+      animation: orb-drift 18s ease-in-out infinite alternate;
+    }
+    .orb-2 {
+      width: 600px; height: 600px;
+      background: radial-gradient(circle, rgba(80,120,255,0.25) 0%, transparent 70%);
+      bottom: 10%; left: -200px;
+      animation: orb-drift 22s ease-in-out infinite alternate-reverse;
+    }
+    .orb-3 {
+      width: 400px; height: 400px;
+      background: radial-gradient(circle, rgba(140,80,255,0.20) 0%, transparent 70%);
+      top: 50%; left: 40%;
+      animation: orb-drift 15s ease-in-out infinite alternate;
+    }
+    @keyframes orb-drift {
+      0%   { transform: translate(0,0) scale(1); }
+      33%  { transform: translate(40px,-30px) scale(1.08); }
+      66%  { transform: translate(-20px,50px) scale(0.94); }
+      100% { transform: translate(30px,20px) scale(1.05); }
     }
 
-    .pill {
-      display: inline-flex;
-      align-items: center;
-      background: #f0f0f0;
-      color: var(--text);
-      border-radius: 999px;
-      padding: 6px 14px;
-      font-size: 12px;
-      font-weight: 600;
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
-    }
-
-    .pill-accent {
-      background: rgba(230,69,0,0.1);
-      color: var(--accent);
-    }
-
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      border-radius: 10px;
-      padding: 13px 28px;
-      font-weight: 600;
-      font-size: 15px;
-      font-family: 'Inter', sans-serif;
-      cursor: pointer;
-      text-decoration: none;
-      transition: all 0.2s ease;
-      border: none;
-    }
-
-    .btn-primary {
-      background: var(--accent);
-      color: #fff;
-    }
-    .btn-primary:hover { background: var(--accent2); transform: translateY(-1px); box-shadow: 0 8px 24px rgba(230,69,0,0.25); }
-
-    .btn-secondary {
-      background: transparent;
-      border: 1px solid var(--border);
-      color: var(--text);
-    }
-    .btn-secondary:hover { border-color: var(--text); transform: translateY(-1px); }
-
-    h1 {
-      font-size: clamp(44px, 6vw, 72px);
-      font-weight: 700;
-      letter-spacing: -2px;
-      line-height: 1.1;
-      color: var(--text);
-    }
-
-    h2 {
-      font-size: clamp(32px, 4vw, 52px);
-      font-weight: 700;
-      letter-spacing: -1.5px;
-      line-height: 1.1;
-      color: var(--text);
-    }
-
-    h3 { font-size: 18px; font-weight: 600; color: var(--text); }
-
-    .section { padding: 100px 0; }
-
-    /* FADE IN ANIMATION */
-    .fade-in {
-      opacity: 0;
-      transform: translateY(24px);
-      transition: opacity 0.6s ease, transform 0.6s ease;
-    }
-    .fade-in.visible { opacity: 1; transform: none; }
-    .fade-in-delay-1 { transition-delay: 0.1s; }
-    .fade-in-delay-2 { transition-delay: 0.2s; }
-    .fade-in-delay-3 { transition-delay: 0.3s; }
-    .fade-in-delay-4 { transition-delay: 0.4s; }
-
-    /* ── NAV ────────────────────────────────────────── */
+    /* ── NAV ── */
     nav {
-      position: sticky;
-      top: 0;
+      position: fixed;
+      top: 0; left: 0; right: 0;
       z-index: 100;
-      height: 64px;
-      background: rgba(255,255,255,0.85);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-    }
-
-    .nav-inner {
+      padding: 0 5vw;
+      height: 68px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      width: 100%;
+      background: rgba(5,8,16,0.75);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      transform: translateY(-100%);
+      animation: nav-enter 0.6s 0.1s cubic-bezier(0.16,1,0.3,1) forwards;
+    }
+    @keyframes nav-enter {
+      to { transform: translateY(0); }
     }
 
     .nav-logo {
-      font-size: 18px;
+      font-size: 1.25rem;
       font-weight: 800;
-      letter-spacing: -0.5px;
+      letter-spacing: -0.03em;
       text-decoration: none;
       color: var(--text);
     }
-
-    .nav-logo .brand-f { color: var(--accent); }
-    .nav-logo .brand-dot {
-      color: var(--accent);
-      font-size: 0.4em;
-      vertical-align: super;
-      line-height: 1;
-    }
+    .nav-logo .bold { font-weight: 900; }
+    .nav-logo .dot { color: var(--orange); }
 
     .nav-links {
       display: flex;
@@ -163,998 +121,1124 @@
       gap: 32px;
       list-style: none;
     }
-
     .nav-links a {
+      color: var(--text-sec);
       text-decoration: none;
-      color: var(--text-muted);
-      font-size: 14px;
+      font-size: 0.875rem;
       font-weight: 500;
       transition: color 0.2s;
     }
     .nav-links a:hover { color: var(--text); }
 
-    .nav-right { display: flex; align-items: center; gap: 16px; }
+    .nav-right { display: flex; align-items: center; gap: 12px; }
 
-    /* Hamburger */
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 22px;
+      background: linear-gradient(135deg, var(--orange), var(--orange2));
+      color: #fff;
+      text-decoration: none;
+      font-size: 0.875rem;
+      font-weight: 600;
+      border-radius: var(--r-btn);
+      border: none;
+      cursor: pointer;
+      transition: all 0.25s;
+      box-shadow: 0 0 0 rgba(230,69,0,0);
+      position: relative;
+      overflow: hidden;
+    }
+    .btn-primary::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(255,255,255,0.1), transparent);
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 0 30px rgba(230,69,0,0.45), 0 4px 20px rgba(230,69,0,0.3);
+    }
+    .btn-primary:hover::after { opacity: 1; }
+
+    .btn-ghost {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 22px;
+      background: var(--surface);
+      color: var(--text);
+      text-decoration: none;
+      font-size: 0.875rem;
+      font-weight: 500;
+      border-radius: var(--r-btn);
+      border: 1px solid var(--border);
+      cursor: pointer;
+      transition: all 0.25s;
+      backdrop-filter: blur(10px);
+    }
+    .btn-ghost:hover {
+      background: rgba(255,255,255,0.08);
+      border-color: var(--border-hover);
+      transform: translateY(-1px);
+    }
+
     .hamburger {
       display: none;
       flex-direction: column;
       gap: 5px;
-      cursor: pointer;
       background: none;
       border: none;
+      cursor: pointer;
       padding: 4px;
     }
     .hamburger span {
       display: block;
-      width: 22px;
-      height: 2px;
+      width: 24px; height: 2px;
       background: var(--text);
       border-radius: 2px;
       transition: all 0.3s;
     }
-    .hamburger.open span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
+    .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
     .hamburger.open span:nth-child(2) { opacity: 0; }
-    .hamburger.open span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
+    .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
 
     .mobile-menu {
       display: none;
       position: fixed;
-      top: 64px;
-      left: 0; right: 0;
-      background: rgba(255,255,255,0.97);
-      backdrop-filter: blur(12px);
+      top: 68px; left: 0; right: 0;
+      background: rgba(5,8,16,0.97);
+      backdrop-filter: blur(20px);
       border-bottom: 1px solid var(--border);
-      padding: 24px;
+      padding: 24px 5vw 32px;
       z-index: 99;
       flex-direction: column;
       gap: 20px;
     }
     .mobile-menu.open { display: flex; }
     .mobile-menu a {
+      color: var(--text-sec);
       text-decoration: none;
-      color: var(--text);
-      font-size: 16px;
+      font-size: 1.1rem;
       font-weight: 500;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border);
+      transition: color 0.2s;
+    }
+    .mobile-menu a:hover { color: var(--text); }
+    .mobile-menu .btn-primary { width: 100%; justify-content: center; margin-top: 8px; }
+
+    /* ── LAYOUT ── */
+    section { position: relative; z-index: 1; }
+
+    .container {
+      max-width: 1140px;
+      margin: 0 auto;
+      padding: 0 5vw;
     }
 
-    /* ── HERO ───────────────────────────────────────── */
-    .hero {
-      position: relative;
-      overflow: hidden;
-      padding: 100px 0 80px;
-      background: var(--bg);
+    /* ── HERO ── */
+    #hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      padding: 120px 5vw 80px;
+      text-align: center;
     }
-
-    .hero-blob {
-      position: absolute;
-      top: -100px;
-      right: -150px;
-      width: 600px;
-      height: 600px;
-      background: radial-gradient(circle, rgba(230,69,0,0.08) 0%, transparent 70%);
-      border-radius: 50%;
-      pointer-events: none;
-      animation: blob-float 8s ease-in-out infinite;
-    }
-
-    @keyframes blob-float {
-      0%, 100% { transform: translate(0, 0) scale(1); }
-      33% { transform: translate(-20px, 15px) scale(1.03); }
-      66% { transform: translate(10px, -10px) scale(0.97); }
-    }
-
     .hero-inner {
-      position: relative;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 60px;
-      align-items: center;
+      max-width: 800px;
+      margin: 0 auto;
+      width: 100%;
     }
 
-    .hero-content { display: flex; flex-direction: column; gap: 24px; }
-
-    .hero-badge { margin-bottom: 4px; }
-
-    .hero h1 { margin: 0; }
-
-    .hero-sub {
-      font-size: 16px;
-      color: var(--text-muted);
-      line-height: 1.65;
-      max-width: 460px;
-    }
-
-    .hero-ctas { display: flex; gap: 12px; flex-wrap: wrap; }
-
-    .hero-trust {
-      font-size: 13px;
-      color: var(--text-muted);
-      display: flex;
+    .badge-pill {
+      display: inline-flex;
       align-items: center;
       gap: 8px;
-    }
-    .hero-trust-dot {
-      width: 3px; height: 3px;
-      border-radius: 50%;
-      background: var(--text-muted);
-      display: inline-block;
-    }
-
-    /* DASHBOARD MOCKUP */
-    .hero-visual {
-      position: relative;
-    }
-
-    .dashboard-mockup {
-      background: #0f0f0f;
-      border-radius: 20px;
-      padding: 20px;
-      border: 1px solid #222;
-      box-shadow: 0 40px 80px rgba(0,0,0,0.2), 0 0 0 1px rgba(255,255,255,0.04);
-    }
-
-    .dash-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 16px;
-    }
-
-    .dash-logo {
-      font-size: 14px;
-      font-weight: 800;
-      color: #fff;
-      letter-spacing: -0.5px;
-    }
-    .dash-logo span { color: var(--accent); }
-
-    .dash-badge {
-      background: rgba(230,69,0,0.15);
-      color: var(--accent2);
-      border-radius: 999px;
-      padding: 4px 10px;
-      font-size: 11px;
-      font-weight: 600;
-    }
-
-    .dash-kpis {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 8px;
-      margin-bottom: 16px;
-    }
-
-    .kpi-tile {
-      background: #1a1a1a;
-      border: 1px solid #2a2a2a;
-      border-radius: 12px;
-      padding: 12px 10px;
-      text-align: center;
-    }
-
-    .kpi-label {
-      font-size: 9px;
-      color: #666;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      margin-bottom: 4px;
-    }
-
-    .kpi-value {
-      font-size: 22px;
-      font-weight: 700;
-      color: #fff;
-      line-height: 1;
-    }
-
-    .kpi-hot .kpi-value { color: #E64500; }
-    .kpi-warm .kpi-value { color: #FA8914; }
-
-    .dash-section-label {
-      font-size: 10px;
-      font-weight: 600;
-      color: #555;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-      margin-bottom: 8px;
-    }
-
-    .dash-chart { margin-bottom: 16px; }
-
-    .chart-row {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 6px;
-    }
-
-    .chart-label {
-      font-size: 10px;
-      color: #888;
-      width: 60px;
-      text-align: right;
-      flex-shrink: 0;
-    }
-
-    .chart-bar-wrap {
-      flex: 1;
-      background: #1e1e1e;
-      border-radius: 4px;
-      height: 8px;
-      overflow: hidden;
-    }
-
-    .chart-bar {
-      height: 100%;
-      background: linear-gradient(90deg, #E64500, #FA5914);
-      border-radius: 4px;
-      transition: width 0.8s ease;
-    }
-
-    .chart-num {
-      font-size: 10px;
-      color: #E64500;
-      font-weight: 600;
-      width: 20px;
-      flex-shrink: 0;
-    }
-
-    .dash-lead-card {
-      background: #1a1a1a;
-      border: 1px solid #2a2a2a;
-      border-radius: 10px;
-      padding: 10px 12px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    .lead-address {
-      font-size: 11px;
-      color: #ccc;
-      font-weight: 500;
-    }
-
-    .lead-type {
-      font-size: 10px;
-      color: #666;
-      margin-top: 2px;
-    }
-
-    .lead-hot-badge {
-      background: rgba(230,69,0,0.2);
-      color: #E64500;
-      border-radius: 999px;
-      padding: 3px 8px;
-      font-size: 10px;
-      font-weight: 700;
-    }
-
-    /* ── TRUST ROW ──────────────────────────────────── */
-    .trust-row {
-      border-top: 1px solid var(--border);
-      border-bottom: 1px solid var(--border);
-      padding: 32px 0;
-      background: var(--bg);
-    }
-
-    .trust-inner {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 16px;
-    }
-
-    .trust-label {
-      font-size: 13px;
-      color: var(--text-muted);
-      font-weight: 500;
-    }
-
-    .trust-pills {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      justify-content: center;
-    }
-
-    .trust-pill {
-      background: #f0f0f0;
-      color: var(--text);
-      border-radius: 999px;
-      padding: 8px 18px;
-      font-size: 13px;
-      font-weight: 600;
-    }
-
-    /* ── FEATURES ───────────────────────────────────── */
-    .features { background: var(--bg-secondary); }
-
-    .section-header {
-      text-align: center;
-      margin-bottom: 64px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 16px;
-    }
-
-    .section-header p {
-      font-size: 16px;
-      color: var(--text-muted);
-      max-width: 560px;
-    }
-
-    .section-eyebrow {
-      font-size: 13px;
-      color: var(--text-muted);
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      margin-bottom: 8px;
-    }
-
-    .features-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 24px;
-    }
-
-    .feature-card {
-      background: #fff;
-      border: 1px solid var(--border);
-      border-radius: var(--card-radius);
-      padding: 28px 28px 32px;
-      transition: transform 0.25s ease, box-shadow 0.25s ease;
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-    }
-    .feature-card:hover { transform: translateY(-4px); box-shadow: 0 16px 48px rgba(0,0,0,0.08); }
-
-    .feature-mockup {
-      background: var(--bg-secondary);
-      border-radius: 12px;
-      border: 1px solid var(--border);
-      padding: 16px;
-      height: 120px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      overflow: hidden;
-      position: relative;
-    }
-
-    /* Feature mockup 1 — timeline bars */
-    .mock-timeline { width: 100%; }
-    .mock-tl-row { display: flex; align-items: center; gap: 6px; margin-bottom: 6px; }
-    .mock-tl-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); flex-shrink: 0; }
-    .mock-tl-bar { height: 6px; border-radius: 3px; background: linear-gradient(90deg, var(--accent), var(--accent2)); }
-    .mock-tl-label { font-size: 9px; color: #aaa; flex-shrink: 0; }
-
-    /* Feature mockup 2 — clock */
-    .mock-clock-ring {
-      width: 56px; height: 56px;
-      border-radius: 50%;
-      border: 3px solid var(--border);
-      border-top-color: var(--accent);
-      position: relative;
-      animation: spin 4s linear infinite;
-    }
-    .mock-clock-center {
-      position: absolute;
-      inset: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 11px;
-      font-weight: 700;
-      color: var(--accent);
-    }
-    @keyframes spin { to { transform: rotate(360deg); } }
-
-    .mock-timing-label {
-      text-align: center;
-      font-size: 11px;
-      color: var(--text-muted);
-      margin-top: 4px;
-    }
-
-    /* Feature mockup 3 — filter tags */
-    .mock-filters { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; }
-    .mock-filter {
-      border-radius: 999px;
-      padding: 4px 10px;
-      font-size: 10px;
-      font-weight: 600;
-    }
-    .mock-filter.active { background: var(--accent); color: #fff; }
-    .mock-filter.inactive { background: var(--border); color: var(--text-muted); }
-
-    .feature-icon { font-size: 24px; }
-    .feature-card h3 { font-size: 18px; }
-    .feature-card p { font-size: 14px; color: var(--text-muted); line-height: 1.65; }
-
-    /* ── BENTO ──────────────────────────────────────── */
-    .bento { background: var(--bg); }
-
-    .bento-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      grid-template-rows: auto auto;
-      gap: 24px;
-    }
-
-    .bento-card {
-      background: #fff;
-      border: 1px solid var(--border);
-      border-radius: var(--card-radius);
-      padding: 28px;
-      overflow: hidden;
-      transition: transform 0.25s ease, box-shadow 0.25s ease;
-    }
-    .bento-card:hover { transform: translateY(-3px); box-shadow: 0 12px 40px rgba(0,0,0,0.07); }
-
-    .bento-large {
-      grid-column: 1 / 3;
-      background: #fff;
-    }
-
-    .bento-card-label {
-      font-size: 12px;
-      font-weight: 600;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-      margin-bottom: 6px;
-    }
-
-    .bento-card-title {
-      font-size: 18px;
-      font-weight: 700;
-      color: var(--text);
-      margin-bottom: 20px;
-    }
-
-    /* Bento dashboard */
-    .bento-kpis {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 10px;
-      margin-bottom: 16px;
-    }
-
-    .bento-kpi {
-      background: var(--bg-secondary);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 12px;
-      text-align: center;
-    }
-    .bento-kpi-val { font-size: 20px; font-weight: 700; color: var(--text); }
-    .bento-kpi-val.orange { color: var(--accent); }
-    .bento-kpi-lbl { font-size: 10px; color: var(--text-muted); font-weight: 600; text-transform: uppercase; margin-top: 2px; }
-
-    .bento-table { width: 100%; border-collapse: collapse; }
-    .bento-table th {
-      font-size: 11px;
-      font-weight: 600;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-      text-align: left;
-      padding: 8px 0 8px;
-      border-bottom: 1px solid var(--border);
-    }
-    .bento-table td {
-      font-size: 13px;
-      color: var(--text);
-      padding: 10px 0;
-      border-bottom: 1px solid #f4f4f5;
-    }
-    .bento-table td:last-child { text-align: right; }
-
-    .status-dot {
-      display: inline-block;
-      width: 6px; height: 6px;
-      border-radius: 50%;
-      margin-right: 6px;
-    }
-    .dot-hot { background: var(--accent); }
-    .dot-warm { background: #FA8914; }
-    .dot-cold { background: #94a3b8; }
-
-    .status-badge {
-      border-radius: 999px;
-      padding: 3px 10px;
-      font-size: 11px;
-      font-weight: 600;
-    }
-    .badge-hot { background: rgba(230,69,0,0.1); color: var(--accent); }
-    .badge-warm { background: rgba(250,137,20,0.1); color: #FA8914; }
-
-    /* Bento timeline card */
-    .timeline-steps { display: flex; flex-direction: column; gap: 12px; margin-top: 8px; }
-    .tl-step { display: flex; gap: 12px; align-items: flex-start; }
-    .tl-dot-col { display: flex; flex-direction: column; align-items: center; }
-    .tl-dot { width: 10px; height: 10px; border-radius: 50%; border: 2px solid var(--border); flex-shrink: 0; }
-    .tl-dot.active { border-color: var(--accent); background: var(--accent); }
-    .tl-line { width: 2px; height: 24px; background: var(--border); margin-top: 2px; }
-    .tl-text { font-size: 12px; color: var(--text-muted); line-height: 1.4; }
-    .tl-text strong { color: var(--text); display: block; font-size: 12px; }
-
-    /* Bento bar chart */
-    .bento-bars { display: flex; flex-direction: column; gap: 8px; margin-top: 8px; }
-    .bento-bar-row { display: flex; align-items: center; gap: 8px; }
-    .bento-bar-label { font-size: 11px; color: var(--text-muted); width: 64px; text-align: right; flex-shrink: 0; }
-    .bento-bar-bg { flex: 1; height: 8px; background: var(--bg-secondary); border-radius: 4px; overflow: hidden; }
-    .bento-bar-fill { height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent2)); border-radius: 4px; }
-    .bento-bar-val { font-size: 11px; font-weight: 600; color: var(--accent); width: 24px; }
-
-    /* ── HOW IT WORKS (dark) ────────────────────────── */
-    .how-it-works {
-      background: var(--bg-dark);
-      position: relative;
-      overflow: hidden;
-    }
-
-    .hiw-glow {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: 800px;
-      height: 500px;
-      background: radial-gradient(ellipse, rgba(230,69,0,0.07) 0%, transparent 70%);
-      pointer-events: none;
-    }
-
-    .how-it-works .section-header h2 { color: #fff; }
-    .how-it-works .section-header p { color: rgba(255,255,255,0.5); }
-
-    .steps-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 24px;
-      position: relative;
-    }
-
-    .step-card {
-      background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: var(--card-radius);
-      padding: 32px;
-    }
-
-    .step-num {
-      width: 40px; height: 40px;
-      border-radius: 50%;
-      background: rgba(230,69,0,0.15);
+      padding: 6px 16px;
+      background: rgba(230,69,0,0.12);
       border: 1px solid rgba(230,69,0,0.3);
-      color: var(--accent);
-      font-weight: 700;
-      font-size: 16px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 20px;
-    }
-
-    .step-card h3 { color: #fff; margin-bottom: 10px; font-size: 18px; }
-    .step-card p { color: rgba(255,255,255,0.5); font-size: 14px; line-height: 1.65; }
-
-    /* Feature tag scroll */
-    .feature-tags-wrap {
-      position: relative;
-      margin-top: 64px;
-      overflow: hidden;
-    }
-    .feature-tags-wrap::before,
-    .feature-tags-wrap::after {
-      content: '';
-      position: absolute;
-      top: 0; bottom: 0;
-      width: 80px;
-      z-index: 1;
-      pointer-events: none;
-    }
-    .feature-tags-wrap::before { left: 0; background: linear-gradient(90deg, var(--bg-dark), transparent); }
-    .feature-tags-wrap::after { right: 0; background: linear-gradient(-90deg, var(--bg-dark), transparent); }
-
-    .feature-tags {
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
-      justify-content: center;
-    }
-
-    .feature-tag {
-      background: rgba(255,255,255,0.07);
-      border: 1px solid rgba(255,255,255,0.1);
-      color: rgba(255,255,255,0.7);
-      border-radius: 999px;
-      padding: 8px 18px;
-      font-size: 13px;
-      font-weight: 500;
-    }
-
-    /* ── ICP SHOWCASE ───────────────────────────────── */
-    .icp { background: var(--bg-secondary); }
-
-    .tabs {
-      display: flex;
-      gap: 0;
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      background: #fff;
-      overflow: hidden;
-      width: fit-content;
-      margin: 0 auto 40px;
-    }
-
-    .tab-btn {
-      padding: 11px 24px;
-      font-size: 14px;
+      border-radius: var(--r-pill);
+      font-size: 0.78rem;
       font-weight: 600;
-      color: var(--text-muted);
-      background: none;
-      border: none;
-      cursor: pointer;
-      font-family: 'Inter', sans-serif;
-      transition: all 0.2s;
+      color: #FA7734;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      opacity: 0;
+      animation: fade-up 0.5s 0.2s ease forwards;
     }
-    .tab-btn.active {
-      background: var(--accent);
-      color: #fff;
-      border-radius: 10px;
+    .badge-pill .pulse-dot {
+      width: 6px; height: 6px;
+      background: var(--orange2);
+      border-radius: 50%;
+      animation: pulse 2s infinite;
     }
-    .tab-btn:not(.active):hover { color: var(--text); }
-
-    .tab-pane { display: none; }
-    .tab-pane.active {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 40px;
-      align-items: center;
-      animation: tabFade 0.3s ease;
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.7); }
     }
 
-    @keyframes tabFade { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
-
-    .icp-content { display: flex; flex-direction: column; gap: 20px; }
-    .icp-content h3 { font-size: 26px; font-weight: 700; letter-spacing: -0.5px; }
-    .icp-content p { font-size: 15px; color: var(--text-muted); line-height: 1.65; }
-
-    .icp-stats { display: flex; flex-direction: column; gap: 12px; }
-    .icp-stat {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      background: #fff;
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 14px 18px;
+    .hero-h1 {
+      font-size: clamp(2.4rem, 5vw, 4rem);
+      font-weight: 900;
+      letter-spacing: -0.04em;
+      line-height: 1.1;
+      margin: 20px 0 24px;
+      opacity: 0;
+      animation: fade-up 0.6s 0.4s ease forwards;
     }
-    .icp-stat-icon {
-      width: 36px; height: 36px;
-      border-radius: 10px;
-      background: rgba(230,69,0,0.1);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 16px;
-      flex-shrink: 0;
-    }
-    .icp-stat-text { font-size: 13px; font-weight: 600; color: var(--text); }
-
-    .icp-visual {
-      background: #fff;
-      border: 1px solid var(--border);
-      border-radius: var(--card-radius);
-      padding: 24px;
-    }
-
-    .icp-visual-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 16px;
-      padding-bottom: 12px;
-      border-bottom: 1px solid var(--border);
-    }
-    .icp-visual-title { font-size: 13px; font-weight: 700; }
-
-    .icp-lead-list { display: flex; flex-direction: column; gap: 10px; }
-    .icp-lead-item {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 10px 12px;
-      background: var(--bg-secondary);
-      border-radius: 10px;
-    }
-    .icp-lead-addr { font-size: 12px; font-weight: 600; }
-    .icp-lead-sub { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
-
-    /* ── TESTIMONIALS ───────────────────────────────── */
-    .testimonials { background: var(--bg); }
-
-    .testi-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 24px;
-    }
-
-    .testi-card {
-      background: #fff;
-      border: 1px solid var(--border);
-      border-radius: var(--card-radius);
-      padding: 32px;
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-      transition: transform 0.25s ease, box-shadow 0.25s ease;
-    }
-    .testi-card:hover { transform: translateY(-4px); box-shadow: 0 16px 48px rgba(0,0,0,0.07); }
-
-    .testi-stars { color: #F59E0B; font-size: 16px; letter-spacing: 2px; }
-    .testi-quote { font-size: 15px; color: var(--text); line-height: 1.65; font-style: italic; flex: 1; }
-    .testi-author { display: flex; flex-direction: column; gap: 2px; }
-    .testi-name { font-size: 14px; font-weight: 700; color: var(--text); }
-    .testi-role { font-size: 13px; color: var(--text-muted); }
-
-    /* ── CTA DARK ───────────────────────────────────── */
-    .cta-dark {
-      background: var(--bg-dark);
-      text-align: center;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .cta-glow {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: 600px;
-      height: 400px;
-      background: radial-gradient(ellipse, rgba(230,69,0,0.1) 0%, transparent 70%);
-      pointer-events: none;
-    }
-
-    .cta-dark-inner { position: relative; display: flex; flex-direction: column; align-items: center; gap: 24px; }
-
-    .cta-dark h2 { color: #fff; font-size: clamp(36px, 4.5vw, 60px); }
-
-    .cta-gradient-text {
-      background: linear-gradient(135deg, var(--accent), var(--accent2), #ff8c42);
+    .hero-h1 .grad {
+      background: linear-gradient(135deg, #FA7734, #E64500, #c73b00);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
     }
 
-    .cta-dark p { color: rgba(255,255,255,0.5); font-size: 16px; max-width: 480px; }
-
-    /* ── FOOTER ─────────────────────────────────────── */
-    footer {
-      background: var(--bg-dark);
-      border-top: 1px solid rgba(255,255,255,0.07);
-      padding: 48px 0 32px;
+    .hero-sub {
+      font-size: clamp(1rem, 2vw, 1.2rem);
+      color: var(--text-sec);
+      line-height: 1.7;
+      max-width: 620px;
+      margin: 0 auto 36px;
+      font-weight: 400;
+      opacity: 0;
+      animation: fade-up 0.6s 0.6s ease forwards;
     }
 
-    .footer-inner {
+    .hero-ctas {
       display: flex;
-      flex-direction: column;
-      gap: 32px;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      flex-wrap: wrap;
+      opacity: 0;
+      animation: fade-up 0.6s 0.8s ease forwards;
+    }
+    .hero-ctas .btn-primary { padding: 14px 32px; font-size: 1rem; border-radius: 14px; }
+    .hero-ctas .btn-ghost { padding: 14px 32px; font-size: 1rem; border-radius: 14px; }
+
+    .hero-trust {
+      margin-top: 18px;
+      font-size: 0.8rem;
+      color: var(--text-ter);
+      letter-spacing: 0.02em;
+      opacity: 0;
+      animation: fade-up 0.5s 1s ease forwards;
     }
 
-    .footer-top {
+    @keyframes fade-up {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── DASHBOARD MOCKUP ── */
+    .dashboard-wrap {
+      margin-top: 56px;
+      opacity: 0;
+      animation: fade-up 0.8s 1s ease forwards;
+    }
+    .dashboard-mockup {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.10);
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 40px 100px rgba(0,0,0,0.6), 0 0 80px rgba(230,69,0,0.08);
+      animation: float 3s ease-in-out infinite alternate;
+      max-width: 780px;
+      margin: 0 auto;
+    }
+    @keyframes float {
+      from { transform: translateY(0); }
+      to   { transform: translateY(-10px); }
+    }
+
+    .dash-header {
+      background: rgba(255,255,255,0.04);
+      border-bottom: 1px solid var(--border);
+      padding: 14px 20px;
       display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      gap: 40px;
+      align-items: center;
+      gap: 12px;
     }
-
-    .footer-brand { display: flex; flex-direction: column; gap: 8px; }
-
-    .footer-logo {
-      font-size: 18px;
-      font-weight: 800;
-      letter-spacing: -0.5px;
-      color: #fff;
-      text-decoration: none;
+    .dash-dots { display: flex; gap: 6px; }
+    .dash-dots span {
+      width: 10px; height: 10px;
+      border-radius: 50%;
     }
-    .footer-logo .brand-f { color: var(--accent); }
-    .footer-logo .brand-dot { color: var(--accent); font-size: 0.4em; vertical-align: super; }
-
-    .footer-tagline { font-size: 13px; color: rgba(255,255,255,0.4); }
-
-    .footer-links {
-      display: flex;
-      gap: 32px;
-      list-style: none;
-    }
-    .footer-links a {
-      text-decoration: none;
-      color: rgba(255,255,255,0.5);
-      font-size: 14px;
+    .dash-dots span:nth-child(1) { background: #FF5F57; }
+    .dash-dots span:nth-child(2) { background: #FFBD2E; }
+    .dash-dots span:nth-child(3) { background: #28CA41; }
+    .dash-title {
+      font-size: 0.78rem;
+      color: var(--text-ter);
       font-weight: 500;
-      transition: color 0.2s;
+      margin-left: 4px;
     }
-    .footer-links a:hover { color: #fff; }
 
-    .footer-bottom {
-      border-top: 1px solid rgba(255,255,255,0.07);
-      padding-top: 24px;
+    .dash-body { padding: 20px; }
+
+    .kpi-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+    .kpi-tile {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 10px;
+      padding: 12px 14px;
+      text-align: left;
+    }
+    .kpi-label {
+      font-size: 0.65rem;
+      color: var(--text-ter);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 6px;
+      font-weight: 600;
+    }
+    .kpi-value {
+      font-size: 1.5rem;
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      line-height: 1;
+    }
+    .kpi-hot { color: #FF5F3F; }
+    .kpi-warm { color: #FFB347; }
+    .kpi-week { color: var(--text); }
+    .kpi-sub { color: #6FA8FF; }
+
+    .dash-lead {
+      background: rgba(230,69,0,0.06);
+      border: 1px solid rgba(230,69,0,0.20);
+      border-radius: 10px;
+      padding: 12px 16px;
       display: flex;
       align-items: center;
       justify-content: space-between;
+      margin-bottom: 12px;
+      font-size: 0.78rem;
+    }
+    .lead-address { font-weight: 600; color: var(--text); }
+    .lead-type { color: var(--text-sec); margin-top: 2px; font-size: 0.7rem; }
+    .lead-badge {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      background: rgba(255,95,63,0.15);
+      border: 1px solid rgba(255,95,63,0.3);
+      border-radius: var(--r-pill);
+      padding: 3px 10px;
+      font-size: 0.68rem;
+      font-weight: 700;
+      color: #FF7055;
+      white-space: nowrap;
     }
 
-    .footer-copy { font-size: 13px; color: rgba(255,255,255,0.3); }
+    .dash-chart-label {
+      font-size: 0.65rem;
+      color: var(--text-ter);
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+    .suburb-bars {
+      display: flex;
+      align-items: flex-end;
+      gap: 8px;
+      height: 56px;
+    }
+    .bar-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      flex: 1;
+    }
+    .bar {
+      width: 100%;
+      border-radius: 4px 4px 0 0;
+      background: linear-gradient(180deg, rgba(230,69,0,0.7), rgba(230,69,0,0.3));
+    }
+    .bar-name { font-size: 0.55rem; color: var(--text-ter); text-align: center; }
 
-    /* ── RESPONSIVE ─────────────────────────────────── */
-    @media (max-width: 1024px) {
-      .features-grid,
-      .testi-grid { grid-template-columns: 1fr 1fr; }
+    /* ── MARQUEE ── */
+    .marquee-section {
+      padding: 20px 0;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      overflow: hidden;
+      background: rgba(255,255,255,0.015);
+    }
+    .marquee-track {
+      display: flex;
+      gap: 16px;
+      animation: marquee 30s linear infinite;
+      width: max-content;
+    }
+    @keyframes marquee {
+      from { transform: translateX(0); }
+      to   { transform: translateX(-50%); }
+    }
+    .marquee-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 20px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--r-pill);
+      font-size: 0.82rem;
+      font-weight: 500;
+      color: var(--text-sec);
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .marquee-pill .icon { color: var(--orange); font-size: 0.9rem; }
 
-      .bento-large { grid-column: 1 / -1; }
-      .bento-grid { grid-template-columns: 1fr 1fr; }
+    /* ── SECTION SHARED ── */
+    .section-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 14px;
+      background: rgba(230,69,0,0.08);
+      border: 1px solid rgba(230,69,0,0.2);
+      border-radius: var(--r-pill);
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--orange2);
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+    .section-h2 {
+      font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+      font-weight: 800;
+      letter-spacing: -0.035em;
+      line-height: 1.15;
+      margin-bottom: 16px;
+    }
+    .section-sub {
+      font-size: 1.05rem;
+      color: var(--text-sec);
+      line-height: 1.7;
+      max-width: 540px;
+    }
 
-      .steps-grid { grid-template-columns: 1fr; gap: 16px; }
+    /* ── REVEAL ANIMATION ── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
 
-      .tab-pane.active { grid-template-columns: 1fr; }
-      .icp-visual { display: none; }
+    /* ── FEATURES ── */
+    #features { padding: 100px 0; }
+    .features-header { text-align: center; margin-bottom: 60px; }
+    .features-header .section-sub { margin: 0 auto; }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+    .feature-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--r-card);
+      padding: 36px 32px;
+      backdrop-filter: blur(20px);
+      transition: all 0.35s cubic-bezier(0.16,1,0.3,1);
+      position: relative;
+      overflow: hidden;
+    }
+    .feature-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(230,69,0,0.5), transparent);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .feature-card:hover {
+      transform: translateY(-6px);
+      border-color: var(--border-hover);
+      background: var(--surface-hover);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.4), 0 0 40px rgba(230,69,0,0.1);
+    }
+    .feature-card:hover::before { opacity: 1; }
+
+    .feature-icon {
+      width: 48px; height: 48px;
+      border-radius: 12px;
+      background: rgba(230,69,0,0.12);
+      border: 1px solid rgba(230,69,0,0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      margin-bottom: 24px;
+    }
+    .feature-card h3 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 12px;
+    }
+    .feature-card p {
+      font-size: 0.9rem;
+      color: var(--text-sec);
+      line-height: 1.7;
+    }
+
+    /* ── PRODUCT SHOWCASE ── */
+    #product { padding: 100px 0; }
+    .product-header { text-align: center; margin-bottom: 60px; }
+    .product-header .section-sub { margin: 0 auto; }
+
+    .bento-grid {
+      display: grid;
+      grid-template-columns: 1.6fr 1fr;
+      grid-template-rows: auto auto;
+      gap: 16px;
+    }
+    .bento-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--r-card);
+      padding: 32px;
+      backdrop-filter: blur(20px);
+      transition: all 0.35s cubic-bezier(0.16,1,0.3,1);
+      overflow: hidden;
+    }
+    .bento-card:hover {
+      border-color: var(--border-hover);
+      background: var(--surface-hover);
+      transform: translateY(-4px);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.4), 0 0 40px rgba(230,69,0,0.08);
+    }
+    .bento-main { grid-row: 1 / 3; }
+
+    .bento-card h3 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 8px;
+    }
+    .bento-card p {
+      font-size: 0.875rem;
+      color: var(--text-sec);
+      line-height: 1.6;
+      margin-bottom: 20px;
+    }
+
+    .tab-pills {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 16px;
+    }
+    .tab-pill {
+      padding: 6px 14px;
+      border-radius: var(--r-pill);
+      font-size: 0.75rem;
+      font-weight: 600;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.04);
+      color: var(--text-sec);
+      transition: all 0.2s;
+    }
+    .tab-pill.active {
+      background: rgba(230,69,0,0.15);
+      border-color: rgba(230,69,0,0.35);
+      color: #FA7734;
+    }
+
+    .funnel-visual {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-top: 16px;
+    }
+    .funnel-bar {
+      height: 28px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      padding: 0 10px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: rgba(255,255,255,0.8);
+    }
+    .funnel-1 { width: 100%; background: linear-gradient(90deg, rgba(230,69,0,0.7), rgba(230,69,0,0.5)); }
+    .funnel-2 { width: 75%; background: linear-gradient(90deg, rgba(230,69,0,0.55), rgba(230,69,0,0.4)); }
+    .funnel-3 { width: 52%; background: linear-gradient(90deg, rgba(230,69,0,0.45), rgba(230,69,0,0.3)); }
+    .funnel-4 { width: 32%; background: linear-gradient(90deg, rgba(230,69,0,0.35), rgba(230,69,0,0.2)); }
+    .funnel-5 { width: 18%; background: linear-gradient(90deg, rgba(100,200,100,0.6), rgba(100,200,100,0.4)); }
+
+    /* ── Bento KPI mini ── */
+    .mini-kpi-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+    .mini-kpi {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 10px;
+      padding: 10px 12px;
+    }
+    .mini-kpi-label { font-size: 0.6rem; color: var(--text-ter); text-transform: uppercase; letter-spacing: 0.08em; font-weight: 600; margin-bottom: 4px; }
+    .mini-kpi-value { font-size: 1.2rem; font-weight: 800; letter-spacing: -0.04em; }
+
+    .mini-lead-row {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .mini-lead {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 8px;
+      padding: 8px 12px;
+      font-size: 0.72rem;
+    }
+    .mini-lead .street { color: var(--text); font-weight: 600; flex: 1; }
+    .mini-lead .status { color: var(--text-sec); }
+    .mini-lead .hot-badge {
+      background: rgba(255,95,63,0.15);
+      border: 1px solid rgba(255,95,63,0.25);
+      color: #FF7055;
+      border-radius: var(--r-pill);
+      padding: 2px 8px;
+      font-size: 0.62rem;
+      font-weight: 700;
+    }
+    .mini-lead .warm-badge {
+      background: rgba(255,180,71,0.12);
+      border: 1px solid rgba(255,180,71,0.25);
+      color: #FFB347;
+      border-radius: var(--r-pill);
+      padding: 2px 8px;
+      font-size: 0.62rem;
+      font-weight: 700;
+    }
+
+    /* ── HOW IT WORKS ── */
+    #how { padding: 100px 0; background: rgba(255,255,255,0.01); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+    .how-header { text-align: center; margin-bottom: 64px; }
+    .how-header .section-sub { margin: 0 auto; }
+
+    .steps-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0;
+      position: relative;
+    }
+    .steps-grid::before {
+      content: '';
+      position: absolute;
+      top: 32px;
+      left: calc(16.666% + 32px);
+      right: calc(16.666% + 32px);
+      height: 1px;
+      background: linear-gradient(90deg, rgba(230,69,0,0.4), rgba(230,69,0,0.1) 50%, rgba(230,69,0,0.4));
+    }
+
+    .step {
+      text-align: center;
+      padding: 0 32px;
+      position: relative;
+    }
+    .step-num {
+      width: 64px; height: 64px;
+      border-radius: 50%;
+      background: rgba(230,69,0,0.12);
+      border: 2px solid rgba(230,69,0,0.35);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      font-weight: 900;
+      color: var(--orange2);
+      margin: 0 auto 28px;
+      position: relative;
+      z-index: 1;
+    }
+    .step h3 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 12px;
+    }
+    .step p {
+      font-size: 0.875rem;
+      color: var(--text-sec);
+      line-height: 1.7;
+    }
+
+    /* ── ICP SHOWCASE ── */
+    #icp { padding: 100px 0; }
+    .icp-header { text-align: center; margin-bottom: 48px; }
+    .icp-header .section-sub { margin: 0 auto; }
+
+    .icp-tabs {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 40px;
+      flex-wrap: wrap;
+    }
+    .icp-tab {
+      padding: 10px 22px;
+      border-radius: var(--r-pill);
+      font-size: 0.875rem;
+      font-weight: 600;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text-sec);
+      cursor: pointer;
+      transition: all 0.25s;
+    }
+    .icp-tab:hover {
+      border-color: var(--border-hover);
+      color: var(--text);
+    }
+    .icp-tab.active {
+      background: rgba(230,69,0,0.15);
+      border-color: rgba(230,69,0,0.4);
+      color: #FA7734;
+    }
+
+    .icp-panels { position: relative; }
+    .icp-panel {
+      display: none;
+      opacity: 0;
+      transition: opacity 0.35s ease;
+    }
+    .icp-panel.active {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      opacity: 1;
+      animation: panel-fade 0.4s ease forwards;
+    }
+    @keyframes panel-fade {
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .icp-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--r-card);
+      padding: 36px 32px;
+      backdrop-filter: blur(20px);
+    }
+    .icp-card h3 { font-size: 1.3rem; font-weight: 800; letter-spacing: -0.03em; margin-bottom: 8px; }
+    .icp-card .icp-role { font-size: 0.8rem; color: var(--orange2); font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 20px; }
+    .icp-list { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+    .icp-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      font-size: 0.9rem;
+      color: var(--text-sec);
+      line-height: 1.5;
+    }
+    .icp-list li .check {
+      width: 18px; height: 18px;
+      border-radius: 50%;
+      background: rgba(230,69,0,0.15);
+      border: 1px solid rgba(230,69,0,0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.65rem;
+      color: var(--orange2);
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .icp-dash-card {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: var(--r-card);
+      padding: 24px;
+      backdrop-filter: blur(20px);
+    }
+    .icp-dash-title {
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-ter);
+      margin-bottom: 16px;
+    }
+
+    /* ── TESTIMONIALS ── */
+    #testimonials { padding: 100px 0; }
+    .testimonials-header { text-align: center; margin-bottom: 60px; }
+    .testimonials-header .section-sub { margin: 0 auto; }
+
+    .testimonials-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+    .testimonial-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--r-card);
+      padding: 32px 28px;
+      backdrop-filter: blur(20px);
+      transition: all 0.35s;
+    }
+    .testimonial-card:hover {
+      border-color: var(--border-hover);
+      transform: translateY(-4px);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.4), 0 0 30px rgba(230,69,0,0.07);
+    }
+    .stars { color: #FA7734; font-size: 0.9rem; letter-spacing: 2px; margin-bottom: 18px; }
+    .testimonial-quote {
+      font-size: 0.95rem;
+      color: var(--text-sec);
+      line-height: 1.75;
+      margin-bottom: 24px;
+      font-style: italic;
+    }
+    .testimonial-quote::before { content: '"'; color: var(--orange2); font-size: 1.4em; line-height: 0; vertical-align: -0.3em; margin-right: 2px; }
+    .testimonial-quote::after  { content: '"'; color: var(--orange2); font-size: 1.4em; line-height: 0; vertical-align: -0.3em; margin-left: 2px; }
+    .testimonial-author { display: flex; align-items: center; gap: 12px; }
+    .author-avatar {
+      width: 40px; height: 40px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, rgba(230,69,0,0.4), rgba(80,120,255,0.4));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.9rem;
+      color: #fff;
+    }
+    .author-name { font-weight: 700; font-size: 0.9rem; }
+    .author-role { font-size: 0.78rem; color: var(--text-ter); margin-top: 2px; }
+
+    /* ── CTA SECTION ── */
+    #cta {
+      padding: 120px 0;
+      text-align: center;
+      position: relative;
+    }
+    #cta::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 600px; height: 300px;
+      background: radial-gradient(ellipse, rgba(230,69,0,0.12) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .cta-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 80px 60px;
+      backdrop-filter: blur(30px);
+      max-width: 700px;
+      margin: 0 auto;
+      position: relative;
+      overflow: hidden;
+    }
+    .cta-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 20%; right: 20%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(230,69,0,0.6), transparent);
+    }
+    .cta-card h2 {
+      font-size: clamp(1.8rem, 3vw, 2.6rem);
+      font-weight: 900;
+      letter-spacing: -0.04em;
+      line-height: 1.15;
+      margin-bottom: 16px;
+    }
+    .cta-card p {
+      font-size: 1rem;
+      color: var(--text-sec);
+      margin-bottom: 36px;
+    }
+    .cta-card .btn-primary {
+      padding: 16px 40px;
+      font-size: 1.05rem;
+      border-radius: 14px;
+      animation: cta-glow 3s ease-in-out infinite alternate;
+    }
+    @keyframes cta-glow {
+      from { box-shadow: 0 0 20px rgba(230,69,0,0.3); }
+      to   { box-shadow: 0 0 50px rgba(230,69,0,0.6), 0 8px 30px rgba(230,69,0,0.4); }
+    }
+    .cta-note {
+      margin-top: 20px;
+      font-size: 0.8rem;
+      color: var(--text-ter);
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 48px 5vw 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 24px;
+    }
+    .footer-logo {
+      font-size: 1.2rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      color: var(--text);
+      text-decoration: none;
+    }
+    .footer-links {
+      display: flex;
+      gap: 28px;
+      list-style: none;
+      flex-wrap: wrap;
+    }
+    .footer-links a {
+      color: var(--text-ter);
+      text-decoration: none;
+      font-size: 0.85rem;
+      transition: color 0.2s;
+    }
+    .footer-links a:hover { color: var(--text-sec); }
+    .footer-copy {
+      font-size: 0.8rem;
+      color: var(--text-ter);
+    }
+
+    /* ── PRICING BADGE ── */
+    .pricing-banner {
+      background: rgba(230,69,0,0.08);
+      border: 1px solid rgba(230,69,0,0.2);
+      border-radius: 12px;
+      padding: 20px 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-top: 40px;
+      flex-wrap: wrap;
+    }
+    .pricing-main {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+    }
+    .pricing-amount {
+      font-size: 2.5rem;
+      font-weight: 900;
+      letter-spacing: -0.05em;
+      color: var(--text);
+    }
+    .pricing-per { font-size: 0.9rem; color: var(--text-sec); }
+    .pricing-badge-early {
+      background: rgba(230,69,0,0.2);
+      border: 1px solid rgba(230,69,0,0.4);
+      border-radius: var(--r-pill);
+      padding: 4px 14px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: #FA7734;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .pricing-note { font-size: 0.8rem; color: var(--text-ter); }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 900px) {
+      .features-grid { grid-template-columns: 1fr; }
+      .bento-grid { grid-template-columns: 1fr; }
+      .bento-main { grid-row: auto; }
+      .steps-grid { grid-template-columns: 1fr; gap: 40px; }
+      .steps-grid::before { display: none; }
+      .icp-panel.active { grid-template-columns: 1fr; }
+      .testimonials-grid { grid-template-columns: 1fr; }
+      .kpi-row { grid-template-columns: repeat(2,1fr); }
     }
 
     @media (max-width: 768px) {
-      .nav-links, .nav-right .btn { display: none; }
+      .nav-links, .nav-right .btn-primary { display: none; }
       .hamburger { display: flex; }
+      #hero { padding: 100px 5vw 60px; }
+      footer { flex-direction: column; text-align: center; }
+      .footer-links { justify-content: center; }
+      .cta-card { padding: 48px 28px; }
+    }
 
-      .hero-inner { grid-template-columns: 1fr; gap: 48px; }
-      .hero-visual { order: -1; }
-      .dashboard-mockup { transform: none; }
-      .dash-kpis { grid-template-columns: repeat(2, 1fr); }
+    @media (max-width: 480px) {
+      .kpi-row { grid-template-columns: repeat(2,1fr); }
+    }
 
-      .features-grid,
-      .testi-grid { grid-template-columns: 1fr; }
-
-      .bento-grid { grid-template-columns: 1fr; }
-      .bento-large { grid-column: auto; }
-      .bento-kpis { grid-template-columns: repeat(2, 1fr); }
-      .bento-table { display: none; }
-
-      .tabs { width: 100%; }
-      .tab-btn { flex: 1; padding: 10px 12px; font-size: 12px; }
-
-      .footer-top { flex-direction: column; }
-      .footer-links { flex-wrap: wrap; gap: 20px; }
-      .footer-bottom { flex-direction: column; gap: 12px; text-align: center; }
-
-      .hero-ctas { flex-direction: column; }
-      .hero-ctas .btn { justify-content: center; }
+    /* ── GRID LINES ── */
+    .grid-bg {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+      background-size: 60px 60px;
+      pointer-events: none;
+      mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 0%, transparent 100%);
     }
   </style>
 </head>
 <body>
 
-<!-- ── NAV ──────────────────────────────────────────── -->
+<!-- Background Orbs -->
+<div class="orb-container">
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+</div>
+
+<!-- NAV -->
 <nav>
-  <div class="container">
-    <div class="nav-inner">
-      <a href="#" class="nav-logo">
-        my<span class="brand-f">Findr</span><span class="brand-dot">●</span>
-      </a>
-
-      <ul class="nav-links">
-        <li><a href="#how-it-works">How It Works</a></li>
-        <li><a href="#features">What You Get</a></li>
-        <li><a href="#icp">ICPs</a></li>
-        <li><a href="#pricing">Pricing</a></li>
-      </ul>
-
-      <div class="nav-right">
-        <a href="https://meetings-ap1.hubspot.com/meetings/jsanto" class="btn btn-primary" target="_blank" rel="noopener">Book a Demo</a>
-        <button class="hamburger" id="hamburgerBtn" aria-label="Menu">
-          <span></span><span></span><span></span>
-        </button>
-      </div>
-    </div>
+  <a href="#" class="nav-logo">my<span class="bold">Findr</span><span class="dot">●</span></a>
+  <ul class="nav-links">
+    <li><a href="#features">Features</a></li>
+    <li><a href="#product">Product</a></li>
+    <li><a href="#how">How it works</a></li>
+    <li><a href="#icp">Who it's for</a></li>
+    <li><a href="#testimonials">Testimonials</a></li>
+  </ul>
+  <div class="nav-right">
+    <a href="https://meetings-ap1.hubspot.com/meetings/jsanto" target="_blank" class="btn-primary">Book a Demo</a>
+    <button class="hamburger" id="hamburger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
   </div>
 </nav>
 
-<!-- Mobile menu -->
-<div class="mobile-menu" id="mobileMenu">
-  <a href="#how-it-works" onclick="closeMobile()">How It Works</a>
-  <a href="#features" onclick="closeMobile()">What You Get</a>
-  <a href="#icp" onclick="closeMobile()">ICPs</a>
-  <a href="#pricing" onclick="closeMobile()">Pricing</a>
-  <a href="https://meetings-ap1.hubspot.com/meetings/jsanto" class="btn btn-primary" target="_blank" rel="noopener" style="justify-content:center">Book a Demo</a>
+<!-- Mobile Menu -->
+<div class="mobile-menu" id="mobile-menu">
+  <a href="#features" onclick="closeMobileMenu()">Features</a>
+  <a href="#product" onclick="closeMobileMenu()">Product</a>
+  <a href="#how" onclick="closeMobileMenu()">How it works</a>
+  <a href="#icp" onclick="closeMobileMenu()">Who it's for</a>
+  <a href="#testimonials" onclick="closeMobileMenu()">Testimonials</a>
+  <a href="https://meetings-ap1.hubspot.com/meetings/jsanto" target="_blank" class="btn-primary">Book a Demo</a>
 </div>
 
-<!-- ── HERO ─────────────────────────────────────────── -->
-<section class="hero">
-  <div class="hero-blob"></div>
-  <div class="container">
-    <div class="hero-inner">
-      <div class="hero-content">
-        <div class="hero-badge fade-in">
-          <span class="pill pill-accent">Property Development Intelligence</span>
-        </div>
-        <h1 class="fade-in fade-in-delay-1">Know What's Being Built Before Your Competitors Do.</h1>
-        <p class="hero-sub fade-in fade-in-delay-2">Real-time Development Application data for Brisbane &amp; Sunshine Coast — filtered to your trade, your suburbs, your pipeline.</p>
-        <div class="hero-ctas fade-in fade-in-delay-3">
-          <a href="https://meetings-ap1.hubspot.com/meetings/jsanto" class="btn btn-primary" target="_blank" rel="noopener">Book a Demo</a>
-          <a href="#how-it-works" class="btn btn-secondary">See How It Works</a>
-        </div>
-        <div class="hero-trust fade-in fade-in-delay-4">
-          <span>No lock-in</span>
-          <span class="hero-trust-dot"></span>
-          <span>Cancel anytime</span>
-          <span class="hero-trust-dot"></span>
-          <span>Updated every morning at 5am</span>
-        </div>
-      </div>
+<!-- HERO -->
+<section id="hero">
+  <div class="grid-bg"></div>
+  <div class="hero-inner">
+    <div class="badge-pill">
+      <span class="pulse-dot"></span>
+      Property Development Intelligence
+    </div>
 
-      <!-- Dashboard Mockup -->
-      <div class="hero-visual fade-in fade-in-delay-2">
-        <div class="dashboard-mockup">
-          <div class="dash-header">
-            <div class="dash-logo">my<span>Findr</span></div>
-            <div class="dash-badge">Interior Designers</div>
+    <h1 class="hero-h1">
+      Know What's Being Built<br>
+      <span class="grad">Before Your Competition Does.</span>
+    </h1>
+
+    <p class="hero-sub">
+      Development Application intelligence for Brisbane &amp; Sunshine Coast property professionals. Ranked leads, timing benchmarks, and suburb hotspots — filtered to your trade.
+    </p>
+
+    <div class="hero-ctas">
+      <a href="https://meetings-ap1.hubspot.com/meetings/jsanto" target="_blank" class="btn-primary">
+        🗓 Book a Demo
+      </a>
+      <a href="https://meetings-ap1.hubspot.com/meetings/jsanto" target="_blank" class="btn-ghost">
+        ▶ See It Live
+      </a>
+    </div>
+
+    <p class="hero-trust">No lock-in &nbsp;·&nbsp; Updated every morning &nbsp;·&nbsp; Cancel anytime</p>
+
+    <!-- Dashboard Mockup -->
+    <div class="dashboard-wrap">
+      <div class="dashboard-mockup">
+        <div class="dash-header">
+          <div class="dash-dots">
+            <span></span><span></span><span></span>
           </div>
-
-          <div class="dash-kpis">
-            <div class="kpi-tile kpi-hot">
-              <div class="kpi-label">HOT Leads</div>
-              <div class="kpi-value">24</div>
-            </div>
-            <div class="kpi-tile kpi-warm">
-              <div class="kpi-label">WARM Leads</div>
-              <div class="kpi-value">61</div>
+          <span class="dash-title">myFindr Dashboard — Interior Designer · Brisbane</span>
+        </div>
+        <div class="dash-body">
+          <div class="kpi-row">
+            <div class="kpi-tile">
+              <div class="kpi-label">🔥 HOT Leads</div>
+              <div class="kpi-value kpi-hot" data-count="72">72</div>
             </div>
             <div class="kpi-tile">
-              <div class="kpi-label">DAs This Month</div>
-              <div class="kpi-value">138</div>
+              <div class="kpi-label">🟡 WARM</div>
+              <div class="kpi-value kpi-warm" data-count="37">37</div>
             </div>
             <div class="kpi-tile">
-              <div class="kpi-label">Reno Permits</div>
-              <div class="kpi-value">47</div>
+              <div class="kpi-label">📋 DAs This Week</div>
+              <div class="kpi-value kpi-week" data-count="138">138</div>
+            </div>
+            <div class="kpi-tile">
+              <div class="kpi-label">📍 Suburbs Tracked</div>
+              <div class="kpi-value kpi-sub" data-count="5">5</div>
             </div>
           </div>
 
-          <div class="dash-section-label">Suburb Activity</div>
-          <div class="dash-chart">
-            <div class="chart-row">
-              <div class="chart-label">Ascot</div>
-              <div class="chart-bar-wrap"><div class="chart-bar" style="width:88%"></div></div>
-              <div class="chart-num">22</div>
-            </div>
-            <div class="chart-row">
-              <div class="chart-label">Paddington</div>
-              <div class="chart-bar-wrap"><div class="chart-bar" style="width:72%"></div></div>
-              <div class="chart-num">18</div>
-            </div>
-            <div class="chart-row">
-              <div class="chart-label">New Farm</div>
-              <div class="chart-bar-wrap"><div class="chart-bar" style="width:64%"></div></div>
-              <div class="chart-num">16</div>
-            </div>
-            <div class="chart-row">
-              <div class="chart-label">Teneriffe</div>
-              <div class="chart-bar-wrap"><div class="chart-bar" style="width:52%"></div></div>
-              <div class="chart-num">13</div>
-            </div>
-          </div>
-
-          <div class="dash-lead-card">
+          <div class="dash-lead">
             <div>
-              <div class="lead-address">29 Ascot St, Ascot</div>
-              <div class="lead-type">Building Permit · Est. value $420k</div>
+              <div class="lead-address">20 Palm Ave, Ascot</div>
+              <div class="lead-type">Building Permit · Interior Renovation</div>
             </div>
-            <div class="lead-hot-badge">HOT 🔥</div>
+            <div class="lead-badge">🔥 HOT · Contact this week</div>
+          </div>
+
+          <div class="dash-chart-label">Activity by Suburb</div>
+          <div class="suburb-bars">
+            <div class="bar-item">
+              <div class="bar" style="height:48px;"></div>
+              <div class="bar-name">Camp Hill</div>
+            </div>
+            <div class="bar-item">
+              <div class="bar" style="height:38px; opacity:0.75;"></div>
+              <div class="bar-name">Hendra</div>
+            </div>
+            <div class="bar-item">
+              <div class="bar" style="height:42px; opacity:0.85;"></div>
+              <div class="bar-name">Ascot</div>
+            </div>
+            <div class="bar-item">
+              <div class="bar" style="height:30px; opacity:0.65;"></div>
+              <div class="bar-name">Annerley</div>
+            </div>
+            <div class="bar-item">
+              <div class="bar" style="height:24px; opacity:0.55;"></div>
+              <div class="bar-name">New Farm</div>
+            </div>
           </div>
         </div>
       </div>
@@ -1162,642 +1246,542 @@
   </div>
 </section>
 
-<!-- ── TRUST ROW ─────────────────────────────────────── -->
-<div class="trust-row">
-  <div class="container">
-    <div class="trust-inner fade-in">
-      <div class="trust-label">Trusted by property professionals across</div>
-      <div class="trust-pills">
-        <span class="trust-pill">Interior Designers</span>
-        <span class="trust-pill">Builders &amp; Trades</span>
-        <span class="trust-pill">Real Estate Agents</span>
-        <span class="trust-pill">Architects</span>
-        <span class="trust-pill">Project Managers</span>
-      </div>
-    </div>
+<!-- MARQUEE -->
+<div class="marquee-section">
+  <div class="marquee-track" id="marqueeTrack">
+    <div class="marquee-pill"><span class="icon">✦</span> Interior Designers</div>
+    <div class="marquee-pill"><span class="icon">✦</span> Architects</div>
+    <div class="marquee-pill"><span class="icon">✦</span> Builders &amp; Trades</div>
+    <div class="marquee-pill"><span class="icon">✦</span> Real Estate Agents</div>
+    <div class="marquee-pill"><span class="icon">✦</span> Project Managers</div>
+    <div class="marquee-pill"><span class="icon">✦</span> Quantity Surveyors</div>
+    <div class="marquee-pill"><span class="icon">✦</span> Property Developers</div>
+    <!-- Duplicate for seamless loop -->
+    <div class="marquee-pill"><span class="icon">✦</span> Interior Designers</div>
+    <div class="marquee-pill"><span class="icon">✦</span> Architects</div>
+    <div class="marquee-pill"><span class="icon">✦</span> Builders &amp; Trades</div>
+    <div class="marquee-pill"><span class="icon">✦</span> Real Estate Agents</div>
+    <div class="marquee-pill"><span class="icon">✦</span> Project Managers</div>
+    <div class="marquee-pill"><span class="icon">✦</span> Quantity Surveyors</div>
+    <div class="marquee-pill"><span class="icon">✦</span> Property Developers</div>
   </div>
 </div>
 
-<!-- ── FEATURES ──────────────────────────────────────── -->
-<section class="section features" id="features">
+<!-- FEATURES -->
+<section id="features">
   <div class="container">
-    <div class="section-header">
-      <span class="pill fade-in">Features</span>
-      <h2 class="fade-in fade-in-delay-1">Everything you need to stay<br>ahead of every project.</h2>
-      <p class="fade-in fade-in-delay-2">Stop switching tools. Start driving growth.</p>
+    <div class="features-header reveal">
+      <div class="section-tag">✦ What Makes Us Different</div>
+      <h2 class="section-h2">Intelligence that actually moves the needle</h2>
+      <p class="section-sub">Not raw data dumps. Not generic alerts. Ranked, timed, and filtered intelligence built for property professionals.</p>
     </div>
-
     <div class="features-grid">
-      <!-- Card 1 -->
-      <div class="feature-card fade-in">
-        <div class="feature-mockup">
-          <div class="mock-timeline" style="width:100%">
-            <div class="mock-tl-row">
-              <div class="mock-tl-dot"></div>
-              <div class="mock-tl-bar" style="width:70%"></div>
-              <div class="mock-tl-label">Ascot</div>
-            </div>
-            <div class="mock-tl-row">
-              <div class="mock-tl-dot" style="background:#555"></div>
-              <div class="mock-tl-bar" style="width:55%; background: rgba(230,69,0,0.3)"></div>
-              <div class="mock-tl-label">Paddington</div>
-            </div>
-            <div class="mock-tl-row">
-              <div class="mock-tl-dot" style="background:#E64500"></div>
-              <div class="mock-tl-bar" style="width:85%"></div>
-              <div class="mock-tl-label">New Farm</div>
-            </div>
-            <div class="mock-tl-row">
-              <div class="mock-tl-dot" style="background:#555"></div>
-              <div class="mock-tl-bar" style="width:45%; background: rgba(230,69,0,0.3)"></div>
-              <div class="mock-tl-label">Teneriffe</div>
-            </div>
-            <div style="text-align:center; margin-top:10px; font-size:10px; color:#aaa; font-weight:600;">Updated 5:00am today</div>
-          </div>
-        </div>
-        <div class="feature-icon">🏗️</div>
-        <h3>24-Hour Project Intelligence</h3>
-        <p>Every planning application lodged in your target suburbs appears in your dashboard the next morning.</p>
+      <div class="feature-card reveal">
+        <div class="feature-icon">⏱</div>
+        <h3>Lead Timing Intelligence</h3>
+        <p>Know if a project is 4 months or 14 months away. Contact at exactly the right moment — not too early, never too late. Our timing benchmarks are built from historical approval patterns across both regions.</p>
       </div>
-
-      <!-- Card 2 -->
-      <div class="feature-card fade-in fade-in-delay-1">
-        <div class="feature-mockup" style="flex-direction:column;gap:8px">
-          <div style="position:relative;width:64px;height:64px">
-            <div class="mock-clock-ring"></div>
-            <div class="mock-clock-center">4mo</div>
-          </div>
-          <div class="mock-timing-label">Est. until construction</div>
-          <div style="display:flex;gap:6px;margin-top:4px">
-            <span style="background:rgba(230,69,0,0.12);color:#E64500;border-radius:999px;padding:3px 10px;font-size:10px;font-weight:600">HOT Window</span>
-            <span style="background:#f0f0f0;color:#888;border-radius:999px;padding:3px 10px;font-size:10px;font-weight:600">120 days</span>
-          </div>
-        </div>
-        <div class="feature-icon">⏱️</div>
-        <h3>Know Exactly When to Contact</h3>
-        <p>Approval timing benchmarks show you whether a project is 4 months or 14 months away — so you reach out at the right moment.</p>
-      </div>
-
-      <!-- Card 3 -->
-      <div class="feature-card fade-in fade-in-delay-2">
-        <div class="feature-mockup" style="flex-direction:column;gap:10px">
-          <div class="mock-filters">
-            <span class="mock-filter active">Interior Design</span>
-            <span class="mock-filter inactive">Builders</span>
-            <span class="mock-filter inactive">Real Estate</span>
-          </div>
-          <div style="width:100%;background:#f0f0f0;border-radius:8px;padding:10px 12px">
-            <div style="font-size:10px;color:#E64500;font-weight:700;margin-bottom:4px">Your ICP: Renovation leads</div>
-            <div style="font-size:9px;color:#888">Reno permit · $300k+ · Filtered suburbs</div>
-          </div>
-        </div>
+      <div class="feature-card reveal">
         <div class="feature-icon">🎯</div>
         <h3>Filtered to Your Trade</h3>
-        <p>Interior Designers, Builders, and Real Estate agents each see different lead signals — tuned to exactly what matters for their business.</p>
+        <p>Interior Designers see renovation leads. Builders see construction corridors. RE agents see plan sealings. Your dashboard is configured to show only what's relevant to your specific business.</p>
+      </div>
+      <div class="feature-card reveal">
+        <div class="feature-icon">🔄</div>
+        <h3>Project Lifecycle Tracking</h3>
+        <p>Follow a project from subdivision through to construction approval — see exactly when it's hot for your business. Never miss a transition, never contact too early.</p>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ── BENTO SHOWCASE ─────────────────────────────────── -->
-<section class="section bento" id="bento">
+<!-- PRODUCT SHOWCASE -->
+<section id="product">
   <div class="container">
-    <div class="section-header">
-      <h2 class="fade-in">Your complete property intelligence hub.</h2>
-      <p class="fade-in fade-in-delay-1">Manage everything in one place.</p>
+    <div class="product-header reveal">
+      <div class="section-tag">✦ The Platform</div>
+      <h2 class="section-h2">Your complete property intelligence hub</h2>
+      <p class="section-sub">Five powerful views, one personal dashboard — configured for your trade and your suburbs.</p>
     </div>
+    <div class="bento-grid reveal">
 
-    <div class="bento-grid">
-      <!-- Large dashboard card -->
-      <div class="bento-card bento-large fade-in">
-        <div class="bento-card-label">Live Dashboard</div>
-        <div class="bento-card-title">Your lead pipeline, ranked by opportunity</div>
-
-        <div class="bento-kpis">
-          <div class="bento-kpi">
-            <div class="bento-kpi-val orange">24</div>
-            <div class="bento-kpi-lbl">HOT Leads</div>
+      <!-- Large main card -->
+      <div class="bento-card bento-main">
+        <h3>Live Dashboard Preview</h3>
+        <p>Real leads, ranked by priority — filtered to exactly what you need to see.</p>
+        <div class="mini-kpi-row">
+          <div class="mini-kpi">
+            <div class="mini-kpi-label">🔥 Hot Leads</div>
+            <div class="mini-kpi-value kpi-hot">72</div>
           </div>
-          <div class="bento-kpi">
-            <div class="bento-kpi-val">61</div>
-            <div class="bento-kpi-lbl">WARM Leads</div>
-          </div>
-          <div class="bento-kpi">
-            <div class="bento-kpi-val">138</div>
-            <div class="bento-kpi-lbl">DAs This Month</div>
-          </div>
-          <div class="bento-kpi">
-            <div class="bento-kpi-val">47</div>
-            <div class="bento-kpi-lbl">Reno Permits</div>
+          <div class="mini-kpi">
+            <div class="mini-kpi-label">🟡 Warm</div>
+            <div class="mini-kpi-value kpi-warm">37</div>
           </div>
         </div>
-
-        <table class="bento-table">
-          <thead>
-            <tr>
-              <th>Address</th>
-              <th>Type</th>
-              <th>Suburb</th>
-              <th>Stage</th>
-              <th>Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td><span class="status-dot dot-hot"></span>29 Ascot St</td>
-              <td>Building Permit</td>
-              <td>Ascot</td>
-              <td>DA Lodged</td>
-              <td><span class="status-badge badge-hot">HOT</span></td>
-            </tr>
-            <tr>
-              <td><span class="status-dot dot-hot"></span>14 Moray St</td>
-              <td>Reno Permit</td>
-              <td>New Farm</td>
-              <td>Under Assessment</td>
-              <td><span class="status-badge badge-hot">HOT</span></td>
-            </tr>
-            <tr>
-              <td><span class="status-dot dot-warm"></span>7 Latrobe Tce</td>
-              <td>Development App</td>
-              <td>Paddington</td>
-              <td>Approved</td>
-              <td><span class="status-badge badge-warm">WARM</span></td>
-            </tr>
-            <tr>
-              <td><span class="status-dot dot-warm"></span>55 James St</td>
-              <td>Reno Permit</td>
-              <td>Fortitude Valley</td>
-              <td>DA Lodged</td>
-              <td><span class="status-badge badge-warm">WARM</span></td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-
-      <!-- Timeline card -->
-      <div class="bento-card fade-in fade-in-delay-1">
-        <div class="bento-card-label">Timing Intelligence</div>
-        <div class="bento-card-title">Contact before<br>construction starts</div>
-        <div class="timeline-steps">
-          <div class="tl-step">
-            <div class="tl-dot-col">
-              <div class="tl-dot active"></div>
-              <div class="tl-line"></div>
-            </div>
-            <div class="tl-text">
-              <strong>DA Lodged</strong>
-              Contact window opens
-            </div>
+        <div class="mini-lead-row">
+          <div class="mini-lead">
+            <span class="street">20 Palm Ave, Ascot</span>
+            <span class="status">Interior Reno</span>
+            <span class="hot-badge">🔥 HOT</span>
           </div>
-          <div class="tl-step">
-            <div class="tl-dot-col">
-              <div class="tl-dot active"></div>
-              <div class="tl-line"></div>
-            </div>
-            <div class="tl-text">
-              <strong>Under Assessment</strong>
-              120–180 days remaining
-            </div>
+          <div class="mini-lead">
+            <span class="street">14 Riverview Rd, Hendra</span>
+            <span class="status">New Build</span>
+            <span class="warm-badge">🟡 WARM</span>
           </div>
-          <div class="tl-step">
-            <div class="tl-dot-col">
-              <div class="tl-dot"></div>
-              <div class="tl-line"></div>
-            </div>
-            <div class="tl-text">
-              <strong>Approved</strong>
-              Designer selection begins
-            </div>
+          <div class="mini-lead">
+            <span class="street">7 Merton St, Camp Hill</span>
+            <span class="status">Extension</span>
+            <span class="hot-badge">🔥 HOT</span>
           </div>
-          <div class="tl-step">
-            <div class="tl-dot-col">
-              <div class="tl-dot"></div>
-            </div>
-            <div class="tl-text">
-              <strong>Construction starts</strong>
-              Window closed
-            </div>
+          <div class="mini-lead">
+            <span class="street">3 Sylvan Rd, Toowong</span>
+            <span class="status">Renovation</span>
+            <span class="warm-badge">🟡 WARM</span>
           </div>
         </div>
-        <div style="margin-top:16px;background:rgba(230,69,0,0.07);border:1px solid rgba(230,69,0,0.15);border-radius:10px;padding:12px;font-size:12px;color:var(--accent);font-weight:600;text-align:center">
-          🎯 Optimal contact: 120–180 days before construction
+        <div class="pricing-banner" style="margin-top:28px;">
+          <div>
+            <div class="pricing-main">
+              <span class="pricing-amount">$200</span>
+              <span class="pricing-per">/week</span>
+            </div>
+            <div class="pricing-note">$250 onboarding · No lock-in</div>
+          </div>
+          <div class="pricing-badge-early">🐦 Early Bird $100/wk until March</div>
+          <a href="https://meetings-ap1.hubspot.com/meetings/jsanto" target="_blank" class="btn-primary" style="flex-shrink:0;">Get Started →</a>
         </div>
       </div>
 
-      <!-- Bar chart card -->
-      <div class="bento-card fade-in fade-in-delay-2">
-        <div class="bento-card-label">Suburb Intelligence</div>
-        <div class="bento-card-title">Activity ranking<br>this month</div>
-        <div class="bento-bars">
-          <div class="bento-bar-row">
-            <div class="bento-bar-label">Ascot</div>
-            <div class="bento-bar-bg"><div class="bento-bar-fill" style="width:92%"></div></div>
-            <div class="bento-bar-val">22</div>
-          </div>
-          <div class="bento-bar-row">
-            <div class="bento-bar-label">Paddington</div>
-            <div class="bento-bar-bg"><div class="bento-bar-fill" style="width:75%"></div></div>
-            <div class="bento-bar-val">18</div>
-          </div>
-          <div class="bento-bar-row">
-            <div class="bento-bar-label">New Farm</div>
-            <div class="bento-bar-bg"><div class="bento-bar-fill" style="width:67%"></div></div>
-            <div class="bento-bar-val">16</div>
-          </div>
-          <div class="bento-bar-row">
-            <div class="bento-bar-label">Teneriffe</div>
-            <div class="bento-bar-bg"><div class="bento-bar-fill" style="width:54%"></div></div>
-            <div class="bento-bar-val">13</div>
-          </div>
-          <div class="bento-bar-row">
-            <div class="bento-bar-label">Bulimba</div>
-            <div class="bento-bar-bg"><div class="bento-bar-fill" style="width:42%"></div></div>
-            <div class="bento-bar-val">10</div>
-          </div>
-          <div class="bento-bar-row">
-            <div class="bento-bar-label">Milton</div>
-            <div class="bento-bar-bg"><div class="bento-bar-fill" style="width:33%"></div></div>
-            <div class="bento-bar-val">8</div>
+      <!-- 5 Tabs card -->
+      <div class="bento-card">
+        <h3>5 Tabs of Intelligence</h3>
+        <p>Everything you need in one place — no toggling between tools.</p>
+        <div class="tab-pills">
+          <span class="tab-pill active">Overview</span>
+          <span class="tab-pill">Hot Leads</span>
+          <span class="tab-pill">Suburb Intel</span>
+          <span class="tab-pill">Network</span>
+          <span class="tab-pill">My Pipeline</span>
+        </div>
+        <div style="margin-top:20px; padding:16px; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.06); border-radius:10px;">
+          <div style="font-size:0.72rem; color:var(--text-ter); font-weight:600; text-transform:uppercase; letter-spacing:0.08em; margin-bottom:10px;">Network Intel — Top Developers</div>
+          <div style="display:flex;flex-direction:column;gap:8px;">
+            <div style="display:flex;align-items:center;justify-content:space-between;font-size:0.75rem;">
+              <span style="color:var(--text);">Aria Built Pty Ltd</span>
+              <span style="color:var(--orange2);font-weight:700;">14 DAs ↑</span>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;font-size:0.75rem;">
+              <span style="color:var(--text);">Brisbane Design Co</span>
+              <span style="color:var(--orange2);font-weight:700;">9 DAs</span>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;font-size:0.75rem;">
+              <span style="color:var(--text);">Coastal Form Studio</span>
+              <span style="color:var(--text-sec);">7 DAs</span>
+            </div>
           </div>
         </div>
       </div>
+
+      <!-- AI Pipeline card -->
+      <div class="bento-card">
+        <h3>AI-Powered Pipeline Insights</h3>
+        <p>Your CRM kanban + AI analysis of what your pipeline data means for revenue.</p>
+        <div class="funnel-visual">
+          <div class="funnel-bar funnel-1">Watch List &nbsp;(24)</div>
+          <div class="funnel-bar funnel-2">Contacted &nbsp;(18)</div>
+          <div class="funnel-bar funnel-3">Meeting &nbsp;(12)</div>
+          <div class="funnel-bar funnel-4">Proposal &nbsp;(8)</div>
+          <div class="funnel-bar funnel-5">Won &nbsp;(4)</div>
+        </div>
+        <div style="margin-top:14px;padding:12px;background:rgba(230,69,0,0.06);border:1px solid rgba(230,69,0,0.15);border-radius:10px;font-size:0.75rem;color:var(--text-sec);">
+          💡 <strong style="color:var(--text);">AI Insight:</strong> Your proposal-to-won rate is strong. 3 Contacted leads are timing-ready — move them to Meeting now.
+        </div>
+      </div>
+
     </div>
   </div>
 </section>
 
-<!-- ── HOW IT WORKS (dark) ───────────────────────────── -->
-<section class="section how-it-works" id="how-it-works">
-  <div class="hiw-glow"></div>
+<!-- HOW IT WORKS -->
+<section id="how">
   <div class="container">
-    <div class="section-header">
-      <span class="pill fade-in" style="background:rgba(255,255,255,0.07);color:rgba(255,255,255,0.6)">How It Works</span>
-      <h2 class="fade-in fade-in-delay-1">From application lodged<br>to your dashboard.</h2>
-      <p class="fade-in fade-in-delay-2">Three simple steps. Zero manual research.</p>
+    <div class="how-header reveal">
+      <div class="section-tag">✦ Process</div>
+      <h2 class="section-h2">Three steps to smarter prospecting</h2>
+      <p class="section-sub">We do the heavy lifting. You get the intelligence — ready to act on every morning.</p>
     </div>
-
     <div class="steps-grid">
-      <div class="step-card fade-in">
+      <div class="step reveal">
         <div class="step-num">1</div>
-        <h3>Tell Us Your Trade &amp; Suburbs</h3>
-        <p>We configure your personal dashboard with filters tailored to your ICP — whether you're an interior designer, builder, or real estate agent.</p>
+        <h3>Tell us your trade &amp; suburbs</h3>
+        <p>We onboard you in a 45-minute session, configure your personal dashboard filtered to your exact trade category and the suburbs that matter to your pipeline.</p>
       </div>
-      <div class="step-card fade-in fade-in-delay-1">
+      <div class="step reveal">
         <div class="step-num">2</div>
-        <h3>Fresh Data Every Morning</h3>
-        <p>Applications from Brisbane City Council and Sunshine Coast Council, processed and ranked overnight. Your inbox at 5am.</p>
+        <h3>Fresh intelligence every morning</h3>
+        <p>Applications updated daily across Brisbane and Sunshine Coast. Your dashboard refreshes with ranked leads, new approvals, and suburb movement — before you start your day.</p>
       </div>
-      <div class="step-card fade-in fade-in-delay-2">
+      <div class="step reveal">
         <div class="step-num">3</div>
-        <h3>Know Exactly When to Act</h3>
-        <p>Stage tracking, applicant details, suburb hotspots, and timing benchmarks — so you never reach out too early or too late.</p>
-      </div>
-    </div>
-
-    <div class="feature-tags-wrap fade-in" style="margin-top:48px">
-      <div class="feature-tags">
-        <span class="feature-tag">🔥 HOT Lead Rankings</span>
-        <span class="feature-tag">📍 Suburb Hotspots</span>
-        <span class="feature-tag">⏱️ Approval Timing</span>
-        <span class="feature-tag">🎯 ICP Filtering</span>
-        <span class="feature-tag">📊 Project Lifecycle</span>
-        <span class="feature-tag">💰 Commission Estimates</span>
+        <h3>Act on the right opportunities</h3>
+        <p>Ranked leads tell you who to call, timing benchmarks tell you when, and network intelligence tells you who's doing the most work in your target suburbs. Outreach, simplified.</p>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ── ICP SHOWCASE ──────────────────────────────────── -->
-<section class="section icp" id="icp">
+<!-- ICP SHOWCASE -->
+<section id="icp">
   <div class="container">
-    <div class="section-header">
-      <span class="pill fade-in">Built for Property Professionals</span>
-      <h2 class="fade-in fade-in-delay-1">See why property professionals<br>choose myFindr</h2>
+    <div class="icp-header reveal">
+      <div class="section-tag">✦ Built for Your Trade</div>
+      <h2 class="section-h2">Built differently for each trade</h2>
+      <p class="section-sub">One platform, four tailored views — because a builder's needs are nothing like an interior designer's.</p>
     </div>
 
-    <div class="tabs fade-in">
-      <button class="tab-btn active" onclick="switchTab('id')">Interior Designers</button>
-      <button class="tab-btn" onclick="switchTab('builders')">Builders &amp; Trades</button>
-      <button class="tab-btn" onclick="switchTab('re')">Real Estate Agents</button>
+    <div class="icp-tabs reveal">
+      <button class="icp-tab active" data-tab="designers">Interior Designers</button>
+      <button class="icp-tab" data-tab="architects">Architects</button>
+      <button class="icp-tab" data-tab="builders">Builders</button>
+      <button class="icp-tab" data-tab="realestate">Real Estate Agents</button>
     </div>
 
-    <!-- Interior Designers -->
-    <div class="tab-pane active" id="tab-id">
-      <div class="icp-content">
-        <h3>Win renovations before<br>design decisions are made</h3>
-        <p>See every renovation permit lodged in your target suburbs — ranked by urgency, filtered to your ICP. Reach clients in the 120-day window before they choose their designer.</p>
-        <div class="icp-stats">
-          <div class="icp-stat">
-            <div class="icp-stat-icon">🏠</div>
-            <div class="icp-stat-text">Renovation leads ranked by urgency</div>
-          </div>
-          <div class="icp-stat">
-            <div class="icp-stat-icon">⏰</div>
-            <div class="icp-stat-text">Contact before design decisions are made</div>
-          </div>
-          <div class="icp-stat">
-            <div class="icp-stat-icon">📅</div>
-            <div class="icp-stat-text">120-day timing window tracked automatically</div>
-          </div>
-        </div>
-      </div>
-      <div class="icp-visual">
-        <div class="icp-visual-header">
-          <span class="icp-visual-title">Interior Designer Dashboard</span>
-          <span class="status-badge badge-hot">24 HOT</span>
-        </div>
-        <div class="icp-lead-list">
-          <div class="icp-lead-item">
-            <div>
-              <div class="icp-lead-addr">29 Ascot St, Ascot</div>
-              <div class="icp-lead-sub">Reno Permit · Est. $420k · DA Lodged</div>
-            </div>
-            <span class="status-badge badge-hot">HOT</span>
-          </div>
-          <div class="icp-lead-item">
-            <div>
-              <div class="icp-lead-addr">14 Moray St, New Farm</div>
-              <div class="icp-lead-sub">Reno Permit · Est. $280k · Under Assessment</div>
-            </div>
-            <span class="status-badge badge-hot">HOT</span>
-          </div>
-          <div class="icp-lead-item">
-            <div>
-              <div class="icp-lead-addr">7 Latrobe Tce, Paddington</div>
-              <div class="icp-lead-sub">Building Permit · Est. $180k · Approved</div>
-            </div>
-            <span class="status-badge badge-warm">WARM</span>
-          </div>
-        </div>
-      </div>
-    </div>
+    <div class="icp-panels">
 
-    <!-- Builders -->
-    <div class="tab-pane" id="tab-builders">
-      <div class="icp-content">
-        <h3>Find hot corridors before<br>your competitors do</h3>
-        <p>Track velocity surges in your target suburbs, monitor approval timelines, and know which areas are heating up — before the competition finds out.</p>
-        <div class="icp-stats">
-          <div class="icp-stat">
-            <div class="icp-stat-icon">🗺️</div>
-            <div class="icp-stat-text">Hot suburb corridors tracked in real-time</div>
+      <!-- Designers -->
+      <div class="icp-panel active" id="tab-designers">
+        <div class="icp-card">
+          <div class="icp-role">Interior Designers</div>
+          <h3>Find renovations before they're even listed</h3>
+          <ul class="icp-list">
+            <li><span class="check">✓</span> <span>Residential renovation DAs ranked by interior scope and project value — skip the noise.</span></li>
+            <li><span class="check">✓</span> <span>Timing intelligence: know if a project is 4 months from needing a designer or 14 months away.</span></li>
+            <li><span class="check">✓</span> <span>Track your preferred suburbs — Camp Hill, Hendra, Ascot, New Farm, and more.</span></li>
+            <li><span class="check">✓</span> <span>CRM pipeline to manage outreach from first contact through to won project.</span></li>
+          </ul>
+        </div>
+        <div class="icp-dash-card">
+          <div class="icp-dash-title">Your filtered view — Interior Designer</div>
+          <div class="mini-lead-row">
+            <div class="mini-lead">
+              <span class="street">42 Gordon St, Ascot</span>
+              <span class="status">Reno DA</span>
+              <span class="hot-badge">🔥 HOT</span>
+            </div>
+            <div class="mini-lead">
+              <span class="street">8 Beach Rd, New Farm</span>
+              <span class="status">Interior</span>
+              <span class="hot-badge">🔥 HOT</span>
+            </div>
+            <div class="mini-lead">
+              <span class="street">19 Brook Ave, Hendra</span>
+              <span class="status">Extension</span>
+              <span class="warm-badge">🟡 WARM</span>
+            </div>
           </div>
-          <div class="icp-stat">
-            <div class="icp-stat-icon">📈</div>
-            <div class="icp-stat-text">Velocity surge detection in your suburbs</div>
-          </div>
-          <div class="icp-stat">
-            <div class="icp-stat-icon">✅</div>
-            <div class="icp-stat-text">Approval timing benchmarks for every project</div>
+          <div style="margin-top:16px;padding:12px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:8px;font-size:0.72rem;color:var(--text-sec);">
+            ⏱ <strong style="color:var(--text);">Timing:</strong> 42 Gordon St — approval expected in 6 weeks. Contact window opens now.
           </div>
         </div>
       </div>
-      <div class="icp-visual">
-        <div class="icp-visual-header">
-          <span class="icp-visual-title">Builder Dashboard</span>
-          <span class="status-badge badge-hot">Surge Detected</span>
-        </div>
-        <div class="icp-lead-list">
-          <div class="icp-lead-item">
-            <div>
-              <div class="icp-lead-addr">Ascot Corridor</div>
-              <div class="icp-lead-sub">+34% velocity this month · 22 new DAs</div>
-            </div>
-            <span class="status-badge badge-hot">🔥 Hot</span>
-          </div>
-          <div class="icp-lead-item">
-            <div>
-              <div class="icp-lead-addr">New Farm Strip</div>
-              <div class="icp-lead-sub">+18% velocity · 16 new DAs</div>
-            </div>
-            <span class="status-badge badge-warm">Warm</span>
-          </div>
-          <div class="icp-lead-item">
-            <div>
-              <div class="icp-lead-addr">Paddington</div>
-              <div class="icp-lead-sub">Stable · 18 DAs · Avg 5.2 mo to approval</div>
-            </div>
-            <span class="status-badge badge-warm">Warm</span>
-          </div>
-        </div>
-      </div>
-    </div>
 
-    <!-- Real Estate -->
-    <div class="tab-pane" id="tab-re">
-      <div class="icp-content">
-        <h3>Find commission opportunities<br>before they hit the market</h3>
-        <p>Track plan sealing events, development hotspots, and off-market signals — so you can reach vendors and buyers at the perfect moment.</p>
-        <div class="icp-stats">
-          <div class="icp-stat">
-            <div class="icp-stat-icon">🔔</div>
-            <div class="icp-stat-text">Plan sealing alerts for your target suburbs</div>
+      <!-- Architects -->
+      <div class="icp-panel" id="tab-architects">
+        <div class="icp-card">
+          <div class="icp-role">Architects</div>
+          <h3>Spot design opportunities at planning stage</h3>
+          <ul class="icp-list">
+            <li><span class="check">✓</span> <span>Pre-approval DAs flagged for architectural opportunity — new builds, extensions, multi-res.</span></li>
+            <li><span class="check">✓</span> <span>Developer network intelligence — know which developers are most active in your suburbs.</span></li>
+            <li><span class="check">✓</span> <span>Approval velocity data — understand how long each application type typically takes.</span></li>
+            <li><span class="check">✓</span> <span>Track the full project lifecycle from land subdivision through to construction approval.</span></li>
+          </ul>
+        </div>
+        <div class="icp-dash-card">
+          <div class="icp-dash-title">Your filtered view — Architect</div>
+          <div class="mini-lead-row">
+            <div class="mini-lead">
+              <span class="street">Lot 4, Highgate Rd</span>
+              <span class="status">New Build</span>
+              <span class="hot-badge">🔥 HOT</span>
+            </div>
+            <div class="mini-lead">
+              <span class="street">21 River Tce, Kangaroo Point</span>
+              <span class="status">Multi-res</span>
+              <span class="warm-badge">🟡 WARM</span>
+            </div>
+            <div class="mini-lead">
+              <span class="street">87 Moray St, New Farm</span>
+              <span class="status">Extension</span>
+              <span class="warm-badge">🟡 WARM</span>
+            </div>
           </div>
-          <div class="icp-stat">
-            <div class="icp-stat-icon">🏙️</div>
-            <div class="icp-stat-text">Development hotspots ranked by opportunity</div>
-          </div>
-          <div class="icp-stat">
-            <div class="icp-stat-icon">💰</div>
-            <div class="icp-stat-text">Commission opportunity estimates per project</div>
+          <div style="margin-top:16px;padding:12px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:8px;font-size:0.72rem;color:var(--text-sec);">
+            🏗 <strong style="color:var(--text);">Network:</strong> Apex Developments — 6 new DAs this month across your tracked suburbs.
           </div>
         </div>
       </div>
-      <div class="icp-visual">
-        <div class="icp-visual-header">
-          <span class="icp-visual-title">Real Estate Dashboard</span>
-          <span class="status-badge badge-hot">3 Alerts</span>
-        </div>
-        <div class="icp-lead-list">
-          <div class="icp-lead-item">
-            <div>
-              <div class="icp-lead-addr">Plan Sealed — Ascot</div>
-              <div class="icp-lead-sub">8-lot subdivision · Est. commission $180k+</div>
-            </div>
-            <span class="status-badge badge-hot">🔔 Alert</span>
-          </div>
-          <div class="icp-lead-item">
-            <div>
-              <div class="icp-lead-addr">Development Hotspot — Bulimba</div>
-              <div class="icp-lead-sub">Commercial rezoning approved · 3 sites</div>
-            </div>
-            <span class="status-badge badge-warm">Opportunity</span>
-          </div>
-          <div class="icp-lead-item">
-            <div>
-              <div class="icp-lead-addr">Upcoming — New Farm</div>
-              <div class="icp-lead-sub">14 DAs near plan sealing · Est. $2.4M value</div>
-            </div>
-            <span class="status-badge badge-warm">Watch</span>
-          </div>
-        </div>
-      </div>
-    </div>
 
+      <!-- Builders -->
+      <div class="icp-panel" id="tab-builders">
+        <div class="icp-card">
+          <div class="icp-role">Builders &amp; Trades</div>
+          <h3>Never run out of pipeline again</h3>
+          <ul class="icp-list">
+            <li><span class="check">✓</span> <span>Construction corridors — cluster view of where building activity is concentrated week by week.</span></li>
+            <li><span class="check">✓</span> <span>Approval-ready DAs flagged for immediate tender — know what's construction-ready now.</span></li>
+            <li><span class="check">✓</span> <span>Filter by project type: new builds, commercial, multi-residential, major extensions.</span></li>
+            <li><span class="check">✓</span> <span>Track repeat developers and consultants — build relationships with the highest-volume clients.</span></li>
+          </ul>
+        </div>
+        <div class="icp-dash-card">
+          <div class="icp-dash-title">Your filtered view — Builder</div>
+          <div class="mini-lead-row">
+            <div class="mini-lead">
+              <span class="street">23 Stanley St, West End</span>
+              <span class="status">New Build</span>
+              <span class="hot-badge">🔥 HOT</span>
+            </div>
+            <div class="mini-lead">
+              <span class="street">Lot 12 Sunshine Ave, Mooloolaba</span>
+              <span class="status">Commercial</span>
+              <span class="hot-badge">🔥 HOT</span>
+            </div>
+            <div class="mini-lead">
+              <span class="street">4 Frew St, Albion</span>
+              <span class="status">Multi-Res</span>
+              <span class="warm-badge">🟡 WARM</span>
+            </div>
+          </div>
+          <div style="margin-top:16px;padding:12px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:8px;font-size:0.72rem;color:var(--text-sec);">
+            📍 <strong style="color:var(--text);">Corridor:</strong> West End — 18 DAs approved last 30 days. High construction activity cluster.
+          </div>
+        </div>
+      </div>
+
+      <!-- Real Estate -->
+      <div class="icp-panel" id="tab-realestate">
+        <div class="icp-card">
+          <div class="icp-role">Real Estate Agents</div>
+          <h3>List new properties before they hit the market</h3>
+          <ul class="icp-list">
+            <li><span class="check">✓</span> <span>Plan sealing applications — properties completing DA process signal imminent sales activity.</span></li>
+            <li><span class="check">✓</span> <span>Subdivision completions alert you when new lots are about to become listable.</span></li>
+            <li><span class="check">✓</span> <span>New build completions — perfect window for developer sales mandates and settlements.</span></li>
+            <li><span class="check">✓</span> <span>Suburb heat maps — know where demand is outpacing supply before your competition does.</span></li>
+          </ul>
+        </div>
+        <div class="icp-dash-card">
+          <div class="icp-dash-title">Your filtered view — Real Estate</div>
+          <div class="mini-lead-row">
+            <div class="mini-lead">
+              <span class="street">Lots 1–4 Cedar Crt, Noosa</span>
+              <span class="status">Plan Seal</span>
+              <span class="hot-badge">🔥 HOT</span>
+            </div>
+            <div class="mini-lead">
+              <span class="street">18 Montague Rd, West End</span>
+              <span class="status">Subdivision</span>
+              <span class="warm-badge">🟡 WARM</span>
+            </div>
+            <div class="mini-lead">
+              <span class="street">55 Shafston Ave, Kangaroo Pt</span>
+              <span class="status">Completion</span>
+              <span class="hot-badge">🔥 HOT</span>
+            </div>
+          </div>
+          <div style="margin-top:16px;padding:12px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:8px;font-size:0.72rem;color:var(--text-sec);">
+            🏡 <strong style="color:var(--text);">Insight:</strong> Noosa — 12 plan sealings this month. Peak listing window: next 6–10 weeks.
+          </div>
+        </div>
+      </div>
+
+    </div>
   </div>
 </section>
 
-<!-- ── TESTIMONIALS ──────────────────────────────────── -->
-<section class="section testimonials" id="testimonials">
+<!-- TESTIMONIALS -->
+<section id="testimonials">
   <div class="container">
-    <div class="section-header">
-      <span class="pill fade-in">What People Say</span>
-      <h2 class="fade-in fade-in-delay-1">Loved by property professionals</h2>
+    <div class="testimonials-header reveal">
+      <div class="section-tag">✦ Social Proof</div>
+      <h2 class="section-h2">Property professionals love myFindr</h2>
+      <p class="section-sub">Early users seeing real results — more conversations, better timing, stronger pipelines.</p>
     </div>
-
-    <div class="testi-grid">
-      <div class="testi-card fade-in">
-        <div class="testi-stars">★★★★★</div>
-        <p class="testi-quote">"I used to spend hours on council portals trying to find relevant projects. Now I open myFindr at 5am and my whole week is planned. It's genuinely changed how I run my studio."</p>
-        <div class="testi-author">
-          <div class="testi-name">Sarah K.</div>
-          <div class="testi-role">Principal Interior Designer, Brisbane</div>
+    <div class="testimonials-grid">
+      <div class="testimonial-card reveal">
+        <div class="stars">★★★★★</div>
+        <p class="testimonial-quote">I used to spend hours trawling through applications to find renovation leads. myFindr gives me exactly what I need before I've even had my morning coffee. Game changer.</p>
+        <div class="testimonial-author">
+          <div class="author-avatar">SL</div>
+          <div>
+            <div class="author-name">Sarah L.</div>
+            <div class="author-role">Interior Designer · Brisbane Inner North</div>
+          </div>
         </div>
       </div>
-
-      <div class="testi-card fade-in fade-in-delay-1">
-        <div class="testi-stars">★★★★★</div>
-        <p class="testi-quote">"The suburb hotspot feature is unreal. We identified a velocity surge in Ascot two months before our competitors moved in. That's three projects we wouldn't have won otherwise."</p>
-        <div class="testi-author">
-          <div class="testi-name">Marcus T.</div>
-          <div class="testi-role">Director, MT Construction Group</div>
+      <div class="testimonial-card reveal">
+        <div class="stars">★★★★★</div>
+        <p class="testimonial-quote">The timing intelligence is what sets this apart. I know exactly when a project is in the right window for a builder conversation — not too early, not when someone else has already won it.</p>
+        <div class="testimonial-author">
+          <div class="author-avatar">MT</div>
+          <div>
+            <div class="author-name">Marcus T.</div>
+            <div class="author-role">Licensed Builder · Sunshine Coast</div>
+          </div>
         </div>
       </div>
-
-      <div class="testi-card fade-in fade-in-delay-2">
-        <div class="testi-stars">★★★★★</div>
-        <p class="testi-quote">"The timing intelligence is what sets it apart. Knowing a project is 120 days from construction means I can build a relationship before anyone else even knows it's happening."</p>
-        <div class="testi-author">
-          <div class="testi-name">Priya M.</div>
-          <div class="testi-role">Property Agent, Sunshine Coast</div>
+      <div class="testimonial-card reveal">
+        <div class="stars">★★★★★</div>
+        <p class="testimonial-quote">I caught three plan sealings before they even reached the market last month. Listed two of them. This pays for itself ten times over if you're serious about your suburb.</p>
+        <div class="testimonial-author">
+          <div class="author-avatar">JW</div>
+          <div>
+            <div class="author-name">Jessica W.</div>
+            <div class="author-role">Principal Agent · RE/MAX Brisbane</div>
+          </div>
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ── CTA DARK ──────────────────────────────────────── -->
-<section class="section cta-dark" id="pricing">
-  <div class="cta-glow"></div>
+<!-- CTA -->
+<section id="cta">
   <div class="container">
-    <div class="cta-dark-inner fade-in">
-      <h2>
-        Unlock Your Property<br>
-        <span class="cta-gradient-text">Intelligence Advantage</span>
-      </h2>
-      <p>Join the property professionals who know about projects before their competitors do.</p>
-      <a href="https://meetings-ap1.hubspot.com/meetings/jsanto" class="btn btn-primary" target="_blank" rel="noopener" style="font-size:16px;padding:15px 36px">
-        Book a Demo →
+    <div class="cta-card reveal">
+      <div class="section-tag" style="display:inline-flex; margin-bottom:20px;">✦ Get Started</div>
+      <h2>Ready to get ahead of<br>every project?</h2>
+      <p>Book a 30-minute demo and see your suburbs, your trade, your leads.<br>
+      Early bird pricing: <strong style="color:#FA7734;">$100/week</strong> until end of March. $200/week after.</p>
+      <a href="https://meetings-ap1.hubspot.com/meetings/jsanto" target="_blank" class="btn-primary">
+        🗓 Book Your Demo
       </a>
-      <div style="display:flex;gap:24px;margin-top:8px;flex-wrap:wrap;justify-content:center">
-        <span style="font-size:13px;color:rgba(255,255,255,0.35)">No lock-in contracts</span>
-        <span style="font-size:13px;color:rgba(255,255,255,0.35)">·</span>
-        <span style="font-size:13px;color:rgba(255,255,255,0.35)">Cancel anytime</span>
-        <span style="font-size:13px;color:rgba(255,255,255,0.35)">·</span>
-        <span style="font-size:13px;color:rgba(255,255,255,0.35)">Setup in 24 hours</span>
-      </div>
+      <p class="cta-note">Limited spots per suburb per ICP &nbsp;·&nbsp; No lock-in &nbsp;·&nbsp; Cancel anytime</p>
     </div>
   </div>
 </section>
 
-<!-- ── FOOTER ─────────────────────────────────────────── -->
+<!-- FOOTER -->
 <footer>
-  <div class="container">
-    <div class="footer-inner">
-      <div class="footer-top">
-        <div class="footer-brand">
-          <a href="#" class="footer-logo">
-            my<span class="brand-f">Findr</span><span class="brand-dot">●</span>
-          </a>
-          <div class="footer-tagline">Property Development Intelligence for Brisbane &amp; Sunshine Coast</div>
-        </div>
-        <ul class="footer-links">
-          <li><a href="#how-it-works">How It Works</a></li>
-          <li><a href="#features">What You Get</a></li>
-          <li><a href="#icp">ICPs</a></li>
-          <li><a href="https://meetings-ap1.hubspot.com/meetings/jsanto" target="_blank" rel="noopener">Book a Demo</a></li>
-        </ul>
-      </div>
-      <div class="footer-bottom">
-        <div class="footer-copy">© 2026 myFindr. All rights reserved.</div>
-        <div class="footer-copy">Updated every morning at 5am · Brisbane &amp; Sunshine Coast</div>
-      </div>
-    </div>
-  </div>
+  <a href="#" class="footer-logo">my<strong>Findr</strong><span style="color:var(--orange);">●</span></a>
+  <ul class="footer-links">
+    <li><a href="#features">Features</a></li>
+    <li><a href="#product">Product</a></li>
+    <li><a href="#how">How it works</a></li>
+    <li><a href="#icp">Who it's for</a></li>
+    <li><a href="https://meetings-ap1.hubspot.com/meetings/jsanto" target="_blank">Book a Demo</a></li>
+  </ul>
+  <div class="footer-copy">© 2026 myFindr. All rights reserved.</div>
 </footer>
 
-<!-- ── SCRIPTS ────────────────────────────────────────── -->
 <script>
-  // Hamburger menu
-  const hamburgerBtn = document.getElementById('hamburgerBtn');
-  const mobileMenu = document.getElementById('mobileMenu');
-
-  hamburgerBtn.addEventListener('click', () => {
-    hamburgerBtn.classList.toggle('open');
+  // Hamburger nav
+  var hamburger = document.getElementById('hamburger');
+  var mobileMenu = document.getElementById('mobile-menu');
+  hamburger.addEventListener('click', function() {
+    hamburger.classList.toggle('open');
     mobileMenu.classList.toggle('open');
   });
-
-  function closeMobile() {
-    hamburgerBtn.classList.remove('open');
+  function closeMobileMenu() {
+    hamburger.classList.remove('open');
     mobileMenu.classList.remove('open');
   }
 
-  // Close mobile menu when clicking outside
-  document.addEventListener('click', (e) => {
-    if (!hamburgerBtn.contains(e.target) && !mobileMenu.contains(e.target)) {
-      closeMobile();
+  // Intersection Observer for reveal animations
+  var revealObserver = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -60px 0px' });
+
+  document.querySelectorAll('.reveal').forEach(function(el) {
+    revealObserver.observe(el);
+  });
+
+  // Staggered reveal for grids
+  document.querySelectorAll('.features-grid .feature-card, .testimonials-grid .testimonial-card').forEach(function(el, i) {
+    el.style.transitionDelay = (i * 0.12) + 's';
+  });
+
+  // ICP Tabs
+  var tabs = document.querySelectorAll('.icp-tab');
+  var panels = document.querySelectorAll('.icp-panel');
+  tabs.forEach(function(tab) {
+    tab.addEventListener('click', function() {
+      var target = tab.getAttribute('data-tab');
+      tabs.forEach(function(t) { t.classList.remove('active'); });
+      panels.forEach(function(p) { p.classList.remove('active'); });
+      tab.classList.add('active');
+      var panel = document.getElementById('tab-' + target);
+      if (panel) panel.classList.add('active');
+    });
+  });
+
+  // Tab pill click in bento (just visual)
+  document.querySelectorAll('.tab-pill').forEach(function(pill) {
+    pill.addEventListener('click', function() {
+      document.querySelectorAll('.tab-pill').forEach(function(p) { p.classList.remove('active'); });
+      pill.classList.add('active');
+    });
+  });
+
+  // Count-up animation for KPI tiles
+  function countUp(el, target, duration) {
+    var start = 0;
+    var startTime = null;
+    function step(timestamp) {
+      if (!startTime) startTime = timestamp;
+      var progress = Math.min((timestamp - startTime) / duration, 1);
+      var eased = 1 - Math.pow(1 - progress, 3);
+      el.textContent = Math.round(eased * target);
+      if (progress < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+
+  var countObserver = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) {
+        var el = entry.target;
+        var target = parseInt(el.getAttribute('data-count'));
+        if (!isNaN(target)) {
+          countUp(el, target, 1200);
+          countObserver.unobserve(el);
+        }
+      }
+    });
+  }, { threshold: 0.5 });
+
+  document.querySelectorAll('[data-count]').forEach(function(el) {
+    el.textContent = '0';
+    countObserver.observe(el);
+  });
+
+  // Nav background on scroll
+  var navEl = document.querySelector('nav');
+  window.addEventListener('scroll', function() {
+    if (window.scrollY > 40) {
+      navEl.style.background = 'rgba(5,8,16,0.92)';
+    } else {
+      navEl.style.background = 'rgba(5,8,16,0.75)';
     }
   });
 
-  // Intersection Observer for fade-in
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('visible');
-        observer.unobserve(entry.target);
-      }
-    });
-  }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
-
-  document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
-
-  // Tab switching
-  function switchTab(id) {
-    // Deactivate all
-    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-    document.querySelectorAll('.tab-pane').forEach(pane => pane.classList.remove('active'));
-
-    // Activate selected
-    const btnIndex = { id: 0, builders: 1, re: 2 };
-    document.querySelectorAll('.tab-btn')[btnIndex[id]].classList.add('active');
-    document.getElementById('tab-' + id).classList.add('active');
-  }
-
   // Smooth scroll for anchor links
-  document.querySelectorAll('a[href^="#"]').forEach(link => {
-    link.addEventListener('click', (e) => {
-      const target = document.querySelector(link.getAttribute('href'));
+  document.querySelectorAll('a[href^="#"]').forEach(function(a) {
+    a.addEventListener('click', function(e) {
+      var target = document.querySelector(a.getAttribute('href'));
       if (target) {
         e.preventDefault();
-        closeMobile();
         target.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }
     });
   });
-
-  // Animate chart bars when in view
-  const chartBars = document.querySelectorAll('.chart-bar, .bento-bar-fill');
-  const barObserver = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.style.width = entry.target.style.width || '0%';
-        barObserver.unobserve(entry.target);
-      }
-    });
-  }, { threshold: 0.3 });
-
-  chartBars.forEach(bar => barObserver.observe(bar));
 </script>
-
 </body>
 </html>
