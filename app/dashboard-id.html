@@ -489,11 +489,11 @@
     </select>
     <select id="filter-dwelling" class="leads-filter-select" onchange="applyFiltersAndSort()">
       <option value="">All Dwelling Types</option>
-      <option value="single_dwelling">Single Dwelling</option>
-      <option value="multi_residential">Multi-Residential</option>
-      <option value="townhouse">Townhouse</option>
-      <option value="villa">Villa</option>
-      <option value="apartment">Apartment</option>
+      <option value="house">House</option>
+      <option value="residential">Residential</option>
+      <option value="commercial">Commercial</option>
+      <option value="business">Business</option>
+      <option value="industrial">Industrial / Industry</option>
     </select>
     <select id="sort-date" class="leads-filter-select" onchange="applyFiltersAndSort()">
       <option value="desc">Newest First</option>
@@ -1096,27 +1096,21 @@ function matchesFilter(lead, projectType, category, dwelling) {
     if (!useLevel.match(/industrial|industry|engineering/)) return false;
   }
 
-  // --- Dwelling Type (from use_level_1 or application_type) ---
-  // Note: use_level_1 values like "House;" or "Commercial; House;" indicate house/dwelling
-  // Multi-dwelling would be "Residential - Non-Domestic;" or multiple use flags
-  if (dwelling === 'single_dwelling') {
-    // House; or Residential; (single dwelling)
-    if (!useLevel.match(/\bhouse\b/) && !useLevel.match(/residential;/)) return false;
-    // Exclude non-domestic (multi-unit)
-    if (useLevel.match(/non-domestic|non domestic/)) return false;
+  // --- Dwelling Type (from use_level_1) ---
+  if (dwelling === 'house') {
+    if (!useLevel.match(/\bhouse\b/)) return false;
   }
-  if (dwelling === 'multi_residential') {
-    // Residential - Non-Domestic or multiple residential entries
-    if (!useLevel.match(/non-domestic|non domestic/) && !useLevel.match(/residential.*residential/)) return false;
+  if (dwelling === 'residential') {
+    if (!useLevel.match(/residential/) || useLevel.match(/non-domestic/)) return false;
   }
-  if (dwelling === 'townhouse') {
-    if (!useLevel.match(/townhouse|town house/)) return false;
+  if (dwelling === 'commercial') {
+    if (!useLevel.match(/commercial/)) return false;
   }
-  if (dwelling === 'villa') {
-    if (!useLevel.match(/villa/)) return false;
+  if (dwelling === 'business') {
+    if (!useLevel.match(/business/)) return false;
   }
-  if (dwelling === 'apartment') {
-    if (!useLevel.match(/apartment|unit|flat/)) return false;
+  if (dwelling === 'industrial') {
+    if (!useLevel.match(/industrial|industry/)) return false;
   }
 
   return true;
