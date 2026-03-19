@@ -477,9 +477,9 @@
   </div>
   <div class="leads-filter-bar">
     <select id="filter-signal" class="leads-filter-select" onchange="applyFiltersAndSort()">
-      <option value="">All Signals</option>
-      <option value="HOT">🔥 HOT Only</option>
-      <option value="WARM">🌡️ WARM Only</option>
+      <option value="">🔥 HOT + WARM (Default)</option>
+      <option value="HOT">🔥 HOT</option>
+      <option value="COOL">🌡️ WARM</option>
     </select>
     <select id="filter-project-type" class="leads-filter-select" onchange="applyFiltersAndSort()">
       <option value="">All Project Types</option>
@@ -736,7 +736,11 @@ async function sb(view, qp={}) {
 
 function fmt$(n){if(!n&&n!==0)return'—';if(n>=1000000)return'$'+(n/1000000).toFixed(1)+'M';if(n>=1000)return'$'+(n/1000).toFixed(0)+'k';return'$'+n.toFixed(0);}
 function fmtN(n){return n!=null?n.toLocaleString():'—';}
-function badge(s){const c=s==='HOT'?'b-hot':s==='WARM'?'b-warm':'b-cold';return `<span class="badge ${c}">${s}</span>`;}
+function badge(s){
+  if(s==='HOT') return `<span class="badge b-hot">🔥 HOT</span>`;
+  if(s==='COOL') return `<span class="badge b-warm">🌡️ WARM</span>`;
+  return `<span class="badge b-cold">COLD</span>`;
+}
 
 // Property type from application_type
 function propType(appType, suburb){
@@ -811,7 +815,7 @@ async function loadAll(){
 
   // KPIs
   const hot=allLeads.filter(r=>r.icp_signal==='HOT').length;
-  const warm=allLeads.filter(r=>r.icp_signal==='WARM').length;
+  const warm=allLeads.filter(r=>r.icp_signal==='COOL').length;
   document.getElementById('k-hot').textContent=hot||'0';
   document.getElementById('k-warm').textContent=warm||'0';
   document.getElementById('k-mtd').textContent=fmtN(mtd.count);
@@ -1185,6 +1189,9 @@ function applyFiltersAndSort() {
   const dwelling = document.getElementById('filter-dwelling')?.value || '';
   const sortDir = document.getElementById('sort-date')?.value || 'desc';
 
+  // If no signal filter selected, default to showing HOT + COOL (not COLD)
+  const effectiveSignal = signal || 'HOT_AND_WARM';
+
   const addedIds = new Set((pipelineData||[]).map(p=>p.application_number).filter(Boolean));
 
   let filtered = (leadsAll || []).filter(lead => {
@@ -1192,7 +1199,13 @@ function applyFiltersAndSort() {
     const key = lead.application_number || lead.id;
     if (key && addedIds.has(key)) return false;
     // Signal filter
-    if (signal && lead.icp_signal !== signal) return false;
+    const leadSig = lead.icp_signal || '';
+    if (effectiveSignal === 'HOT_AND_WARM') {
+      if (leadSig === 'COLD') return false; // hide cold by default
+    } else {
+      const matchSig = effectiveSignal === 'WARM' ? 'COOL' : effectiveSignal;
+      if (leadSig !== matchSig) return false;
+    }
     // New filters
     return matchesFilter(lead, projectType, category, dwelling);
   });
