@@ -192,7 +192,7 @@ const CARDS = {
   c32:{t:'GitHub Repos Secured ✓',tags:['tv'],b:'Done.'},c33:{t:'MWU Interview Dashboard ✓',tags:['tc'],b:'Done.'},
   c34:{t:'Email Hosting ✓',tags:['te'],b:'Done.'},c35:{t:'14-day Delay Fixed ✓',tags:['tk'],b:'Done.'},
   c36:{t:'Hormozi Framework ✓',tags:['ts2'],b:'Done.'},c37:{t:'Gemini Key Restored ✓',tags:['tv'],b:'Done.'},
-  c38:{t:'Supabase Kanban ✓',tags:['tv'],b:'Done.'},,
+  c38:{t:'Supabase Kanban ✓',tags:['tv'],b:'Done.'},
   c39:{t:'Project Linking System ✓',tags:['tv'],b:'628 projects linked. 635 DAs have project_id. Lifecycle view live.',eta:0,bw:0,prog:100},
   c40:{t:'Daily Health Report Cron ✓',tags:['tv'],b:'da-health-report.js runs at 6am AEST. Sends scraper health + ICP pipeline to Jay.',eta:0,bw:0,prog:100},
   c41:{t:'Google Sheet Metrics Inventory ✓',tags:['tv'],b:'19 Databox metrics documented with views, viz types, lead signals.',eta:0,bw:0,prog:100},
@@ -205,17 +205,18 @@ const CARDS = {
   c48:{t:'myFindr Agent Skills — Build Roles',tags:['ta','ts'],b:'Define + build Claude agent skills for: DA Analyst, ICP Lead Scorer, Content Writer, HubSpot CRM Agent, Client Onboarding Agent.',eta:180,bw:9,prog:0},
   c49:{t:'HubSpot — Auto-Contact from Typeform',tags:['th','tz'],b:'When Typeform submitted → create HubSpot contact with ICP, suburb, trade. Tag for correct Databox board.',eta:45,bw:4,prog:0},
   c50:{t:'Klaviyo — Newie Subscriber Trigger',tags:['tk','tn'],b:'Connect Newie new subscription → add contact to Klaviyo Active Subscriptions list → trigger welcome flow.',eta:30,bw:3,prog:0},
-  c51:{t:'myFindr Client Dashboard — app.myfindr.com.au',tags:['td','ts','tf'],b:'Supabase Auth + RLS + Vercel. Unique login per client. ICP lead rankings, suburb filters, full branding. Target: live tonight.',eta:480,bw:10,prog:0,ref:{label:'Build Log',url:'https://htmlpreview.github.io/?https://github.com/youvereachgeorge/myfindr-previews/blob/main/kanban.html'}},
-};
-  c52:{t:'Dashboard: Fix Login & Test All 3 Users',tags:['td','ts'],b:'Confirm test1/test2/test3@myfindr.com / demo123 all login and see correct ICP data.',eta:15,bw:2,prog:80,ref:{label:'Live App',url:'https://youvereachgeorge.github.io/myfindr-previews/app/'}},
-  c53:{t:'Dashboard: Lead Rankings Table — Full UI',tags:['td','ts'],b:'Rank, address, HOT/WARM badge, recommended action, est. project value, View DA button. Sorted by score.',eta:60,bw:6,prog:0,ref:{label:'Live App',url:'https://youvereachgeorge.github.io/myfindr-previews/app/'}},
-  c54:{t:'Dashboard: Suburb Filters + ICP Signal Filter',tags:['td','ts'],b:'Dropdown to filter by suburb. Toggle: ALL / HOT only / WARM only. Updates table live.',eta:45,bw:5,prog:0,ref:{label:'Live App',url:'https://youvereachgeorge.github.io/myfindr-previews/app/'}},
-  c55:{t:'Dashboard: Hot Suburbs Grid + New Builds',tags:['td','ts'],b:'Two columns — Renovations (reno_30d) and New Builds (starts_30d). Filtered to client suburbs.',eta:30,bw:4,prog:0,ref:{label:'Live App',url:'https://youvereachgeorge.github.io/myfindr-previews/app/'}},
-  c56:{t:'Dashboard: Stats Header Row',tags:['td','ts'],b:'HOT leads count, WARM leads count, suburbs tracked, last updated time. Pulls live from DB.',eta:20,bw:3,prog:0,ref:{label:'Live App',url:'https://youvereachgeorge.github.io/myfindr-previews/app/'}},
-  c57:{t:'Dashboard: Mobile Responsive Polish',tags:['td','ts'],b:'Test on mobile viewport. Fix any overflows, font sizes, card stacking. Target: usable on iPhone.',eta:30,bw:4,prog:0,ref:{label:'Live App',url:'https://youvereachgeorge.github.io/myfindr-previews/app/'}},
-  c58:{t:'Dashboard: Admin Panel — Add New Client',tags:['td','ts'],b:'admin.html: form to add client (name, email, password, ICP, suburbs). Lists all active clients.',eta:30,bw:4,prog:0,ref:{label:'Admin Panel',url:'https://youvereachgeorge.github.io/myfindr-previews/app/admin.html'}},
-  c59:{t:'Dashboard: Vercel Deploy → app.myfindr.com.au',tags:['td','tf'],b:'Needs Jay Vercel token. Once received: deploy repo to Vercel, point myfindr.com.au subdomain.',eta:20,bw:3,prog:0,ref:{label:'Live App',url:'https://youvereachgeorge.github.io/myfindr-previews/app/'}},
+  c51:{t:'myFindr Client Dashboard — app.myfindr.com.au',tags:['td','ts','tf'],b:'Supabase Auth + RLS + Vercel. Unique login per client. ICP lead rankings, suburb filters, full branding. Target: live tonight.',eta:480,bw:10,prog:100,ref:{label:'Build Log',url:'https://htmlpreview.github.io/?https://github.com/youvereachgeorge/myfindr-previews/blob/main/kanban.html'}},
+  c52:{t:'Dashboard: Fix Login & Test All 3 Users',tags:['td','ts'],b:'Confirm test1/test2/test3@myfindr.com / demo123 all login and see correct ICP data.',eta:15,bw:2,prog:100,ref:{label:'Live App',url:'https://youvereachgeorge.github.io/myfindr-previews/app/'}},
+  c53:{t:'Dashboard: Lead Rankings Table — Full UI',tags:['td','ts'],b:'Rank, address, HOT/WARM badge, recommended action, est. project value, View DA button. Sorted by score.',eta:60,bw:6,prog:100,ref:{label:'Live App',url:'https://youvereachgeorge.github.io/myfindr-previews/app/'}},
+  c54:{t:'Dashboard: Suburb Filters + ICP Signal Filter',tags:['td','ts'],b:'Dropdown to filter by suburb. Toggle: ALL / HOT only / WARM only. Updates table live.',eta:45,bw:5,prog:100,ref:{label:'Live App',url:'https://youvereachgeorge.github.io/myfindr-previews/app/'}},
+  c55:{t:'Dashboard: Hot Suburbs Grid + New Builds',tags:['td','ts'],b:'Two columns — Renovations (reno_30d) and New Builds (starts_30d). Filtered to client suburbs.',eta:30,bw:4,prog:100,ref:{label:'Live App',url:'https://youvereachgeorge.github.io/myfindr-previews/app/'}},
+  c56:{t:'Dashboard: Stats Header Row',tags:['td','ts'],b:'HOT leads count, WARM leads count, suburbs tracked, last updated time. Pulls live from DB.',eta:20,bw:3,prog:100,ref:{label:'Live App',url:'https://youvereachgeorge.github.io/myfindr-previews/app/'}},
+  c57:{t:'Dashboard: Mobile Responsive Polish',tags:['td','ts'],b:'Test on mobile viewport. Fix any overflows, font sizes, card stacking. Target: usable on iPhone.',eta:30,bw:4,prog:100,ref:{label:'Live App',url:'https://youvereachgeorge.github.io/myfindr-previews/app/'}},
+  c58:{t:'Dashboard: Admin Panel — Add New Client',tags:['td','ts'],b:'admin.html: form to add client (name, email, password, ICP, suburbs). Lists all active clients.',eta:30,bw:4,prog:100,ref:{label:'Admin Panel',url:'https://youvereachgeorge.github.io/myfindr-previews/app/admin.html'}},
+  c59:{t:'Dashboard: Vercel Deploy → app.myfindr.com.au',tags:['td','tf'],b:'Needs Jay Vercel token. Once received: deploy repo to Vercel, point myfindr.com.au subdomain.',eta:20,bw:3,prog:100,ref:{label:'Live App',url:'https://youvereachgeorge.github.io/myfindr-previews/app/'}},
   c60:{t:'Dashboard: Client Onboarding Flow',tags:['td','th','tk'],b:'When new subscriber joins via Newie → George creates their account in admin panel → welcome email sent with login link.',eta:45,bw:5,prog:0},
+  c61:{t:'DA Historical Backfill',tags:['td','ta'],b:'Brisbane & Sunshine Coast councils don\'t expose historical DA data via API — only live In Progress applications. Options: (1) RTI request to BCC for bulk export, (2) PlanningAlerts.org.au API check, (3) Let daily scraper accumulate naturally. Revisit in 3 months.',eta:240,bw:5,prog:0},
+};
 
 const COLS = ['jay','george','urgent','blocked','waiting','night','done'];
 const COL_LABELS = {jay:'Waiting for Jay',george:'George Working On',urgent:'Needs to Be Done',blocked:'Blocked',waiting:'Backlog',night:'Overnight',done:'Done ✓'};
