@@ -419,9 +419,10 @@
             <thead>
               <tr>
                 <th>Name</th>
+                <th>Company</th>
                 <th>Email</th>
                 <th>ICP</th>
-                <th>Suburbs</th>
+                <th>Location</th>
                 <th>Council</th>
                 <th>Status</th>
                 <th>Joined</th>
@@ -802,6 +803,7 @@
             </select>
           </div>
           <div class="profile-field" style="grid-column:1/-1"><label>Target Suburbs</label><input type="text" id="prof-suburbs" placeholder="Suburb1, Suburb2, Suburb3" onchange="updateProfileSuburbs(this.value)"></div>
+          <div class="profile-field"><label>Business Location (Suburb, State)</label><input type="text" id="prof-location" placeholder="e.g. Palm Beach, QLD" onchange="updateProfile('location',this.value)"></div>
         </div>
       </div>
 
@@ -1014,12 +1016,13 @@ function renderClientsTable(clients) {
   document.getElementById('clients-count').innerHTML = `<span style="color:var(--green);font-weight:700;">${active.length} active</span> / ${clients.length} total`;
 
   if (!clients.length) {
-    document.getElementById('clients-tbody').innerHTML = '<tr><td colspan="10" style="color:var(--text-muted)">No clients yet.</td></tr>';
+    document.getElementById('clients-tbody').innerHTML = '<tr><td colspan="11" style="color:var(--text-muted)">No clients yet.</td></tr>';
     return;
   }
 
   document.getElementById('clients-tbody').innerHTML = clients.map(c => {
     const suburbs = Array.isArray(c.target_suburbs) ? c.target_suburbs.slice(0,3).join(', ') + (c.target_suburbs.length > 3 ? '…' : '') : (c.target_suburbs || '—');
+    const locationCell = c.location || c.suburb || '<span style="color:#555">—</span>';
     const statusBadge = c.active
       ? `<span class="badge badge-green">Active</span>`
       : `<span class="badge badge-red">Inactive</span>`;
@@ -1034,9 +1037,10 @@ function renderClientsTable(clients) {
     const lastLoginCell = c.last_login ? `<span style="font-size:11px;color:var(--text-dim)">${timeAgo(c.last_login)}</span>` : '<span style="color:var(--text-muted);font-size:11px">Never</span>';
     return `<tr>
       <td style="font-weight:600;">${c.full_name || '—'}</td>
+      <td style="color:var(--text-dim)">${c.company || '<span style="color:#555">—</span>'}</td>
       <td style="color:var(--text-dim)">${c.email || '—'}</td>
       <td>${icpBadge}</td>
-      <td style="color:var(--text-dim);font-size:12px;max-width:180px;">${suburbs}</td>
+      <td style="color:var(--text-dim);font-size:12px;">${locationCell}</td>
       <td style="color:var(--text-dim)">${c.target_council || '—'}</td>
       <td>${statusBadge}</td>
       <td style="color:var(--text-muted)">${fmtDate(c.created_at)}</td>
@@ -1596,6 +1600,7 @@ function openProfile(client) {
   document.getElementById('prof-icp').value = client.icp_type || 'interior_designer';
   document.getElementById('prof-council').value = client.target_council || 'brisbane';
   document.getElementById('prof-suburbs').value = Array.isArray(client.target_suburbs) ? client.target_suburbs.join(', ') : (client.target_suburbs || '');
+  document.getElementById('prof-location').value = client.location || '';
 
   // CRM fields
   document.getElementById('prof-deal-stage').value = client.deal_stage || '';
