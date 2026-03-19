@@ -78,6 +78,11 @@
 
     /* LEADS */
     .leads-filter-bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:16px}
+    .leads-legend{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:10px;padding:14px 18px;margin-bottom:16px;display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
+    .legend-item{display:flex;flex-direction:column;gap:3px}
+    .legend-term{font-size:.75rem;font-weight:700;color:#E64500;text-transform:uppercase;letter-spacing:.5px}
+    .legend-desc{font-size:.8rem;color:#868686;line-height:1.4}
+    @media(max-width:768px){.leads-legend{grid-template-columns:1fr}}
     .leads-filter-select{background:rgba(255,255,255,.06);border:1px solid var(--card-border);color:var(--text);border-radius:7px;padding:5px 10px;font-size:.72rem;font-family:inherit;min-width:140px;cursor:pointer;outline:none}
     .leads-filter-select:hover{border-color:rgba(230,69,0,.4)}
     .leads-filter-select:focus{border-color:var(--accent)}
@@ -500,6 +505,7 @@
       <option value="asc">Oldest First</option>
     </select>
   </div>
+  <div class="leads-legend" id="leads-legend"><!-- populated by JS based on ICP type --></div>
   <div id="leads-container">Loading leads...</div>
 </div>
 
@@ -643,6 +649,53 @@
 </div>
 
 <script>
+// ─── ICP-Aware Legend ───────────────────────────────────────────────────────
+const LEGEND_CONTENT = {
+  interior_designer: [
+    { term: 'Building Work', desc: 'Owner is actively renovating or extending — the best time to reach out before a designer is engaged.' },
+    { term: 'Change of Use', desc: 'A space is being converted (e.g. commercial to residential) — often requires full interior redesign.' },
+    { term: 'Operational Works', desc: 'Infrastructure or site works underway — lower priority, but may precede a fit-out or new build.' },
+    { term: 'Reconfigure / Subdivide', desc: 'Land is being split into new lots — new dwellings incoming, get in before construction starts.' }
+  ],
+  builder: [
+    { term: 'Building Work', desc: 'Active construction approval — owner has budget confirmed and is looking for a builder now.' },
+    { term: 'Change of Use', desc: 'Structural changes required to convert the space — strong opportunity for a quote.' },
+    { term: 'Operational Works', desc: 'Site prep, earthworks or civil works approved — often precedes a major build.' },
+    { term: 'Reconfigure / Subdivide', desc: 'New lots approved — multiple new dwellings to be constructed, high volume opportunity.' }
+  ],
+  real_estate: [
+    { term: 'Building Work', desc: 'Property being upgraded — value is increasing, ideal time to discuss sale or rental appraisal post-reno.' },
+    { term: 'Change of Use', desc: 'Property purpose changing — may come to market or need a new appraisal post-conversion.' },
+    { term: 'Operational Works', desc: 'Development activity in the area — signals neighbourhood growth and rising property values.' },
+    { term: 'Reconfigure / Subdivide', desc: 'New lots approved — new properties entering the market, opportunity to list or manage.' }
+  ],
+  architect: [
+    { term: 'Building Work', desc: "Construction approved — if an architect isn't yet engaged, this is your window to pitch." },
+    { term: 'Change of Use', desc: 'Space conversion underway — complex projects often need architectural oversight and drawings.' },
+    { term: 'Operational Works', desc: 'Site infrastructure works — may precede a larger development requiring architectural services.' },
+    { term: 'Reconfigure / Subdivide', desc: 'New lots being created — each new lot is a potential new build project waiting for design.' }
+  ]
+};
+const DEFAULT_LEGEND = LEGEND_CONTENT.interior_designer;
+
+function renderLegend(icpType) {
+  const el = document.getElementById('leads-legend');
+  if (!el) return;
+  const key = (icpType || '').toLowerCase()
+    .replace(/\s+/g, '_')
+    .replace('interior_designers', 'interior_designer')
+    .replace('builders', 'builder')
+    .replace('architects', 'architect');
+  const items = LEGEND_CONTENT[key] || DEFAULT_LEGEND;
+  el.innerHTML = items.map(item => `
+    <div class="legend-item">
+      <span class="legend-term">${item.term}</span>
+      <span class="legend-desc">${item.desc}</span>
+    </div>
+  `).join('');
+}
+// ────────────────────────────────────────────────────────────────────────────
+
 const SUPA = 'https://ieqbavwzydlxiaclzcjl.supabase.co';
 const KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9' + '.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImllcWJhdnd6eWRseGlhY2x6Y2psIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3MzM4NDEwMCwiZXhwIjoyMDg4OTYwMTAwfQ.8FqHSTp-FxwIiiZWBpzAiYRkL5WdSNETn2ICAo-1DOE';
 
@@ -845,6 +898,7 @@ async function loadAll(){
         const parts = [client.company, client.location || client.suburb].filter(Boolean);
         const clEl = document.getElementById('client-company-location');
         if (clEl) clEl.textContent = parts.join(' · ') || '';
+        renderLegend(client.icp_type);
       }
     } catch(e) { console.warn('Client profile load failed:', e.message); }
   }
