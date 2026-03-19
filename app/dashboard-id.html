@@ -1059,24 +1059,75 @@ function renderLeads(leads){
 }
 
 function matchesFilter(lead, projectType, category, dwelling) {
-  const appType = (lead.application_type || lead.use_level_1 || '').toLowerCase();
-  const desc = (lead.description || lead.project_type || '').toLowerCase();
-  const combined = appType + ' ' + desc;
+  // Real QLD DA data fields from vw_icp_lead_rankings_id
+  // application_type: "Carry Out Building Work", "Material Change of Use", etc.
+  // use_level_1: "Commercial; House;", "Residential;", "Commercial;", "House;",
+  //              "Business;", "Industrial;", "Residential - Non-Domestic;", null, etc.
+  const appType = (lead.application_type || '').toLowerCase();
+  const useLevel = (lead.use_level_1 || '').toLowerCase();
 
-  if (projectType === 'renovation' && !combined.match(/alteration|renovation|extension|addition|alter/)) return false;
-  if (projectType === 'new_development' && combined.match(/alteration|renovation|extension|addition|alter/)) return false;
+  // If no classification data, only show under "All" (pass when no filter active)
+  const hasData = appType.length > 0;
+  if (!hasData && (projectType || category || dwelling)) return false;
 
-  if (category === 'residential' && !combined.match(/dwelling|residential|house|home|unit|apartment/)) return false;
-  if (category === 'commercial' && !combined.match(/commercial|office|shop|retail|business/)) return false;
-  if (category === 'industrial' && !combined.match(/industrial|warehouse|factory/)) return false;
+  // --- Project Type ---
+  // "renovation" = Building Work only (modifications to existing structures)
+  // "new_development" = Material Change of Use (change of land use / new development)
+  if (projectType === 'renovation') {
+    // "Carry Out Building Work" without MCU = alterations/additions to existing
+    if (!appType.match(/building work/)) return false;
+  }
+  if (projectType === 'new_development') {
+    // "Material Change of Use" indicates new development/change of use
+    if (!appType.match(/material change/)) return false;
+  }
 
-  if (dwelling === 'single_dwelling' && !combined.match(/single|detached/)) return false;
-  if (dwelling === 'multi_residential' && !combined.match(/multi|dual|multiple/)) return false;
-  if (dwelling === 'townhouse' && !combined.match(/townhouse|town house/)) return false;
-  if (dwelling === 'villa' && !combined.match(/villa/)) return false;
-  if (dwelling === 'apartment' && !combined.match(/apartment|unit|flat/)) return false;
+  // --- Category (from use_level_1) ---
+  if (category === 'residential') {
+    // Residential, House, Residential - Domestic, Residential - Non-Domestic
+    if (!useLevel.match(/residential|house/)) return false;
+  }
+  if (category === 'commercial') {
+    // Commercial, Business, Sport and Recreation
+    if (!useLevel.match(/commercial|business|sport/)) return false;
+  }
+  if (category === 'industrial') {
+    // Industrial, Engineering
+    if (!useLevel.match(/industrial|industry|engineering/)) return false;
+  }
+
+  // --- Dwelling Type (from use_level_1 or application_type) ---
+  // Note: use_level_1 values like "House;" or "Commercial; House;" indicate house/dwelling
+  // Multi-dwelling would be "Residential - Non-Domestic;" or multiple use flags
+  if (dwelling === 'single_dwelling') {
+    // House; or Residential; (single dwelling)
+    if (!useLevel.match(/\bhouse\b/) && !useLevel.match(/residential;/)) return false;
+    // Exclude non-domestic (multi-unit)
+    if (useLevel.match(/non-domestic|non domestic/)) return false;
+  }
+  if (dwelling === 'multi_residential') {
+    // Residential - Non-Domestic or multiple residential entries
+    if (!useLevel.match(/non-domestic|non domestic/) && !useLevel.match(/residential.*residential/)) return false;
+  }
+  if (dwelling === 'townhouse') {
+    if (!useLevel.match(/townhouse|town house/)) return false;
+  }
+  if (dwelling === 'villa') {
+    if (!useLevel.match(/villa/)) return false;
+  }
+  if (dwelling === 'apartment') {
+    if (!useLevel.match(/apartment|unit|flat/)) return false;
+  }
 
   return true;
+}
+
+function resetFilters() {
+  ['filter-project-type', 'filter-category', 'filter-dwelling', 'filter-signal'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+  applyFiltersAndSort();
 }
 
 function applyFiltersAndSort() {
@@ -1113,7 +1164,7 @@ function applyFiltersAndSort() {
   if (countEl) countEl.textContent = `Showing ${shown.length} of ${(leadsAll||[]).length} leads`;
 
   const el = document.getElementById('leads-container');
-  if (!shown.length) { el.innerHTML='<div style="color:var(--text3);padding:2rem;text-align:center">No leads matching your filter</div>'; return; }
+  if (!shown.length) { el.innerHTML='<div style="color:var(--text3);padding:2rem;text-align:center">No leads match the selected filters. <button onclick="resetFilters()" style="margin-left:.5rem;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:var(--text1);padding:.3rem .8rem;border-radius:6px;cursor:pointer;font-size:.8rem">Clear filters</button></div>'; return; }
   el.innerHTML = shown.map((r, i) => {
     const tip=outreachTip(r.stage,r.days_since_lodged);
     const cost=costEst(r.application_type,r.suburb);
