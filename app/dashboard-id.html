@@ -77,6 +77,12 @@
     .b-acc{background:rgba(230,69,0,.15);color:var(--accent)}
 
     /* LEADS */
+    .leads-filter-bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:16px}
+    .leads-filter-select{background:rgba(255,255,255,.06);border:1px solid var(--card-border);color:var(--text);border-radius:7px;padding:5px 10px;font-size:.72rem;font-family:inherit;min-width:140px;cursor:pointer;outline:none}
+    .leads-filter-select:hover{border-color:rgba(230,69,0,.4)}
+    .leads-filter-select:focus{border-color:var(--accent)}
+    .leads-filter-select option{background:#1a1a2e;color:var(--text)}
+    @media(max-width:768px){.leads-filter-select{min-width:calc(50% - 4px);flex:1 1 calc(50% - 4px)}}
     .lead-card{background:rgba(255,255,255,.03);border:1px solid var(--card-border);border-radius:10px;padding:.9rem;margin-bottom:.7rem;transition:.2s}
     .lead-card:hover{border-color:rgba(230,69,0,.3);background:rgba(230,69,0,.04)}
     .lead-addr{font-size:.82rem;font-weight:700;margin-bottom:.3rem}
@@ -458,18 +464,41 @@
 
 <!-- ═══════════════════ HOT LEADS ═══════════════════ -->
 <div class="section" id="sec-leads">
-  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.75rem;flex-wrap:wrap;gap:.5rem">
     <div>
       <div class="section-label">Lead Intelligence</div>
-      <div style="font-size:.82rem;font-weight:700">Hot & Warm Projects — Ranked by Opportunity Score</div>
+      <div style="font-size:.82rem;font-weight:700">Hot & Warm Projects — Ranked by Opportunity Score <span id="leads-count" style="font-size:0.8rem;color:#868686;margin-left:8px;font-weight:400"></span></div>
     </div>
-    <div style="display:flex;gap:.5rem">
-      <select id="filter-signal" onchange="filterLeads()" style="background:rgba(255,255,255,.06);border:1px solid var(--card-border);color:var(--text);border-radius:7px;padding:5px 10px;font-size:.72rem;font-family:inherit">
-        <option value="">All Signals</option>
-        <option value="HOT">🔥 HOT Only</option>
-        <option value="WARM">🌡️ WARM Only</option>
-      </select>
-    </div>
+  </div>
+  <div class="leads-filter-bar">
+    <select id="filter-signal" class="leads-filter-select" onchange="applyFiltersAndSort()">
+      <option value="">All Signals</option>
+      <option value="HOT">🔥 HOT Only</option>
+      <option value="WARM">🌡️ WARM Only</option>
+    </select>
+    <select id="filter-project-type" class="leads-filter-select" onchange="applyFiltersAndSort()">
+      <option value="">All Project Types</option>
+      <option value="new_development">New Development</option>
+      <option value="renovation">Renovation</option>
+    </select>
+    <select id="filter-category" class="leads-filter-select" onchange="applyFiltersAndSort()">
+      <option value="">All Categories</option>
+      <option value="residential">Residential</option>
+      <option value="commercial">Commercial</option>
+      <option value="industrial">Industrial</option>
+    </select>
+    <select id="filter-dwelling" class="leads-filter-select" onchange="applyFiltersAndSort()">
+      <option value="">All Dwelling Types</option>
+      <option value="single_dwelling">Single Dwelling</option>
+      <option value="multi_residential">Multi-Residential</option>
+      <option value="townhouse">Townhouse</option>
+      <option value="villa">Villa</option>
+      <option value="apartment">Apartment</option>
+    </select>
+    <select id="sort-date" class="leads-filter-select" onchange="applyFiltersAndSort()">
+      <option value="desc">Newest First</option>
+      <option value="asc">Oldest First</option>
+    </select>
   </div>
   <div id="leads-container">Loading leads...</div>
 </div>
@@ -1026,19 +1055,66 @@ async function loadSuburbTrendChart() {
 
 function renderLeads(leads){
   leadsAll=leads;
-  filterLeads();
+  applyFiltersAndSort();
 }
 
-function filterLeads(){
-  const sig=document.getElementById('filter-signal').value;
-  const show=sig?leadsAll.filter(r=>r.icp_signal===sig):leadsAll;
-  // FIX 2: Only hide leads EXACTLY in the pipeline by application_number (or id if no application_number)
-  const addedIds=new Set((pipelineData||[]).map(p=>p.application_number).filter(Boolean));
-  const shown=show.filter(r=>{ const key=r.application_number||r.id; return !key||!addedIds.has(key); }).slice(0,50);
-  window._shownLeads=shown;
-  const el=document.getElementById('leads-container');
-  if(!shown.length){el.innerHTML='<div style="color:var(--text3);padding:2rem;text-align:center">No leads matching your filter</div>';return;}
-  el.innerHTML=shown.map((r,i)=>{
+function matchesFilter(lead, projectType, category, dwelling) {
+  const appType = (lead.application_type || lead.use_level_1 || '').toLowerCase();
+  const desc = (lead.description || lead.project_type || '').toLowerCase();
+  const combined = appType + ' ' + desc;
+
+  if (projectType === 'renovation' && !combined.match(/alteration|renovation|extension|addition|alter/)) return false;
+  if (projectType === 'new_development' && combined.match(/alteration|renovation|extension|addition|alter/)) return false;
+
+  if (category === 'residential' && !combined.match(/dwelling|residential|house|home|unit|apartment/)) return false;
+  if (category === 'commercial' && !combined.match(/commercial|office|shop|retail|business/)) return false;
+  if (category === 'industrial' && !combined.match(/industrial|warehouse|factory/)) return false;
+
+  if (dwelling === 'single_dwelling' && !combined.match(/single|detached/)) return false;
+  if (dwelling === 'multi_residential' && !combined.match(/multi|dual|multiple/)) return false;
+  if (dwelling === 'townhouse' && !combined.match(/townhouse|town house/)) return false;
+  if (dwelling === 'villa' && !combined.match(/villa/)) return false;
+  if (dwelling === 'apartment' && !combined.match(/apartment|unit|flat/)) return false;
+
+  return true;
+}
+
+function applyFiltersAndSort() {
+  const signal = document.getElementById('filter-signal')?.value || '';
+  const projectType = document.getElementById('filter-project-type')?.value || '';
+  const category = document.getElementById('filter-category')?.value || '';
+  const dwelling = document.getElementById('filter-dwelling')?.value || '';
+  const sortDir = document.getElementById('sort-date')?.value || 'desc';
+
+  const addedIds = new Set((pipelineData||[]).map(p=>p.application_number).filter(Boolean));
+
+  let filtered = (leadsAll || []).filter(lead => {
+    // Exclude already-in-pipeline
+    const key = lead.application_number || lead.id;
+    if (key && addedIds.has(key)) return false;
+    // Signal filter
+    if (signal && lead.icp_signal !== signal) return false;
+    // New filters
+    return matchesFilter(lead, projectType, category, dwelling);
+  });
+
+  // Sort by date
+  filtered.sort((a, b) => {
+    const da = new Date(a.date_received || a.lodged_date || a.date_lodged || 0);
+    const db = new Date(b.date_received || b.lodged_date || b.date_lodged || 0);
+    return sortDir === 'asc' ? da - db : db - da;
+  });
+
+  const shown = filtered.slice(0, 50);
+  window._shownLeads = shown;
+
+  // Update count
+  const countEl = document.getElementById('leads-count');
+  if (countEl) countEl.textContent = `Showing ${shown.length} of ${(leadsAll||[]).length} leads`;
+
+  const el = document.getElementById('leads-container');
+  if (!shown.length) { el.innerHTML='<div style="color:var(--text3);padding:2rem;text-align:center">No leads matching your filter</div>'; return; }
+  el.innerHTML = shown.map((r, i) => {
     const tip=outreachTip(r.stage,r.days_since_lodged);
     const cost=costEst(r.application_type,r.suburb);
     const pType=propType(r.application_type,r.suburb);
