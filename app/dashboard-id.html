@@ -752,16 +752,24 @@ function badge(s){
 }
 
 // Property type from application_type
-function propType(appType, useLevel){
+function propType(appType, useLevel1, useLevel2) {
   const a = (appType || '').toLowerCase();
-  const u = (useLevel || '').toLowerCase();
+  const u1 = (useLevel1 || '').toLowerCase();
+  const u2 = (useLevel2 || '').toLowerCase();
 
-  // Determine property category from use_level_1
+  // use_level_2 is more specific — prefer it if available
   let cat = '';
-  if (u.match(/commercial/) && !u.match(/\bhouse\b|residential/)) cat = 'Commercial';
-  else if (u.match(/industrial|industry/)) cat = 'Industrial';
-  else if (u.match(/business/) && !u.match(/\bhouse\b|residential/)) cat = 'Business';
-  else if (u.match(/\bhouse\b/) || u.match(/residential/)) cat = 'Residential';
+
+  // Check use_level_2 first (more specific)
+  if (u2.match(/multi.unit|dual.occ|multiple.dwelling|apartment|unit.complex/)) cat = 'Multi-Residential';
+  else if (u2.match(/dwelling.house|single.house|house.*extension|single.unit/)) cat = 'House';
+  else if (u2.match(/warehouse|industrial|factory/)) cat = 'Industrial';
+  else if (u2.match(/childcare|medical|office|retail|shop/)) cat = 'Commercial';
+  // Fall back to use_level_1
+  else if (u1.match(/commercial/) && !u1.match(/\bhouse\b|residential/)) cat = 'Commercial';
+  else if (u1.match(/industrial|industry/)) cat = 'Industrial';
+  else if (u1.match(/business/) && !u1.match(/\bhouse\b|residential/)) cat = 'Business';
+  else if (u1.match(/\bhouse\b/) || u1.match(/residential/)) cat = 'Residential';
 
   // Determine work type from application_type
   let work = '';
@@ -1157,7 +1165,7 @@ function renderPage() {
     const absIdx = start + i;
     const tip=outreachTip(r.stage,r.days_since_lodged);
     const cost=costEst(r.application_type,r.suburb);
-    const pType=propType(r.application_type,r.use_level_1);
+    const pType=propType(r.application_type,r.use_level_1,r.use_level_2);
     const rKey=r.application_number||r.id;
     const inPipe=rKey&&pipelineData.some(function(p){return p.application_number&&p.application_number===rKey;});
     const pipeEntry=inPipe?pipelineData.find(function(p){return p.application_number===rKey;}):null;
@@ -1237,7 +1245,7 @@ function matchesFilter(lead, projectType, category, dwelling) {
   // use_level_1: "Commercial; House;", "Residential;", "Commercial;", "House;",
   //              "Business;", "Industrial;", "Residential - Non-Domestic;", null, etc.
   const appType = (lead.application_type || '').toLowerCase();
-  const useLevel = (lead.use_level_1 || '').toLowerCase();
+  const useLevel = ((lead.use_level_1 || '') + ' ' + (lead.use_level_2 || '')).toLowerCase();
   const hasUseLevel = useLevel.trim().length > 0;
 
   // If filtering by category or dwelling but no use_level_1 data, exclude (can't classify)
@@ -1744,7 +1752,7 @@ function openModalById(idx){
 function openModal(project){
   currentModalProject=project;
   const cost=costEst(project.application_type,project.suburb);
-  document.getElementById('modal-project-info').innerHTML=`<strong>${project.address||project.suburb}</strong> · ${propType(project.application_type,project.use_level_1)} · System est: ${fmt$(cost.min)} – ${fmt$(cost.max)}`;
+  document.getElementById('modal-project-info').innerHTML=`<strong>${project.address||project.suburb}</strong> · ${propType(project.application_type,project.use_level_1,project.use_level_2)} · System est: ${fmt$(cost.min)} – ${fmt$(cost.max)}`;
   document.getElementById('modal-value').value='';
   document.getElementById('modal-start').value='';
   document.getElementById('modal-notes').value='';
@@ -1782,7 +1790,7 @@ async function saveToHipeline(){
     suburb: project.suburb,
     council: project.council,
     application_type: project.application_type,
-    property_type: propType(project.application_type, project.use_level_1),
+    property_type: propType(project.application_type, project.use_level_1, project.use_level_2),
     stage,
     estimated_value: val ? parseFloat(val) : null,
     expected_start_date: start || null,
