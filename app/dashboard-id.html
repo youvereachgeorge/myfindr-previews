@@ -790,7 +790,7 @@ async function loadAll(){
   const subOr = suburbs.length?'('+suburbs.map(s=>'suburb.ilike.*'+s.replace(/ /g,'+')+'*').join(',')+')'  :null;
   const baseQ={order:'rank.asc',limit:'200'};
   // Leads query: no suburb restriction — pull all hot/warm leads for the ICP
-  const leadsQ={order:'rank.asc',limit:'50'};
+  const leadsQ={order:'rank.asc',limit:'200'};
   const renoQ=subOr?{order:'reno_30d.desc',limit:'20',or:subOr}:{order:'reno_30d.desc',limit:'20'};
 
   const now=new Date();
@@ -1151,8 +1151,9 @@ function matchesFilter(lead, projectType, category, dwelling) {
     if (!useLevel.match(/residential|house/)) return false;
   }
   if (category === 'commercial') {
-    // Commercial, Business, Sport and Recreation
+    // Commercial, Business, Sport and Recreation — but NOT mixed residential/commercial
     if (!useLevel.match(/commercial|business|sport/)) return false;
+    if (useLevel.match(/\bhouse\b|residential/)) return false; // exclude "Commercial; House;" type records
   }
   if (category === 'industrial') {
     // Industrial, Engineering
