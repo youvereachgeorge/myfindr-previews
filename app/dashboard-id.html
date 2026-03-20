@@ -77,6 +77,11 @@
     .b-acc{background:rgba(230,69,0,.15);color:var(--accent)}
 
     /* LEADS */
+    .pagination{display:flex;align-items:center;justify-content:center;gap:12px;padding:12px 0;margin:8px 0}
+    .pagination button{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);color:#fff;padding:8px 16px;border-radius:6px;cursor:pointer;font-size:0.85rem;min-height:36px}
+    .pagination button:disabled{opacity:0.3;cursor:not-allowed}
+    .pagination button:not(:disabled):hover{background:rgba(255,255,255,0.1)}
+    .page-info{font-size:0.8rem;color:#868686}
     .leads-filter-bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:16px}
     .leads-legend{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:10px;padding:14px 18px;margin-bottom:16px;display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
     .legend-item{display:flex;flex-direction:column;gap:3px}
@@ -472,7 +477,7 @@
   <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.75rem;flex-wrap:wrap;gap:.5rem">
     <div>
       <div class="section-label">Lead Intelligence</div>
-      <div style="font-size:.82rem;font-weight:700">Hot & Warm Projects — Ranked by Opportunity Score <span id="leads-count" style="font-size:0.8rem;color:#868686;margin-left:8px;font-weight:400"></span></div>
+      <div style="font-size:.82rem;font-weight:700">Top 100 Leads · Ranked by Opportunity Score <span id="leads-count" style="font-size:0.8rem;color:#868686;margin-left:8px;font-weight:400"></span></div>
     </div>
   </div>
   <div class="leads-filter-bar">
@@ -508,7 +513,9 @@
     </select>
   </div>
   <div class="leads-legend" id="leads-legend"><!-- populated by JS based on ICP type --></div>
+  <div id="leads-pagination"></div>
   <div id="leads-container">Loading leads...</div>
+  <div id="leads-pagination-bottom"></div>
 </div>
 
 <!-- ═══════════════════ INSIGHTS (Suburb Intel + Network) ═══════════════════ -->
@@ -745,17 +752,30 @@ function badge(s){
 }
 
 // Property type from application_type
-function propType(appType, suburb){
-  const t=(appType||'').toLowerCase();
-  if(t.includes('master planned'))return'Master Planned Community';
-  if(t.includes('reconfigur')&&t.includes('material change'))return'Mixed Development';
-  if(t.includes('reconfigur'))return'Subdivision / Townhouses';
-  if(t.includes('material change')&&t.includes('building'))return'Multi-Dwelling (Apartment/Units)';
-  if(t.includes('material change'))return'Commercial / Use Change';
-  if(t.includes('operational')&&t.includes('building'))return'Construction + Civil Works';
-  if(t.includes('building work'))return'Single Dwelling / Renovation';
-  if(t.includes('operational'))return'Civil / Operational Works';
-  return'Development Application';
+function propType(appType, useLevel){
+  const a = (appType || '').toLowerCase();
+  const u = (useLevel || '').toLowerCase();
+
+  // Determine property category from use_level_1
+  let cat = '';
+  if (u.match(/commercial/) && !u.match(/\bhouse\b|residential/)) cat = 'Commercial';
+  else if (u.match(/industrial|industry/)) cat = 'Industrial';
+  else if (u.match(/business/) && !u.match(/\bhouse\b|residential/)) cat = 'Business';
+  else if (u.match(/\bhouse\b/) || u.match(/residential/)) cat = 'Residential';
+
+  // Determine work type from application_type
+  let work = '';
+  if (a.match(/building work/)) work = 'Building Work';
+  else if (a.match(/material change/)) work = 'Change of Use';
+  else if (a.match(/operational work/)) work = 'Operational Works';
+  else if (a.match(/reconfigure|reconfiguring/)) work = 'Reconfigure / Subdivide';
+  else if (a.match(/plan sealing/)) work = 'Plan Sealing';
+  else if (a.match(/compliance/)) work = 'Compliance';
+
+  if (cat && work) return `${cat} / ${work}`;
+  if (work) return work;
+  if (cat) return cat;
+  return appType || 'DA Submission';
 }
 
 // Cost estimate by suburb tier + type
@@ -790,7 +810,7 @@ async function loadAll(){
   const subOr = suburbs.length?'('+suburbs.map(s=>'suburb.ilike.*'+s.replace(/ /g,'+')+'*').join(',')+')'  :null;
   const baseQ={order:'rank.asc',limit:'200'};
   // Leads query: no suburb restriction — pull all hot/warm leads for the ICP
-  const leadsQ={order:'rank.asc',limit:'200'};
+  const leadsQ={order:'rank.asc',limit:'100'};
   const renoQ=subOr?{order:'reno_30d.desc',limit:'20',or:subOr}:{order:'reno_30d.desc',limit:'20'};
 
   const now=new Date();
@@ -1113,9 +1133,102 @@ async function loadSuburbTrendChart() {
   }
 }
 
+let currentPage = 1;
+const PAGE_SIZE = 25;
+let filteredLeads = [];
+
 function renderLeads(leads){
   leadsAll=leads;
   applyFiltersAndSort();
+}
+
+function renderPage() {
+  const start = (currentPage - 1) * PAGE_SIZE;
+  const pageLeads = filteredLeads.slice(start, start + PAGE_SIZE);
+  const container = document.getElementById('leads-container');
+  if (!container) return;
+
+  if (pageLeads.length === 0) {
+    container.innerHTML = '<div class="leads-empty">No leads match the selected filters. <button onclick="resetFilters()">Clear filters</button></div>';
+    return;
+  }
+  window._shownLeads = filteredLeads; // keep full filtered set for modal idx lookups
+  container.innerHTML = pageLeads.map((r, i) => {
+    const absIdx = start + i;
+    const tip=outreachTip(r.stage,r.days_since_lodged);
+    const cost=costEst(r.application_type,r.suburb);
+    const pType=propType(r.application_type,r.use_level_1);
+    const rKey=r.application_number||r.id;
+    const inPipe=rKey&&pipelineData.some(function(p){return p.application_number&&p.application_number===rKey;});
+    const pipeEntry=inPipe?pipelineData.find(function(p){return p.application_number===rKey;}):null;
+    const pipeStageLabel={'watching':'Watch List','contacted':'Contacted','meeting':'Meeting','proposal':'Proposal Sent','won':'Won','lost':'Lost','unqualified':'Unqualified'};
+    const inPipeLabel=pipeEntry?('✓ In Pipeline · '+(pipeStageLabel[pipeEntry.stage]||pipeEntry.stage)):'';
+    return`<div class="lead-card" style="${inPipe?'opacity:.6;border-color:rgba(76,175,80,.4);':''}">
+      ${inPipe?'<div style="font-size:.63rem;font-weight:700;color:#81c784;background:rgba(76,175,80,.1);border-radius:6px;padding:3px 10px;margin-bottom:.5rem;display:inline-flex;align-items:center;gap:5px">'+inPipeLabel+'</div>':''}
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:.75rem;margin-bottom:.5rem">
+        <div>
+          <div class="lead-addr">${r.address||'Unknown Address'}</div>
+          <div class="lead-meta">${pType} · Lodged ${r.date_lodged||'—'} · ${r.days_since_lodged||0} days ago</div>
+        </div>
+        <div style="display:flex;gap:.5rem;align-items:center;flex-shrink:0">
+          ${badge(r.icp_signal||'COLD')}
+          <button class="btn-add ${inPipe?'added':''}" onclick="openModalById(${absIdx})">${inPipe?'✓ In Pipeline':'+ Pipeline'}</button>
+        </div>
+      </div>
+      <div class="lead-row">
+        <div class="lead-section" style="flex:1.5">
+          <strong>When to contact</strong>
+          ${tip.when}
+        </div>
+        <div class="lead-section" style="flex:2">
+          <strong>How to reach out</strong>
+          ${tip.how}
+        </div>
+        <div class="lead-section" style="flex:1">
+          <strong>Est. Project Value</strong>
+          <div class="value-range">${r.est_project_value||fmt$(cost.min)+' – '+fmt$(cost.max)}</div>
+          <div style="font-size:.62rem;color:var(--text3);margin-top:2px">${cost.note}</div>
+        </div>
+      </div>
+      <div style="margin-top:.5rem;display:flex;gap:.75rem;align-items:center;flex-wrap:wrap">
+        ${r.applicant?`<span style="font-size:.65rem;color:var(--text3)">👤 ${r.applicant}</span>`:''}
+        ${r.suburb?`<span style="font-size:.65rem;color:var(--text3)">📍 ${r.suburb}</span>`:''}
+        ${r.da_link?`<a href="${r.da_link}" target="_blank" class="a-link">View DA Application →</a>`:''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function updatePagination() {
+  const totalPages = Math.ceil(filteredLeads.length / PAGE_SIZE);
+  const showing_start = filteredLeads.length ? (currentPage - 1) * PAGE_SIZE + 1 : 0;
+  const showing_end = Math.min(currentPage * PAGE_SIZE, filteredLeads.length);
+
+  const countEl = document.getElementById('leads-count');
+  if (countEl) countEl.textContent = filteredLeads.length
+    ? `Showing ${showing_start}–${showing_end} of ${filteredLeads.length} leads`
+    : `0 leads`;
+
+  const paginHtml = totalPages <= 1 ? '' : `
+    <div class="pagination">
+      <button onclick="goPage(${currentPage-1})" ${currentPage===1?'disabled':''}>← Prev</button>
+      <span class="page-info">Page ${currentPage} of ${totalPages} · Showing ${showing_start}–${showing_end} of ${filteredLeads.length}</span>
+      <button onclick="goPage(${currentPage+1})" ${currentPage===totalPages?'disabled':''}>Next →</button>
+    </div>
+  `;
+  const elTop = document.getElementById('leads-pagination');
+  if (elTop) elTop.innerHTML = paginHtml;
+  const elBot = document.getElementById('leads-pagination-bottom');
+  if (elBot) elBot.innerHTML = paginHtml;
+}
+
+function goPage(n) {
+  const totalPages = Math.ceil(filteredLeads.length / PAGE_SIZE);
+  if (n < 1 || n > totalPages) return;
+  currentPage = n;
+  renderPage();
+  updatePagination();
+  document.getElementById('leads-container')?.scrollIntoView({behavior:'smooth', block:'start'});
 }
 
 function matchesFilter(lead, projectType, category, dwelling) {
@@ -1125,6 +1238,10 @@ function matchesFilter(lead, projectType, category, dwelling) {
   //              "Business;", "Industrial;", "Residential - Non-Domestic;", null, etc.
   const appType = (lead.application_type || '').toLowerCase();
   const useLevel = (lead.use_level_1 || '').toLowerCase();
+  const hasUseLevel = useLevel.trim().length > 0;
+
+  // If filtering by category or dwelling but no use_level_1 data, exclude (can't classify)
+  if ((category || dwelling) && !hasUseLevel) return false;
 
   // If no classification data, only show under "All" (pass when no filter active)
   const hasData = appType.length > 0;
@@ -1224,54 +1341,11 @@ function applyFiltersAndSort() {
     return sortDir === 'asc' ? da - db : db - da;
   });
 
-  const shown = filtered.slice(0, 50);
-  window._shownLeads = shown;
-
-  // Update count
-  const countEl = document.getElementById('leads-count');
-  if (countEl) countEl.textContent = `Showing ${shown.length} of ${(leadsAll||[]).length} leads`;
-
-  const el = document.getElementById('leads-container');
-  if (!shown.length) { el.innerHTML='<div style="color:var(--text3);padding:2rem;text-align:center">No leads match the selected filters. <button onclick="resetFilters()" style="margin-left:.5rem;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:var(--text1);padding:.3rem .8rem;border-radius:6px;cursor:pointer;font-size:.8rem">Clear filters</button></div>'; return; }
-  el.innerHTML = shown.map((r, i) => {
-    const tip=outreachTip(r.stage,r.days_since_lodged);
-    const cost=costEst(r.application_type,r.suburb);
-    const pType=propType(r.application_type,r.suburb);
-    const rKey=r.application_number||r.id;
-    const inPipe=rKey&&pipelineData.some(function(p){return p.application_number&&p.application_number===rKey;});
-    const pipeEntry=inPipe?pipelineData.find(function(p){return p.application_number===rKey;}):null;
-    const pipeStageLabel={'watching':'Watch List','contacted':'Contacted','meeting':'Meeting','proposal':'Proposal Sent','won':'Won','lost':'Lost','unqualified':'Unqualified'};
-    const inPipeLabel=pipeEntry?('✓ In Pipeline · '+(pipeStageLabel[pipeEntry.stage]||pipeEntry.stage)):'';
-    return`<div class="lead-card" style="${inPipe?'opacity:.6;border-color:rgba(76,175,80,.4);':''}">
-      ${inPipe?'<div style="font-size:.63rem;font-weight:700;color:#81c784;background:rgba(76,175,80,.1);border-radius:6px;padding:3px 10px;margin-bottom:.5rem;display:inline-flex;align-items:center;gap:5px">'+inPipeLabel+'</div>':''}
-      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:.75rem;margin-bottom:.5rem">
-        <div>
-          <div class="lead-addr">${r.address||'Unknown Address'}</div>
-          <div class="lead-meta">${pType} · Lodged ${r.date_lodged||'—'} · ${r.days_since_lodged||0} days ago</div>
-        </div>
-        <div style="display:flex;gap:.5rem;align-items:center;flex-shrink:0">
-          ${badge(r.icp_signal||'COLD')}
-          <button class="btn-add ${inPipe?'added':''}" onclick="openModalById(${i})">${inPipe?'✓ In Pipeline':'+ Pipeline'}</button>
-        </div>
-      </div>
-      <div class="lead-row">
-        <div class="lead-section" style="flex:1.5">
-          <strong>When to contact</strong>
-          ${tip.when}
-        </div>
-        <div class="lead-section" style="flex:2">
-          <strong>How to reach out</strong>
-          ${tip.how}
-        </div>
-        <div class="lead-section" style="flex:1">
-          <strong>Est. Project Value</strong>
-          <div class="value-range">${r.est_project_value||fmt$(cost.min)+' – '+fmt$(cost.max)}</div>
-          <div style="font-size:.62rem;color:var(--text3);margin-top:2px">${cost.note}</div>
-        </div>
-      </div>
-      ${r.da_link?`<a href="${r.da_link}" target="_blank" class="a-link">View DA Application →</a>`:''}
-    </div>`;
-  }).join('');
+  // Hand off to pagination
+  filteredLeads = filtered;
+  currentPage = 1;
+  renderPage();
+  updatePagination();
 }
 
 // ── PIPELINE ──
@@ -1670,7 +1744,7 @@ function openModalById(idx){
 function openModal(project){
   currentModalProject=project;
   const cost=costEst(project.application_type,project.suburb);
-  document.getElementById('modal-project-info').innerHTML=`<strong>${project.address||project.suburb}</strong> · ${propType(project.application_type)} · System est: ${fmt$(cost.min)} – ${fmt$(cost.max)}`;
+  document.getElementById('modal-project-info').innerHTML=`<strong>${project.address||project.suburb}</strong> · ${propType(project.application_type,project.use_level_1)} · System est: ${fmt$(cost.min)} – ${fmt$(cost.max)}`;
   document.getElementById('modal-value').value='';
   document.getElementById('modal-start').value='';
   document.getElementById('modal-notes').value='';
@@ -1708,7 +1782,7 @@ async function saveToHipeline(){
     suburb: project.suburb,
     council: project.council,
     application_type: project.application_type,
-    property_type: propType(project.application_type),
+    property_type: propType(project.application_type, project.use_level_1),
     stage,
     estimated_value: val ? parseFloat(val) : null,
     expected_start_date: start || null,
