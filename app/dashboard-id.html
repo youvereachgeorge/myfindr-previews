@@ -1168,6 +1168,7 @@ function matchesFilter(lead, projectType, category, dwelling) {
   }
   if (dwelling === 'commercial') {
     if (!useLevel.match(/commercial/)) return false;
+    if (useLevel.match(/\bhouse\b|residential/)) return false; // exclude mixed residential/commercial
   }
   if (dwelling === 'business') {
     if (!useLevel.match(/business/)) return false;
