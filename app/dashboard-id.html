@@ -1788,6 +1788,10 @@ async function saveToHipeline(){
     expected_start_date: start || null,
     notes,
     files: [],
+    comments: notes ? [{
+      ts: new Date().toLocaleString('en-AU', {dateStyle:'medium', timeStyle:'short'}),
+      text: notes
+    }] : [],
     created_at: new Date().toISOString()
   };
 
