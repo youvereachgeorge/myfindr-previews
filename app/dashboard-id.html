@@ -752,34 +752,40 @@ function badge(s){
 }
 
 // Property type from application_type
-function propType(appType, useLevel1, useLevel2) {
+function getWorkType(appType) {
+  const a = (appType || '').toLowerCase();
+  if (a.match(/building work/)) return 'Building Work';
+  if (a.match(/material change/)) return 'Change of Use';
+  if (a.match(/operational work/)) return 'Operational Works';
+  if (a.match(/reconfigure|reconfiguring/)) return 'Reconfigure / Subdivide';
+  if (a.match(/plan sealing/)) return 'Plan Sealing';
+  if (a.match(/compliance/)) return 'Compliance';
+  return '';
+}
+
+function propType(appType, useLevel1, useLevel2, derivedType, derivedCategory) {
   const a = (appType || '').toLowerCase();
   const u1 = (useLevel1 || '').toLowerCase();
   const u2 = (useLevel2 || '').toLowerCase();
 
-  // use_level_2 is more specific — prefer it if available
-  let cat = '';
+  // Use derived type if available and not Unknown (covers Sunshine Coast nulls)
+  if (derivedType && derivedType !== 'Unknown') {
+    const work = getWorkType(appType);
+    return work ? `${derivedType} / ${work}` : derivedType;
+  }
 
-  // Check use_level_2 first (more specific)
+  // Fall back to source data logic
+  let cat = '';
   if (u2.match(/multi.unit|dual.occ|multiple.dwelling|apartment|unit.complex/)) cat = 'Multi-Residential';
   else if (u2.match(/dwelling.house|single.house|house.*extension|single.unit/)) cat = 'House';
   else if (u2.match(/warehouse|industrial|factory/)) cat = 'Industrial';
   else if (u2.match(/childcare|medical|office|retail|shop/)) cat = 'Commercial';
-  // Fall back to use_level_1
   else if (u1.match(/commercial/) && !u1.match(/\bhouse\b|residential/)) cat = 'Commercial';
   else if (u1.match(/industrial|industry/)) cat = 'Industrial';
   else if (u1.match(/business/) && !u1.match(/\bhouse\b|residential/)) cat = 'Business';
   else if (u1.match(/\bhouse\b/) || u1.match(/residential/)) cat = 'Residential';
 
-  // Determine work type from application_type
-  let work = '';
-  if (a.match(/building work/)) work = 'Building Work';
-  else if (a.match(/material change/)) work = 'Change of Use';
-  else if (a.match(/operational work/)) work = 'Operational Works';
-  else if (a.match(/reconfigure|reconfiguring/)) work = 'Reconfigure / Subdivide';
-  else if (a.match(/plan sealing/)) work = 'Plan Sealing';
-  else if (a.match(/compliance/)) work = 'Compliance';
-
+  const work = getWorkType(appType);
   if (cat && work) return `${cat} / ${work}`;
   if (work) return work;
   if (cat) return cat;
@@ -1165,7 +1171,7 @@ function renderPage() {
     const absIdx = start + i;
     const tip=outreachTip(r.stage,r.days_since_lodged);
     const cost=costEst(r.application_type,r.suburb);
-    const pType=propType(r.application_type,r.use_level_1,r.use_level_2);
+    const pType=propType(r.application_type,r.use_level_1,r.use_level_2,r.derived_type,r.derived_category);
     const rKey=r.application_number||r.id;
     const inPipe=rKey&&pipelineData.some(function(p){return p.application_number&&p.application_number===rKey;});
     const pipeEntry=inPipe?pipelineData.find(function(p){return p.application_number===rKey;}):null;
@@ -1176,7 +1182,7 @@ function renderPage() {
       <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:.75rem;margin-bottom:.5rem">
         <div>
           <div class="lead-addr">${r.address||'Unknown Address'}</div>
-          <div class="lead-meta">${pType} · Lodged ${r.date_lodged||'—'} · ${r.days_since_lodged||0} days ago</div>
+          <div class="lead-meta">${pType} · Lodged ${r.date_lodged||'—'} · ${r.days_since_lodged||0} days ago${r.derived_confidence==='LOW'?' <span class="badge b-cold" style="font-size:0.65rem;vertical-align:middle">⚠ Est.</span>':''}</div>
         </div>
         <div style="display:flex;gap:.5rem;align-items:center;flex-shrink:0">
           ${badge(r.icp_signal||'COLD')}
@@ -1240,23 +1246,24 @@ function goPage(n) {
 }
 
 function matchesFilter(lead, projectType, category, dwelling) {
-  // Real QLD DA data fields from vw_icp_lead_rankings_id
-  // application_type: "Carry Out Building Work", "Material Change of Use", etc.
-  // use_level_1: "Commercial; House;", "Residential;", "Commercial;", "House;",
-  //              "Business;", "Industrial;", "Residential - Non-Domestic;", null, etc.
   const appType = (lead.application_type || '').toLowerCase();
-  const useLevel = ((lead.use_level_1 || '') + ' ' + (lead.use_level_2 || '')).toLowerCase();
-  const hasUseLevel = useLevel.trim().length > 0;
+  const u1 = (lead.use_level_1 || '').toLowerCase();
+  const u2 = (lead.use_level_2 || '').toLowerCase();
+  const derivedCat = (lead.derived_category || '').toLowerCase();
+  const derivedType = (lead.derived_type || '').toLowerCase();
 
-  // If filtering by category or dwelling but no use_level_1 data, exclude (can't classify)
+  // Combined source use level
+  const useLevel = (u1 + ' ' + u2).trim();
+  // Record is classifiable if we have source data OR a non-unknown derived category
+  const hasUseLevel = useLevel.length > 0 || (derivedCat && derivedCat !== 'unknown');
+
+  // If filtering by category or dwelling but no classifiable data, exclude
   if ((category || dwelling) && !hasUseLevel) return false;
 
-  // If no classification data, only show under "All" (pass when no filter active)
   const hasData = appType.length > 0;
   if (!hasData && (projectType || category || dwelling)) return false;
 
-  // --- Project Type ---
-  // Matches against actual QLD DA application_type values
+  // --- Project Type filter ---
   if (projectType === 'building_work') {
     if (!appType.match(/building work/)) return false;
   }
@@ -1270,37 +1277,38 @@ function matchesFilter(lead, projectType, category, dwelling) {
     if (!appType.match(/reconfigure/)) return false;
   }
 
-  // --- Category (from use_level_1) ---
-  if (category === 'residential') {
-    // Residential, House, Residential - Domestic, Residential - Non-Domestic
-    if (!useLevel.match(/residential|house/)) return false;
-  }
-  if (category === 'commercial') {
-    // Commercial, Business, Sport and Recreation — but NOT mixed residential/commercial
-    if (!useLevel.match(/commercial|business|sport/)) return false;
-    if (useLevel.match(/\bhouse\b|residential/)) return false; // exclude "Commercial; House;" type records
-  }
-  if (category === 'industrial') {
-    // Industrial, Engineering
-    if (!useLevel.match(/industrial|industry|engineering/)) return false;
+  // --- Category filter — use derived_category first, fall back to source use_level ---
+  if (category) {
+    const effectiveCat = (derivedCat && derivedCat !== 'unknown') ? derivedCat : useLevel;
+    if (category === 'residential') {
+      if (!effectiveCat.match(/residential|house/)) return false;
+    }
+    if (category === 'commercial') {
+      if (!effectiveCat.match(/commercial|business/)) return false;
+    }
+    if (category === 'industrial') {
+      if (!effectiveCat.match(/industrial|industry/)) return false;
+    }
   }
 
-  // --- Dwelling Type (from use_level_1) ---
-  if (dwelling === 'house') {
-    if (!useLevel.match(/\bhouse\b/)) return false;
-  }
-  if (dwelling === 'residential') {
-    if (!useLevel.match(/residential/) || useLevel.match(/non-domestic/)) return false;
-  }
-  if (dwelling === 'commercial') {
-    if (!useLevel.match(/commercial/)) return false;
-    if (useLevel.match(/\bhouse\b|residential/)) return false; // exclude mixed residential/commercial
-  }
-  if (dwelling === 'business') {
-    if (!useLevel.match(/business/)) return false;
-  }
-  if (dwelling === 'industrial') {
-    if (!useLevel.match(/industrial|industry/)) return false;
+  // --- Dwelling Type filter — use derived_type first, fall back to source use_level ---
+  if (dwelling) {
+    const effectiveType = (derivedType && derivedType !== 'unknown') ? derivedType : useLevel;
+    if (dwelling === 'house') {
+      if (!effectiveType.match(/\bhouse\b/)) return false;
+    }
+    if (dwelling === 'residential') {
+      if (!effectiveType.match(/residential/)) return false;
+    }
+    if (dwelling === 'commercial') {
+      if (!effectiveType.match(/commercial/)) return false;
+    }
+    if (dwelling === 'business') {
+      if (!effectiveType.match(/business/)) return false;
+    }
+    if (dwelling === 'industrial') {
+      if (!effectiveType.match(/industrial|industry/)) return false;
+    }
   }
 
   return true;
@@ -1752,7 +1760,7 @@ function openModalById(idx){
 function openModal(project){
   currentModalProject=project;
   const cost=costEst(project.application_type,project.suburb);
-  document.getElementById('modal-project-info').innerHTML=`<strong>${project.address||project.suburb}</strong> · ${propType(project.application_type,project.use_level_1,project.use_level_2)} · System est: ${fmt$(cost.min)} – ${fmt$(cost.max)}`;
+  document.getElementById('modal-project-info').innerHTML=`<strong>${project.address||project.suburb}</strong> · ${propType(project.application_type,project.use_level_1,project.use_level_2,project.derived_type,project.derived_category)} · System est: ${fmt$(cost.min)} – ${fmt$(cost.max)}`;
   document.getElementById('modal-value').value='';
   document.getElementById('modal-start').value='';
   document.getElementById('modal-notes').value='';
@@ -1790,7 +1798,7 @@ async function saveToHipeline(){
     suburb: project.suburb,
     council: project.council,
     application_type: project.application_type,
-    property_type: propType(project.application_type, project.use_level_1, project.use_level_2),
+    property_type: propType(project.application_type, project.use_level_1, project.use_level_2, project.derived_type, project.derived_category),
     stage,
     estimated_value: val ? parseFloat(val) : null,
     expected_start_date: start || null,
