@@ -1419,6 +1419,7 @@ async function sbWrite(table, cid){
     date_lodged: p.date_lodged || null,
     da_link: p.da_link || p.application_link || null,
     files: p.files || [],
+    comments: p.comments || [],
     created_at: p.created_at || new Date().toISOString()
   }));
   await fetch(`${SUPA}/rest/v1/${table}`, {
