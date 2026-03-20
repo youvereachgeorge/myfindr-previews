@@ -483,8 +483,10 @@
     </select>
     <select id="filter-project-type" class="leads-filter-select" onchange="applyFiltersAndSort()">
       <option value="">All Project Types</option>
-      <option value="new_development">New Development</option>
-      <option value="renovation">Renovation</option>
+      <option value="building_work">Building Work</option>
+      <option value="change_of_use">Change of Use</option>
+      <option value="operational_works">Operational Works</option>
+      <option value="reconfigure">Reconfigure</option>
     </select>
     <select id="filter-category" class="leads-filter-select" onchange="applyFiltersAndSort()">
       <option value="">All Categories</option>
@@ -1129,15 +1131,18 @@ function matchesFilter(lead, projectType, category, dwelling) {
   if (!hasData && (projectType || category || dwelling)) return false;
 
   // --- Project Type ---
-  // "renovation" = Building Work only (modifications to existing structures)
-  // "new_development" = Material Change of Use (change of land use / new development)
-  if (projectType === 'renovation') {
-    // "Carry Out Building Work" without MCU = alterations/additions to existing
+  // Matches against actual QLD DA application_type values
+  if (projectType === 'building_work') {
     if (!appType.match(/building work/)) return false;
   }
-  if (projectType === 'new_development') {
-    // "Material Change of Use" indicates new development/change of use
-    if (!appType.match(/material change/)) return false;
+  if (projectType === 'change_of_use') {
+    if (!appType.match(/material change of use|material change/)) return false;
+  }
+  if (projectType === 'operational_works') {
+    if (!appType.match(/operational work/)) return false;
+  }
+  if (projectType === 'reconfigure') {
+    if (!appType.match(/reconfigure/)) return false;
   }
 
   // --- Category (from use_level_1) ---
