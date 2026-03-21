@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="format-detection" content="telephone=no,date=no,address=no,email=no">
+  <title>Welcome to myFindr</title>
+  <style type="text/css">
+    /* Reset */
+    * { -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
+    body { margin: 0; padding: 0; background-color: #0a0a0a; }
+    table { border-spacing: 0; }
+    img { display: block; max-width: 100%; border: 0; outline: 0; }
+    a { text-decoration: none; cursor: pointer; }
+    p { margin: 0; padding: 0; }
+
+    /* Mobile tiles: stack vertically */
+    @media only screen and (max-width: 620px) {
+      .tile-cell {
+        display: block !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+        padding: 20px !important;
+        margin-bottom: 12px !important;
+      }
+      .tiles-spacer {
+        display: none !important;
+      }
+      .hero-headline {
+        font-size: 32px !important;
+        line-height: 1.15 !important;
+      }
+      .content-table {
+        width: 100% !important;
+      }
+      .outer-pad {
+        padding-left: 20px !important;
+        padding-right: 20px !important;
+      }
+    }
+  </style>
+  <!--[if gte mso 9]><style type="text/css">
+    table, td, tr, a, span, b { line-height: normal !important; mso-line-height-rule: exactly; }
+    h1, h2, h3, h4, h5, h6 { line-height: inherit !important; font-family: Arial, sans-serif !important; mso-line-height-rule: exactly; }
+  </style><xml><o:OfficeDocumentSettings><o:AllowPNG/><o:PixelsPerInch>96</o:PixelsPerInch></o:OfficeDocumentSettings></xml><![endif]-->
+</head>
+<body style="margin:0;padding:0;background-color:#0a0a0a;">
+
+  <!-- ═══════════════════════════════════════════════════
+       PREHEADER (hidden)
+  ═══════════════════════════════════════════════════ -->
+  <div style="display:none;max-height:0;overflow:hidden;font-size:1px;color:#0a0a0a;">Your DA intelligence is now live — log in and see what's happening in your area.</div>
+  <!-- Preheader padding characters -->
+  <div style="display:none;max-height:0;overflow:hidden;">&#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847;</div>
+
+  <!-- ═══════════════════════════════════════════════════
+       OUTER WRAPPER
+  ═══════════════════════════════════════════════════ -->
+  <table border="0" cellpadding="0" cellspacing="0" role="presentation" width="100%" bgcolor="#0a0a0a" style="background-color:#0a0a0a;">
+    <tr>
+      <td align="center">
+
+        <!-- ═══════════════════════════════════════════════════
+             CONTENT TABLE (600px)
+        ═══════════════════════════════════════════════════ -->
+        <table border="0" cellpadding="0" cellspacing="0" role="presentation" width="600" align="center" class="content-table" style="width:600px;max-width:600px;">
+
+          <!-- ───────────────────────────────────────────────
+               SECTION 2: HEADER
+          ─────────────────────────────────────────────── -->
+          <tr>
+            <td align="center" bgcolor="#0a0a0a" style="background-color:#0a0a0a;height:60px;vertical-align:middle;border-bottom:2px solid #E64500;" class="outer-pad">
+              <p style="font-family:-apple-system,'SF Pro Display','Helvetica Neue',Arial,sans-serif;font-size:22px;line-height:60px;color:#ffffff;margin:0;padding:0;">
+                <span style="font-weight:300;">my</span><span style="font-weight:700;">Findr</span>
+              </p>
+            </td>
+          </tr>
+
+          <!-- ───────────────────────────────────────────────
+               SECTION 3: HERO
+          ─────────────────────────────────────────────── -->
+          <!-- Hero top spacer -->
+          <tr>
+            <td height="48" bgcolor="#0a0a0a" style="background-color:#0a0a0a;font-size:0;line-height:0;">&nbsp;</td>
+          </tr>
+          <!-- Orange label -->
+          <tr>
+            <td align="center" bgcolor="#0a0a0a" style="background-color:#0a0a0a;" class="outer-pad">
+              <p style="font-family:-apple-system,'SF Pro Display','Helvetica Neue',Arial,sans-serif;font-size:11px;font-weight:600;line-height:1.4;color:#E64500;letter-spacing:2px;text-transform:uppercase;margin:0;">WELCOME TO MYFINDR</p>
+            </td>
+          </tr>
+          <!-- Spacer 16px -->
+          <tr>
+            <td height="16" bgcolor="#0a0a0a" style="background-color:#0a0a0a;font-size:0;line-height:0;">&nbsp;</td>
+          </tr>
+          <!-- Headline -->
+          <tr>
+            <td align="center" bgcolor="#0a0a0a" style="background-color:#0a0a0a;" class="outer-pad">
+              <h1 class="hero-headline" style="font-family:-apple-system,'SF Pro Display','Helvetica Neue',Arial,sans-serif;font-size:42px;font-weight:700;line-height:1.1;color:#ffffff;margin:0;padding:0;text-align:center;">Your DA intelligence<br>is live, {{CLIENT_NAME}}.</h1>
+            </td>
+          </tr>
+          <!-- Spacer 20px -->
+          <tr>
+            <td height="20" bgcolor="#0a0a0a" style="background-color:#0a0a0a;font-size:0;line-height:0;">&nbsp;</td>
+          </tr>
+          <!-- Subtext -->
+          <tr>
+            <td align="center" bgcolor="#0a0a0a" style="background-color:#0a0a0a;padding-left:60px;padding-right:60px;" class="outer-pad">
+              <p style="font-family:-apple-system,'SF Pro Display','Helvetica Neue',Arial,sans-serif;font-size:17px;font-weight:400;line-height:1.6;color:#868686;margin:0;text-align:center;max-width:480px;">You now have access to real-time development application data across Brisbane — ranked by opportunity before anyone else sees it.</p>
+            </td>
+          </tr>
+          <!-- Hero bottom spacer -->
+          <tr>
+            <td height="48" bgcolor="#0a0a0a" style="background-color:#0a0a0a;font-size:0;line-height:0;">&nbsp;</td>
+          </tr>
+
+          <!-- ───────────────────────────────────────────────
+               SECTION 4: LOGIN CREDENTIALS CARD
+          ─────────────────────────────────────────────── -->
+          <tr>
+            <td bgcolor="#0a0a0a" style="background-color:#0a0a0a;padding-left:24px;padding-right:24px;" class="outer-pad">
+              <!-- Card outer table -->
+              <table border="0" cellpadding="0" cellspacing="0" role="presentation" width="100%" style="background-color:#161616;border:1px solid #E64500;border-radius:12px;">
+                <tr>
+                  <td style="padding:32px;">
+                    <!-- Card label -->
+                    <p style="font-family:-apple-system,'SF Pro Display','Helvetica Neue',Arial,sans-serif;font-size:11px;font-weight:600;line-height:1.4;color:#E64500;letter-spacing:2px;text-transform:uppercase;margin:0;">YOUR LOGIN DETAILS</p>
+                    <!-- Spacer 20px -->
+                    <table border="0" cellpadding="0" cellspacing="0" role="presentation" width="100%">
+                      <tr><td height="20" style="font-size:0;line-height:0;">&nbsp;</td></tr>
+                    </table>
+                    <!-- Credentials rows -->
+                    <table border="0" cellpadding="0" cellspacing="0" role="presentation" width="100%">
+                      <!-- Row 1: Portal -->
+                      <tr>
+                        <td style="font-family:-apple-system,'SF Pro Display','Helvetica Neue',Arial,sans-serif;font-size:15px;font-weight:400;line-height:1.5;color:#868686;padding-bottom:12px;width:100px;">Portal</td>
+                        <td style="font-family:-apple-system,'SF Pro Display','Helvetica Neue',Arial,sans-serif;font-size:15px;font-weight:400;line-height:1.5;padding-bottom:12px;">
+                          <a href="https://app.myfindr.com.au" style="color:#E64500;text-decoration:none;">app.myfindr.com.au</a>
+                        </td>
+                      </tr>
+                      <!-- Divider -->
+                      <tr>
+                        <td colspan="2" height="1" style="background-color:rgba(255,255,255,0.06);font-size:0;line-height:0;padding-bottom:12px;"><div style="height:1px;background-color:rgba(255,255,255,0.06);font-size:0;line-height:0;"></div></td>
+                      </tr>
+                      <!-- Row 2: Email -->
+                      <tr>
+                        <td style="font-family:-apple-system,'SF Pro Display','Helvetica Neue',Arial,sans-serif;font-size:15px;font-weight:400;line-height:1.5;color:#868686;padding-top:12px;padding-bottom:12px;width:100px;">Email</td>
+                        <td style="font-family:-apple-system,'SF Pro Display','Helvetica Neue',Arial,sans-serif;font-size:15px;font-weight:400;line-height:1.5;color:#ffffff;padding-top:12px;padding-bottom:12px;">{{CLIENT_EMAIL}}</td>
+                      </tr>
+                      <!-- Divider -->
+                      <tr>
+                        <td colspan="2" height="1" style="font-size:0;line-height:0;padding-bottom:12px;"><div style="height:1px;background-color:rgba(255,255,255,0.06);font-size:0;line-height:0;"></div></td>
+                      </tr>
+                      <!-- Row 3: Password -->
+                      <tr>
+                        <td style="font-family:-apple-system,'SF Pro Display','Helvetica Neue',Arial,sans-serif;font-size:15px;font-weight:400;line-height:1.5;color:#868686;padding-top:12px;width:100px;">Password</td>
+                        <td style="font-family:'Courier New',Courier,monospace;font-size:15px;font-weight:400;line-height:1.5;color:#ffffff;padding-top:12px;">{{CLIENT_PASSWORD}}</td>
+                      </tr>
+                    </table>
+                    <!-- Spacer 20px -->
+                    <table border="0" cellpadding="0" cellspacing="0" role="presentation" width="100%">
+                      <tr><td height="20" style="font-size:0;line-height:0;">&nbsp;</td></tr>
+                    </table>
+                    <!-- Note -->
+                    <p style="font-family:-apple-system,'SF Pro Display','Helvetica Neue',Arial,sans-serif;font-size:13px;font-weight:400;line-height:1.5;color:#555555;margin:0;">We recommend changing your password after first login.</p>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- ───────────────────────────────────────────────
+               SECTION 5: WHAT'S WAITING FOR YOU (3 tiles)
+          ─────────────────────────────────────────────── -->
+          <!-- Section header spacer -->
+          <tr>
+            <td height="40" bgcolor="#0a0a0a" style="background-color:#0a0a0a;font-size:0;line-height:0;">&nbsp;</td>
+          </tr>
+          <!-- Section label -->
+          <tr>
+            <td align="center" bgcolor="#0a0a0a" style="background-color:#0a0a0a;" class="outer-pad">
+              <p style="font-family:-apple-system,'SF Pro Display','Helvetica Neue',Arial,sans-serif;font-size:11px;font-weight:400;line-height:1.4;color:#868686;letter-spacing:2px;text-transform:uppercase;text-align:center;margin:0;">WHAT'S WAITING FOR YOU</p>
+            </td>
+          </tr>
+          <!-- Spacer 20px -->
+          <tr>
+            <td height="20" bgcolor="#0a0a0a" style="background-color:#0a0a0a;font-size:0;line-height:0;">&nbsp;</td>
+          </tr>
+          <!-- 3 Tiles row -->
+          <tr>
+            <td bgcolor="#0a0a0a" style="background-color:#0a0a0a;padding-left:24px;padding-right:24px;" class="outer-pad">
+              <table border="0" cellpadding="0" cellspacing="0" role="presentation" width="100%">
+                <tr>
+                  <!-- Tile 1: Hot Leads -->
+                  <td class="tile-cell" valign="top" style="background-color:#161616;border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:24px;text-align:center;vertical-align:top;width:31%;">
+                    <p style="font-family:-apple-system,'SF Pro Display','Helvetica Neue',Arial,sans-serif;font-size:24px;line-height:1.3;margin:0;padding-bottom:10px;">🔥</p>
+                    <p style="font-family:-apple-system,'SF Pro Display','Helvetica Neue',Arial,sans-serif;font-size:15px;font-weight:700;line-height:1.4;color:#ffffff;margin:0;padding-bottom:8px;">Hot Leads</p>
+                    <p style="font-family:-apple-system,'SF Pro Display','Helvetica Neue',Arial,sans-serif;font-size:13px;font-weight:400;line-height:1.5;color:#868686;margin:0;">New DAs ranked by opportunity score</p>
+                  </td>
+                  <!-- Gap -->
+                  <td class="tiles-spacer" width="12" style="width:12px;font-size:0;line-height:0;">&nbsp;</td>
+                  <!-- Tile 2: Suburb Intel -->
+                  <td class="tile-cell" valign="top" style="background-color:#161616;border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:24px;text-align:center;vertical-align:top;width:31%;">
+                    <p style="font-family:-apple-system,'SF Pro Display','Helvetica Neue',Arial,sans-serif;font-size:24px;line-height:1.3;margin:0;padding-bottom:10px;">📍</p>
+                    <p style="font-family:-apple-system,'SF Pro Display','Helvetica Neue',Arial,sans-serif;font-size:15px;font-weight:700;line-height:1.4;color:#ffffff;margin:0;padding-bottom:8px;">Suburb Intel</p>
+                    <p style="font-family:-apple-system,'SF Pro Display','Helvetica Neue',Arial,sans-serif;font-size:13px;font-weight:400;line-height:1.5;color:#868686;margin:0;">Track which areas are surging with activity</p>
+                  </td>
+                  <!-- Gap -->
+                  <td class="tiles-spacer" width="12" style="width:12px;font-size:0;line-height:0;">&nbsp;</td>
+                  <!-- Tile 3: My Pipeline -->
+                  <td class="tile-cell" valign="top" style="background-color:#161616;border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:24px;text-align:center;vertical-align:top;width:31%;">
+                    <p style="font-family:-apple-system,'SF Pro Display','Helvetica Neue',Arial,sans-serif;font-size:24px;line-height:1.3;margin:0;padding-bottom:10px;">📋</p>
+                    <p style="font-family:-apple-system,'SF Pro Display','Helvetica Neue',Arial,sans-serif;font-size:15px;font-weight:700;line-height:1.4;color:#ffffff;margin:0;padding-bottom:8px;">My Pipeline</p>
+                    <p style="font-family:-apple-system,'SF Pro Display','Helvetica Neue',Arial,sans-serif;font-size:13px;font-weight:400;line-height:1.5;color:#868686;margin:0;">Save projects, upload files, track your outreach</p>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- ───────────────────────────────────────────────
+               SECTION 6: CTA BUTTON
+          ─────────────────────────────────────────────── -->
+          <!-- CTA top spacer -->
+          <tr>
+            <td height="40" bgcolor="#0a0a0a" style="background-color:#0a0a0a;font-size:0;line-height:0;">&nbsp;</td>
+          </tr>
+          <!-- Button -->
+          <tr>
+            <td align="center" bgcolor="#0a0a0a" style="background-color:#0a0a0a;" class="outer-pad">
+              <table border="0" cellpadding="0" cellspacing="0" role="presentation">
+                <tr>
+                  <td align="center" style="border-radius:8px;background-color:#E64500;">
+                    <a href="https://app.myfindr.com.au" style="display:inline-block;font-family:-apple-system,'SF Pro Display','Helvetica Neue',Arial,sans-serif;font-size:17px;font-weight:600;line-height:1.2;color:#ffffff;text-decoration:none;padding:16px 48px;border-radius:8px;background-color:#E64500;">Log In to myFindr &rarr;</a>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+          <!-- URL sub-text -->
+          <tr>
+            <td height="12" bgcolor="#0a0a0a" style="background-color:#0a0a0a;font-size:0;line-height:0;">&nbsp;</td>
+          </tr>
+          <tr>
+            <td align="center" bgcolor="#0a0a0a" style="background-color:#0a0a0a;">
+              <p style="font-family:-apple-system,'SF Pro Display','Helvetica Neue',Arial,sans-serif;font-size:13px;font-weight:400;line-height:1.5;color:#868686;margin:0;text-align:center;">app.myfindr.com.au</p>
+            </td>
+          </tr>
+
+          <!-- ───────────────────────────────────────────────
+               SECTION 7: LOOM VIDEO SECTION
+          ─────────────────────────────────────────────── -->
+          <!-- Loom spacer -->
+          <tr>
+            <td height="32" bgcolor="#0a0a0a" style="background-color:#0a0a0a;font-size:0;line-height:0;">&nbsp;</td>
+          </tr>
+          <!-- Loom card -->
+          <tr>
+            <td bgcolor="#0a0a0a" style="background-color:#0a0a0a;padding-left:24px;padding-right:24px;" class="outer-pad">
+              <table border="0" cellpadding="0" cellspacing="0" role="presentation" width="100%" style="background-color:#161616;border-radius:12px;">
+                <tr>
+                  <td style="padding:32px;">
+                    <!-- Heading -->
+                    <p style="font-family:-apple-system,'SF Pro Display','Helvetica Neue',Arial,sans-serif;font-size:18px;font-weight:600;line-height:1.4;color:#ffffff;margin:0;padding-bottom:12px;">New here? Watch the 3-min walkthrough.</p>
+                    <!-- Body text -->
+                    <p style="font-family:-apple-system,'SF Pro Display','Helvetica Neue',Arial,sans-serif;font-size:15px;font-weight:400;line-height:1.6;color:#868686;margin:0;padding-bottom:20px;">Jay walks you through the platform in 3 minutes — covering hot leads, your pipeline, and how to get the most out of your subscription.</p>
+                    <!-- CTA link -->
+                    <a href="{{LOOM_URL}}" style="font-family:-apple-system,'SF Pro Display','Helvetica Neue',Arial,sans-serif;font-size:15px;font-weight:500;line-height:1.5;color:#E64500;text-decoration:underline;">Watch the Walkthrough &rarr;</a>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- ───────────────────────────────────────────────
+               SECTION 8: FOOTER
+          ─────────────────────────────────────────────── -->
+          <!-- Footer top spacer -->
+          <tr>
+            <td height="40" bgcolor="#0a0a0a" style="background-color:#0a0a0a;font-size:0;line-height:0;">&nbsp;</td>
+          </tr>
+          <!-- Footer line 1 -->
+          <tr>
+            <td align="center" bgcolor="#0a0a0a" style="background-color:#0a0a0a;" class="outer-pad">
+              <p style="font-family:-apple-system,'SF Pro Display','Helvetica Neue',Arial,sans-serif;font-size:12px;font-weight:400;line-height:1.6;color:#555555;margin:0;text-align:center;">Questions? Reply to this email or contact us at <a href="mailto:info@myfindr.com.au" style="color:#555555;text-decoration:underline;">info@myfindr.com.au</a></p>
+            </td>
+          </tr>
+          <!-- Spacer 8px -->
+          <tr>
+            <td height="8" bgcolor="#0a0a0a" style="background-color:#0a0a0a;font-size:0;line-height:0;">&nbsp;</td>
+          </tr>
+          <!-- Footer line 2 -->
+          <tr>
+            <td align="center" bgcolor="#0a0a0a" style="background-color:#0a0a0a;" class="outer-pad">
+              <p style="font-family:-apple-system,'SF Pro Display','Helvetica Neue',Arial,sans-serif;font-size:12px;font-weight:400;line-height:1.6;color:#555555;margin:0;text-align:center;">&copy; 2026 myFindr &middot; Brisbane, QLD</p>
+            </td>
+          </tr>
+          <!-- Spacer 8px -->
+          <tr>
+            <td height="8" bgcolor="#0a0a0a" style="background-color:#0a0a0a;font-size:0;line-height:0;">&nbsp;</td>
+          </tr>
+          <!-- Footer line 3: Unsubscribe -->
+          <tr>
+            <td align="center" bgcolor="#0a0a0a" style="background-color:#0a0a0a;" class="outer-pad">
+              <p style="font-family:-apple-system,'SF Pro Display','Helvetica Neue',Arial,sans-serif;font-size:12px;font-weight:400;line-height:1.6;color:#555555;margin:0;text-align:center;"><a href="{{UNSUBSCRIBE_URL}}" style="color:#555555;text-decoration:underline;">Unsubscribe</a></p>
+            </td>
+          </tr>
+          <!-- Footer bottom spacer -->
+          <tr>
+            <td height="40" bgcolor="#0a0a0a" style="background-color:#0a0a0a;font-size:0;line-height:0;">&nbsp;</td>
+          </tr>
+
+        </table>
+        <!-- /content-table -->
+
+      </td>
+    </tr>
+  </table>
+  <!-- /outer-wrapper -->
+
+</body>
+</html>
