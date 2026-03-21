@@ -109,10 +109,20 @@
     display: inline-block; padding: 2px 8px; border-radius: 20px;
     font-size: 11px; font-weight: 600; white-space: nowrap;
   }
-  .badge-green { background: rgba(76,175,80,0.18); color: var(--green); border: 1px solid rgba(76,175,80,0.3); }
+  .badge-green { background: rgba(34,197,94,0.15); color: #22c55e; border: 1px solid rgba(34,197,94,0.35); }
+  .badge-inactive { background: rgba(120,120,130,0.18); color: #888; border: 1px solid rgba(120,120,130,0.3); }
   .badge-red { background: rgba(233,30,99,0.18); color: var(--pink); border: 1px solid rgba(233,30,99,0.3); }
   .badge-teal { background: var(--teal-dim); color: var(--orange); border: 1px solid rgba(230,69,0,0.3); }
   .badge-yellow { background: rgba(255,179,0,0.18); color: var(--yellow); border: 1px solid rgba(255,179,0,0.3); }
+
+  /* ACTION BUTTONS */
+  .action-group { display: flex; flex-direction: column; gap: 4px; }
+  .action-row { display: flex; gap: 4px; }
+  .btn-action { font-size: 11px; padding: 4px 8px; border-radius: 4px; cursor: pointer; border: none; white-space: nowrap; }
+  .btn-profile { background: rgba(255,255,255,0.08); color: #ccc; }
+  .btn-deactivate { background: rgba(239,68,68,0.15); color: #ef4444; border: 1px solid rgba(239,68,68,0.3) !important; }
+  .btn-activate { background: rgba(34,197,94,0.12); color: #22c55e; border: 1px solid rgba(34,197,94,0.3) !important; }
+  .btn-welcome { background: rgba(230,69,0,0.15); color: #E64500; border: 1px solid rgba(230,69,0,0.3) !important; width: 100%; }
 
   /* CARD */
   .card {
@@ -415,7 +425,20 @@
 
       <div class="card">
         <div class="table-wrap">
-          <table>
+          <table style="table-layout:fixed;word-break:break-word;">
+            <colgroup>
+              <col style="width:120px">
+              <col style="width:120px">
+              <col style="width:180px">
+              <col style="width:130px">
+              <col style="width:100px">
+              <col style="width:100px">
+              <col style="width:70px">
+              <col style="width:80px">
+              <col style="width:70px">
+              <col style="width:140px">
+              <col style="width:100px">
+            </colgroup>
             <thead>
               <tr>
                 <th>Name</th>
@@ -432,7 +455,7 @@
               </tr>
             </thead>
             <tbody id="clients-tbody">
-              <tr><td colspan="10" class="loading">Loading clients...</td></tr>
+              <tr><td colspan="11" class="loading">Loading clients...</td></tr>
             </tbody>
           </table>
         </div>
@@ -1011,6 +1034,29 @@ async function loadClientsSection() {
   }
 }
 
+function formatICP(icp) {
+  const map = {
+    'interior_designer': 'Interior Designer',
+    'interior designer': 'Interior Designer',
+    'builder': 'Builder',
+    'real_estate': 'Real Estate',
+    'real estate': 'Real Estate',
+    'architect': 'Architect',
+    'builder_trades': 'Builder & Trades'
+  };
+  return map[(icp||'').toLowerCase()] || icp || '—';
+}
+
+function formatCouncil(c) {
+  const map = { 'brisbane': 'Brisbane', 'sunshine_coast': 'Sunshine Coast', 'gold_coast': 'Gold Coast' };
+  return map[(c||'').toLowerCase()] || (c||'—');
+}
+
+function cleanCompany(c) {
+  if (!c) return '—';
+  return c.replace(/['"]/g, '').replace(/\s*US\s*/i, '').trim() || '—';
+}
+
 function renderClientsTable(clients) {
   const active = clients.filter(c => c.active);
   document.getElementById('clients-count').innerHTML = `<span style="color:var(--green);font-weight:700;">${active.length} active</span> / ${clients.length} total`;
@@ -1025,27 +1071,33 @@ function renderClientsTable(clients) {
     const locationCell = c.location || c.suburb || '<span style="color:#555">—</span>';
     const statusBadge = c.active
       ? `<span class="badge badge-green">Active</span>`
-      : `<span class="badge badge-red">Inactive</span>`;
-    const icpBadge = `<span class="badge badge-teal">${(c.icp_type || '—').replace('_', ' ')}</span>`;
+      : `<span class="badge badge-inactive">Inactive</span>`;
+    const icpBadge = `<span class="badge badge-teal">${formatICP(c.icp_type)}</span>`;
     const actionBtn = c.active
-      ? `<button class="btn btn-danger btn-sm" onclick="deactivateClient('${c.id}', this)">Deactivate</button>`
-      : `<button class="btn btn-ghost btn-sm" onclick="activateClient('${c.id}', this)">Activate</button>`;
+      ? `<button class="btn-action btn-deactivate" onclick="deactivateClient('${c.id}', this)">Deactivate</button>`
+      : `<button class="btn-action btn-activate" onclick="activateClient('${c.id}', this)">Activate</button>`;
     const dashMap = {'interior_designer':'./dashboard-id.html','builder':'./dashboard-builders.html','real_estate':'./dashboard-re.html','architect':'./dashboard-architects.html'};
     const dashUrl = dashMap[c.icp_type] || './dashboard-id.html';
     const subStr = Array.isArray(c.target_suburbs) ? c.target_suburbs.join(',') : '';
-    const viewDashBtn = c.active ? `<a href="${dashUrl}?suburbs=${subStr}&icp=${c.icp_type}&clientId=${c.id}" target="_blank" class="btn btn-primary btn-sm">View Dashboard →</a>` : '—';
+    const viewDashBtn = c.active ? `<a href="${dashUrl}?suburbs=${subStr}&icp=${c.icp_type}&clientId=${c.id}" target="_blank" class="btn btn-primary btn-sm">View →</a>` : '—';
     const lastLoginCell = c.last_login ? `<span style="font-size:11px;color:var(--text-dim)">${timeAgo(c.last_login)}</span>` : '<span style="color:var(--text-muted);font-size:11px">Never</span>';
     return `<tr>
       <td style="font-weight:600;">${c.full_name || '—'}</td>
-      <td style="color:var(--text-dim)">${c.company || '<span style="color:#555">—</span>'}</td>
-      <td style="color:var(--text-dim)">${c.email || '—'}</td>
+      <td style="color:var(--text-dim)">${cleanCompany(c.company)}</td>
+      <td style="color:var(--text-dim);font-size:12px;">${c.email || '—'}</td>
       <td>${icpBadge}</td>
       <td style="color:var(--text-dim);font-size:12px;">${locationCell}</td>
-      <td style="color:var(--text-dim)">${c.target_council || '—'}</td>
+      <td style="color:var(--text-dim)">${formatCouncil(c.target_council)}</td>
       <td>${statusBadge}</td>
-      <td style="color:var(--text-muted)">${fmtDate(c.created_at)}</td>
+      <td style="color:var(--text-muted);font-size:11px;">${fmtDate(c.created_at)}</td>
       <td>${lastLoginCell}</td>
-      <td><button class="btn btn-ghost btn-sm" onclick='openProfile(${JSON.stringify(c)})'>👤 Profile</button> ${actionBtn} <button class="btn btn-sm" style="background:rgba(230,69,0,0.15);color:#E64500;border:1px solid rgba(230,69,0,0.35);" onclick="sendWelcomeEmail('${c.email}','${c.full_name}','${c.icp_type}','${c.temp_password||''}')">📧 Welcome</button></td>
+      <td><div class="action-group">
+        <div class="action-row">
+          <button class="btn-action btn-profile" onclick='openProfile(${JSON.stringify(c)})'>👤 Profile</button>
+          ${actionBtn}
+        </div>
+        <button class="btn-action btn-welcome" onclick="sendWelcomeEmail('${c.email}','${c.full_name}','${c.icp_type}','${c.temp_password||''}')">📧 Welcome</button>
+      </div></td>
       <td>${viewDashBtn}</td>
     </tr>`;
   }).join('');
@@ -1102,9 +1154,9 @@ async function addClient() {
 // ── Send welcome email via Gmail API ────────────────────────────────────────
 async function sendWelcomeEmail(email, name, icpType, tempPassword) {
   // Gmail OAuth credentials (admin portal is password-protected)
-  const GMAIL_CLIENT_ID     = window.GMAIL_CLIENT_ID     || '';
-  const GMAIL_CLIENT_SECRET = window.GMAIL_CLIENT_SECRET || '';
-  const GMAIL_REFRESH_TOKEN = window.GMAIL_REFRESH_TOKEN || '';
+  const GMAIL_CLIENT_ID     = '572951495279-08n55f0glf8ahm7n46dtq6p0291piuc9.apps.googleusercontent.com';
+  const GMAIL_CLIENT_SECRET = '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';
+  const GMAIL_REFRESH_TOKEN = 'ya29.a0ATkoCc7pl7I3X25A4ZeKAUu7LXxWMJdFs7ViP4BS1Lz0aPx3gxIEWOqlxW0_N7z0ZCJ1SRpZr5w0PMQBsLRY-do5gwG4dyBAfCSKzA8YUCAii9r1UcWwBkedTWg_rWSWVBkI35polsSjjx7wp9Mhm2txAahrJ1a0nowWyLsKyfN22fLVrpTYKiBA0n1wna84iGeMSLQaCgYKAUESARMSFQHGX2MiI70D_ivGLIDcQM80EiDxog0206';
 
   const firstName = (name || '').split(' ')[0] || name;
   const password = tempPassword || '(see your login details)';
@@ -1130,17 +1182,18 @@ async function sendWelcomeEmail(email, name, icpType, tempPassword) {
     const tokenData = await tokenRes.json();
     if (!tokenData.access_token) throw new Error('Failed to get access token: ' + JSON.stringify(tokenData));
 
-    // 2. Load and personalise the email template
-    const templateRes = await fetch('../emails/welcome.html');
+    // 2. Load and personalise the onboarding invite template
+    const templateRes = await fetch('../emails/onboarding-invite.html');
     let html = await templateRes.text();
+    const onboardingUrl = `https://onboarding.myfindr.com.au?email=${encodeURIComponent(email)}`;
     html = html
       .replace(/\{\{CLIENT_NAME\}\}/g,     firstName)
       .replace(/\{\{CLIENT_EMAIL\}\}/g,    email)
-      .replace(/\{\{CLIENT_PASSWORD\}\}/g, password)
+      .replace(/\{\{ONBOARDING_URL\}\}/g,  onboardingUrl)
       .replace(/\{\{ICP_TYPE\}\}/g,        icpDisplay)
       .replace(/\{\{LOOM_URL\}\}/g,        loomUrl);
 
-    const subject = `Welcome to myFindr, ${firstName} — your access is live 🔥`;
+    const subject = `${firstName}, your myFindr account is almost ready`;
 
     // 3. Build RFC 2822 message
     const rawEmail = [
