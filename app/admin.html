@@ -1045,7 +1045,7 @@ function renderClientsTable(clients) {
       <td>${statusBadge}</td>
       <td style="color:var(--text-muted)">${fmtDate(c.created_at)}</td>
       <td>${lastLoginCell}</td>
-      <td><button class="btn btn-ghost btn-sm" onclick='openProfile(${JSON.stringify(c)})'>👤 Profile</button> ${actionBtn}</td>
+      <td><button class="btn btn-ghost btn-sm" onclick='openProfile(${JSON.stringify(c)})'>👤 Profile</button> ${actionBtn} <button class="btn btn-sm" style="background:rgba(230,69,0,0.15);color:#E64500;border:1px solid rgba(230,69,0,0.35);" onclick="sendWelcomeEmail('${c.email}','${c.full_name}','${c.icp_type}','${c.temp_password||''}')">📧 Welcome</button></td>
       <td>${viewDashBtn}</td>
     </tr>`;
   }).join('');
@@ -1096,6 +1096,86 @@ async function addClient() {
     ['new-name','new-email','new-password','new-suburbs'].forEach(id => { document.getElementById(id).value = ''; });
   } catch(e) {
     msgEl.style.color = 'var(--pink)'; msgEl.textContent = 'Error: ' + e.message;
+  }
+}
+
+// ── Send welcome email via Gmail API ────────────────────────────────────────
+async function sendWelcomeEmail(email, name, icpType, tempPassword) {
+  // Gmail OAuth credentials (admin portal is password-protected)
+  const GMAIL_CLIENT_ID     = window.GMAIL_CLIENT_ID     || '';
+  const GMAIL_CLIENT_SECRET = window.GMAIL_CLIENT_SECRET || '';
+  const GMAIL_REFRESH_TOKEN = window.GMAIL_REFRESH_TOKEN || '';
+
+  const firstName = (name || '').split(' ')[0] || name;
+  const password = tempPassword || '(see your login details)';
+  const loomUrl = 'https://loom.com';
+
+  const icpMap = { interior_designer: 'Interior Designer', builder: 'Builder', real_estate: 'Real Estate Agent', architect: 'Architect' };
+  const icpDisplay = icpMap[icpType] || (icpType || '').replace(/_/g, ' ');
+
+  showToast(`Sending welcome email to ${email}...`);
+
+  try {
+    // 1. Get fresh access token
+    const tokenRes = await fetch('https://oauth2.googleapis.com/token', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams({
+        client_id: GMAIL_CLIENT_ID,
+        client_secret: GMAIL_CLIENT_SECRET,
+        refresh_token: GMAIL_REFRESH_TOKEN,
+        grant_type: 'refresh_token'
+      })
+    });
+    const tokenData = await tokenRes.json();
+    if (!tokenData.access_token) throw new Error('Failed to get access token: ' + JSON.stringify(tokenData));
+
+    // 2. Load and personalise the email template
+    const templateRes = await fetch('../emails/welcome.html');
+    let html = await templateRes.text();
+    html = html
+      .replace(/\{\{CLIENT_NAME\}\}/g,     firstName)
+      .replace(/\{\{CLIENT_EMAIL\}\}/g,    email)
+      .replace(/\{\{CLIENT_PASSWORD\}\}/g, password)
+      .replace(/\{\{ICP_TYPE\}\}/g,        icpDisplay)
+      .replace(/\{\{LOOM_URL\}\}/g,        loomUrl);
+
+    const subject = `Welcome to myFindr, ${firstName} — your access is live 🔥`;
+
+    // 3. Build RFC 2822 message
+    const rawEmail = [
+      `From: myFindr <info@myfindr.com.au>`,
+      `To: ${email}`,
+      `Subject: ${subject}`,
+      `MIME-Version: 1.0`,
+      `Content-Type: text/html; charset=utf-8`,
+      ``,
+      html
+    ].join('\r\n');
+
+    // base64url encode
+    const encoded = btoa(unescape(encodeURIComponent(rawEmail)))
+      .replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+
+    // 4. Send via Gmail API
+    const sendRes = await fetch('https://gmail.googleapis.com/gmail/v1/users/me/messages/send', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${tokenData.access_token}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ raw: encoded })
+    });
+    const sendData = await sendRes.json();
+
+    if (sendData.id) {
+      showToast(`✅ Welcome email sent to ${email}!`);
+    } else {
+      throw new Error(JSON.stringify(sendData));
+    }
+  } catch(e) {
+    showToast('❌ Email failed: ' + e.message, true);
+    console.error('sendWelcomeEmail error:', e);
   }
 }
 
