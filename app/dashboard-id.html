@@ -243,6 +243,21 @@
     .toast{position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%);background:#121212;border:1px solid rgba(76,175,80,.4);color:#81c784;font-size:.75rem;font-weight:600;padding:.65rem 1.25rem;border-radius:8px;z-index:999;opacity:0;transition:opacity .3s;pointer-events:none}
     .toast.show{opacity:1}
 
+    /* ── ALERTS / WATCHERS ── */
+    .form-row{margin-bottom:14px}
+    .form-label{display:block;font-size:.75rem;color:#868686;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
+    .form-input,.form-select{width:100%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:6px;padding:10px 12px;color:#fff;font-size:.875rem;box-sizing:border-box;font-family:inherit}
+    .form-input:focus,.form-select:focus{outline:none;border-color:var(--accent)}
+    .form-select option{background:#1a1a1a}
+    .checkbox-group{display:flex;flex-wrap:wrap;gap:10px}
+    .checkbox-group label{display:flex;align-items:center;gap:6px;font-size:.825rem;color:#ccc;cursor:pointer}
+    .watcher-card{background:#161616;border:1px solid rgba(255,255,255,.08);border-radius:8px;padding:16px;margin-bottom:12px}
+    .watcher-card.active{border-left:3px solid #22c55e}
+    .watcher-card.inactive{border-left:3px solid #555;opacity:.6}
+    .watcher-name{font-weight:600;color:#fff;margin-bottom:6px}
+    .watcher-meta{font-size:.75rem;color:#868686}
+    .watcher-actions{display:flex;gap:8px;margin-top:10px}
+
     /* ── MODAL FILE UPLOAD ── */
     .modal-files-list{display:flex;flex-direction:column;gap:4px;margin-bottom:.6rem;min-height:4px}
     .file-item{display:flex;align-items:center;gap:6px;font-size:.68rem;color:var(--teal);text-decoration:none;padding:4px 6px;background:rgba(255,255,255,.03);border-radius:5px;border:1px solid rgba(255,255,255,.06)}
@@ -399,6 +414,7 @@
   <div class="tab active" onclick="showTab('overview')">📊 Dashboard</div>
   <div class="tab" onclick="showTab('leads')">🔥 Hot Leads</div>
   <div class="tab" onclick="showTab('insights')">🔍 Insights</div>
+  <div class="tab" onclick="showTab('alerts')">🔔 My Alerts</div>
   <div class="tab" onclick="showTab('pipeline')">💼 My Pipeline</div>
 </div>
 
@@ -554,6 +570,55 @@
       <div class="card-title"><span class="card-dot"></span>Most Active Planning Consultants</div>
       <div class="section-label" style="margin-bottom:.75rem">Past 6 months · Town planning firms with most submissions</div>
       <div id="consultant-list">Loading...</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════ MY ALERTS ═══════════════════ -->
+<div class="section" id="sec-alerts">
+  <div class="section-label" style="margin-bottom:1rem">🔔 My Alerts</div>
+
+  <!-- Existing watchers list -->
+  <div id="watchers-list">Loading...</div>
+
+  <!-- Add new watcher card -->
+  <div class="card" style="margin-top:1.5rem">
+    <div class="card-title">➕ Add New Alert</div>
+    <div style="padding:8px 0">
+
+      <div class="form-row">
+        <label class="form-label">Alert Name</label>
+        <input type="text" id="w-name" class="form-input" placeholder="e.g. Brisbane Renovations">
+      </div>
+
+      <div class="form-row">
+        <label class="form-label">Signal</label>
+        <select id="w-signal" class="form-select">
+          <option value="HOT">🔥 HOT leads only</option>
+          <option value="COOL">🌡️ HOT + WARM leads</option>
+          <option value="ALL">All leads</option>
+        </select>
+      </div>
+
+      <div class="form-row">
+        <label class="form-label">Application Types</label>
+        <div class="checkbox-group" id="w-app-types">
+          <label><input type="checkbox" value="Carry Out Building Work"> Building Work</label>
+          <label><input type="checkbox" value="Material Change Of Use"> Change of Use</label>
+          <label><input type="checkbox" value="Reconfiguring A Lot"> Reconfigure / Subdivide</label>
+          <label><input type="checkbox" value="Operational Works"> Operational Works</label>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <label class="form-label">Frequency</label>
+        <select id="w-frequency" class="form-select">
+          <option value="daily">Daily digest (7am)</option>
+          <option value="instant">Instant (as they come in)</option>
+        </select>
+      </div>
+
+      <button class="btn-pri" onclick="saveWatcher()" style="margin-top:12px">Save Alert</button>
     </div>
   </div>
 </div>
@@ -731,11 +796,12 @@ if(!isBrisbane&&!isSunshineCoast&&suburbs.length){suburbs.forEach(s=>{const el=d
 
 // Tab switching
 function showTab(tab) {
-  document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',['overview','leads','insights','pipeline'][i]===tab));
+  document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',['overview','leads','insights','alerts','pipeline'][i]===tab));
   document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
   document.getElementById('sec-'+tab).classList.add('active');
   if (tab==='pipeline') renderPipeline();
   if (tab==='overview') updateLastSync(); // FIX 5
+  if (tab==='alerts') loadWatchers();
 }
 
 // Supabase fetch
@@ -2003,6 +2069,79 @@ function showToast(msg, duration=3000) {
   t.textContent = msg;
   t.classList.add('show');
   setTimeout(() => t.classList.remove('show'), duration);
+}
+
+// ── ALERT WATCHERS ──
+async function loadWatchers() {
+  const el = document.getElementById('watchers-list');
+  if (!el || !clientId) return;
+  el.innerHTML = '<div style="color:#868686;font-size:.875rem">Loading...</div>';
+  const res = await fetch(`${SUPA}/rest/v1/client_watchers?client_id=eq.${clientId}&order=created_at.asc`, {
+    headers: { apikey: KEY, Authorization: 'Bearer '+KEY }
+  });
+  const watchers = await res.json();
+  if (!Array.isArray(watchers) || !watchers.length) {
+    el.innerHTML = '<div style="color:#868686;font-size:.875rem;padding:16px 0">No alerts set up yet. Add your first alert below.</div>';
+    return;
+  }
+  el.innerHTML = watchers.map(w => `
+    <div class="watcher-card ${w.active ? 'active' : 'inactive'}">
+      <div class="watcher-name">🔔 ${w.name}</div>
+      <div class="watcher-meta">
+        ${w.signal_threshold === 'HOT' ? '🔥 HOT leads only' : w.signal_threshold === 'COOL' ? '🌡️ HOT + WARM' : 'All leads'} ·
+        ${w.frequency === 'daily' ? 'Daily digest 7am' : 'Instant alerts'} ·
+        ${w.active ? '<span style="color:#22c55e">Active</span>' : '<span style="color:#555">Paused</span>'}
+      </div>
+      ${w.application_types?.length ? `<div class="watcher-meta" style="margin-top:4px">Types: ${w.application_types.join(', ')}</div>` : ''}
+      <div class="watcher-actions">
+        <button onclick="toggleWatcher('${w.id}', ${!w.active})" style="background:rgba(255,255,255,0.06);color:#ccc;border:1px solid rgba(255,255,255,0.1);padding:4px 12px;border-radius:4px;cursor:pointer;font-size:0.75rem">
+          ${w.active ? 'Pause' : 'Resume'}
+        </button>
+        <button onclick="deleteWatcher('${w.id}')" style="background:rgba(239,68,68,0.1);color:#ef4444;border:1px solid rgba(239,68,68,0.2);padding:4px 12px;border-radius:4px;cursor:pointer;font-size:0.75rem">
+          Delete
+        </button>
+      </div>
+    </div>
+  `).join('');
+}
+
+async function saveWatcher() {
+  const name = document.getElementById('w-name').value.trim();
+  if (!name) { showToast('Please enter an alert name'); return; }
+  const appTypes = [...document.querySelectorAll('#w-app-types input:checked')].map(el => el.value);
+  const signal = document.getElementById('w-signal').value;
+  const frequency = document.getElementById('w-frequency').value;
+  const res = await fetch(`${SUPA}/rest/v1/client_watchers`, {
+    method: 'POST',
+    headers: { apikey: KEY, Authorization: 'Bearer '+KEY, 'Content-Type': 'application/json', Prefer: 'return=minimal' },
+    body: JSON.stringify({ client_id: clientId, name, application_types: appTypes, signal_threshold: signal, frequency, active: true })
+  });
+  if (res.ok || res.status === 201) {
+    showToast('✅ Alert saved!');
+    document.getElementById('w-name').value = '';
+    document.querySelectorAll('#w-app-types input').forEach(el => el.checked = false);
+    loadWatchers();
+  } else {
+    showToast('❌ Failed to save alert');
+  }
+}
+
+async function toggleWatcher(id, newActive) {
+  await fetch(`${SUPA}/rest/v1/client_watchers?id=eq.${id}`, {
+    method: 'PATCH',
+    headers: { apikey: KEY, Authorization: 'Bearer '+KEY, 'Content-Type': 'application/json', Prefer: 'return=minimal' },
+    body: JSON.stringify({ active: newActive })
+  });
+  loadWatchers();
+}
+
+async function deleteWatcher(id) {
+  if (!confirm('Delete this alert?')) return;
+  await fetch(`${SUPA}/rest/v1/client_watchers?id=eq.${id}`, {
+    method: 'DELETE',
+    headers: { apikey: KEY, Authorization: 'Bearer '+KEY }
+  });
+  loadWatchers();
 }
 // ── FILE UPLOAD (MODAL / PROJECT DETAIL) ── FIX 1
 
