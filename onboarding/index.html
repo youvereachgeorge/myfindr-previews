@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>myFindr — Onboarding</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+
+  <!-- NOTE: Using service key (no ANON key found in supabase-myfindr.env). 
+       Replace with anon/public key once RLS policies are set up. -->
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0a0a0a;
+      --orange: #E64500;
+      --orange-hover: #ff5a1f;
+      --text: #f0f0f0;
+      --muted: #888;
+      --border: #2a2a2a;
+      --card: #141414;
+      --choice-hover: #1a1a1a;
+      --choice-selected: #1f1008;
+      --choice-selected-border: #E64500;
+    }
+
+    html, body {
+      height: 100%;
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      overflow: hidden;
+    }
+
+    /* ── Progress bar ── */
+    #progress-bar {
+      position: fixed;
+      top: 0; left: 0;
+      height: 3px;
+      background: var(--orange);
+      transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      z-index: 100;
+    }
+
+    /* ── Slide container ── */
+    #slide-container {
+      position: relative;
+      width: 100%;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    .slide {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      opacity: 0;
+      transform: translateY(40px);
+      pointer-events: none;
+      transition: opacity 0.45s cubic-bezier(0.4, 0, 0.2, 1),
+                  transform 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .slide.active {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: all;
+    }
+
+    .slide.exit-up {
+      opacity: 0;
+      transform: translateY(-40px);
+      pointer-events: none;
+    }
+
+    /* ── Content card ── */
+    .slide-inner {
+      width: 100%;
+      max-width: 600px;
+    }
+
+    /* ── Step label ── */
+    .step-label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--orange);
+      margin-bottom: 1.5rem;
+    }
+
+    /* ── Question heading ── */
+    .slide h1 {
+      font-size: clamp(1.8rem, 5vw, 2.8rem);
+      font-weight: 700;
+      line-height: 1.15;
+      margin-bottom: 0.5rem;
+      color: var(--text);
+    }
+
+    .slide .subtitle {
+      font-size: 1rem;
+      color: var(--muted);
+      margin-bottom: 2.5rem;
+    }
+
+    /* ── Text inputs ── */
+    .text-input {
+      width: 100%;
+      background: transparent;
+      border: none;
+      border-bottom: 2px solid var(--border);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      font-size: 1.5rem;
+      font-weight: 400;
+      padding: 0.5rem 0 0.75rem;
+      outline: none;
+      transition: border-color 0.2s;
+      caret-color: var(--orange);
+    }
+
+    .text-input::placeholder { color: #444; }
+
+    .text-input:focus {
+      border-bottom-color: var(--orange);
+    }
+
+    /* ── Choice grid ── */
+    .choices {
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+      width: 100%;
+    }
+
+    .choice {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 0.9rem 1.1rem;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.15s, border-color 0.15s;
+      font-size: 0.95rem;
+      font-weight: 500;
+      user-select: none;
+    }
+
+    .choice:hover {
+      background: var(--choice-hover);
+      border-color: #444;
+    }
+
+    .choice.selected {
+      background: var(--choice-selected);
+      border-color: var(--choice-selected-border);
+      color: var(--orange);
+    }
+
+    .choice-key {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 24px;
+      height: 24px;
+      border: 1.5px solid var(--muted);
+      border-radius: 4px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: var(--muted);
+      flex-shrink: 0;
+      transition: border-color 0.15s, color 0.15s;
+    }
+
+    .choice.selected .choice-key {
+      border-color: var(--orange);
+      color: var(--orange);
+    }
+
+    /* multi-select checkmark */
+    .choice-check {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 20px;
+      height: 20px;
+      border: 1.5px solid var(--muted);
+      border-radius: 4px;
+      flex-shrink: 0;
+      transition: all 0.15s;
+    }
+
+    .choice.selected .choice-check {
+      background: var(--orange);
+      border-color: var(--orange);
+    }
+
+    .choice.selected .choice-check::after {
+      content: '';
+      display: block;
+      width: 5px;
+      height: 9px;
+      border: 2px solid white;
+      border-top: none;
+      border-left: none;
+      transform: rotate(45deg) translate(-1px, -1px);
+    }
+
+    /* ── Buttons ── */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-top: 2.5rem;
+      padding: 0.85rem 1.8rem;
+      background: var(--orange);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-family: 'Inter', sans-serif;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s, transform 0.1s;
+    }
+
+    .btn:hover { background: var(--orange-hover); }
+    .btn:active { transform: scale(0.98); }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--muted);
+      border: 1.5px solid var(--border);
+    }
+
+    .btn-ghost:hover { background: var(--choice-hover); color: var(--text); }
+
+    /* ── Enter hint ── */
+    .enter-hint {
+      margin-top: 1.2rem;
+      font-size: 0.8rem;
+      color: #555;
+    }
+
+    .enter-hint kbd {
+      display: inline-block;
+      padding: 1px 6px;
+      border: 1px solid #444;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      color: #666;
+    }
+
+    /* ── Welcome / Done specific ── */
+    .welcome-logo {
+      font-size: 1.4rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      color: var(--orange);
+      margin-bottom: 3rem;
+    }
+
+    .done-emoji {
+      font-size: 3.5rem;
+      margin-bottom: 1.5rem;
+      line-height: 1;
+    }
+
+    .done-sub {
+      font-size: 1.1rem;
+      color: var(--muted);
+      margin-top: 0.75rem;
+    }
+
+    /* ── Error toast ── */
+    #toast {
+      position: fixed;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%) translateY(6rem);
+      background: #2a0a0a;
+      border: 1px solid #8b1a1a;
+      color: #ff7070;
+      padding: 0.75rem 1.5rem;
+      border-radius: 8px;
+      font-size: 0.875rem;
+      transition: transform 0.3s;
+      z-index: 200;
+      white-space: nowrap;
+    }
+
+    #toast.show { transform: translateX(-50%) translateY(0); }
+
+    /* ── Nav arrows ── */
+    #nav-arrows {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      display: flex;
+      gap: 0.5rem;
+      z-index: 50;
+    }
+
+    .nav-arrow {
+      width: 36px;
+      height: 36px;
+      border: 1.5px solid var(--border);
+      border-radius: 6px;
+      background: transparent;
+      color: var(--muted);
+      font-size: 1rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: border-color 0.15s, color 0.15s;
+    }
+
+    .nav-arrow:hover { border-color: #666; color: var(--text); }
+    .nav-arrow:disabled { opacity: 0.2; cursor: default; }
+  </style>
+</head>
+<body>
+
+<div id="progress-bar" style="width: 0%"></div>
+
+<div id="slide-container">
+
+  <!-- 0: Welcome -->
+  <div class="slide active" id="slide-0">
+    <div class="slide-inner" style="text-align:center">
+      <div class="welcome-logo">myFindr</div>
+      <h1>Welcome to myFindr.</h1>
+      <p class="subtitle">Let's get you set up in under two minutes.</p>
+      <button class="btn" id="welcome-btn">Let's go &nbsp;→</button>
+    </div>
+  </div>
+
+  <!-- 1: Name -->
+  <div class="slide" id="slide-1">
+    <div class="slide-inner">
+      <div class="step-label">Question 1 of 6</div>
+      <h1>What's your name?</h1>
+      <p class="subtitle">First and last name, please.</p>
+      <input class="text-input" id="input-name" type="text" placeholder="Jane Smith" autocomplete="name" />
+      <div>
+        <button class="btn" id="btn-name">OK &nbsp;✓</button>
+      </div>
+      <p class="enter-hint">press <kbd>Enter ↵</kbd></p>
+    </div>
+  </div>
+
+  <!-- 2: Company -->
+  <div class="slide" id="slide-2">
+    <div class="slide-inner">
+      <div class="step-label">Question 2 of 6</div>
+      <h1>What's your company name?</h1>
+      <p class="subtitle">The business you represent.</p>
+      <input class="text-input" id="input-company" type="text" placeholder="Acme Interiors" autocomplete="organization" />
+      <div>
+        <button class="btn" id="btn-company">OK &nbsp;✓</button>
+      </div>
+      <p class="enter-hint">press <kbd>Enter ↵</kbd></p>
+    </div>
+  </div>
+
+  <!-- 3: Phone -->
+  <div class="slide" id="slide-3">
+    <div class="slide-inner">
+      <div class="step-label">Question 3 of 6</div>
+      <h1>What's your phone number?</h1>
+      <p class="subtitle">We'll use this to contact you if needed.</p>
+      <input class="text-input" id="input-phone" type="tel" placeholder="04xx xxx xxx" autocomplete="tel" />
+      <div>
+        <button class="btn" id="btn-phone">OK &nbsp;✓</button>
+      </div>
+      <p class="enter-hint">press <kbd>Enter ↵</kbd></p>
+    </div>
+  </div>
+
+  <!-- 4: Location -->
+  <div class="slide" id="slide-4">
+    <div class="slide-inner">
+      <div class="step-label">Question 4 of 6</div>
+      <h1>Where are you based?</h1>
+      <p class="subtitle">Select your primary location.</p>
+      <div class="choices" id="choices-location">
+        <div class="choice" data-value="Brisbane"><span class="choice-key">A</span> Brisbane</div>
+        <div class="choice" data-value="Sunshine Coast"><span class="choice-key">B</span> Sunshine Coast</div>
+        <div class="choice" data-value="Gold Coast"><span class="choice-key">C</span> Gold Coast</div>
+        <div class="choice" data-value="Northern Rivers"><span class="choice-key">D</span> Northern Rivers</div>
+        <div class="choice" data-value="National"><span class="choice-key">E</span> National</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5: Industry -->
+  <div class="slide" id="slide-5">
+    <div class="slide-inner">
+      <div class="step-label">Question 5 of 6</div>
+      <h1>What's your industry?</h1>
+      <p class="subtitle">Pick the one that best describes you.</p>
+      <div class="choices" id="choices-industry">
+        <div class="choice" data-value="Interior Designer"><span class="choice-key">A</span> Interior Designer</div>
+        <div class="choice" data-value="Builder & Trades"><span class="choice-key">B</span> Builder &amp; Trades</div>
+        <div class="choice" data-value="Developer"><span class="choice-key">C</span> Developer</div>
+        <div class="choice" data-value="Real Estate Agent"><span class="choice-key">D</span> Real Estate Agent</div>
+        <div class="choice" data-value="Architect"><span class="choice-key">E</span> Architect</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 6: Project types -->
+  <div class="slide" id="slide-6">
+    <div class="slide-inner">
+      <div class="step-label">Question 6 of 6</div>
+      <h1>What types of projects do you work on?</h1>
+      <p class="subtitle">Select all that apply.</p>
+      <div class="choices" id="choices-projects">
+        <div class="choice" data-value="Renovations"><span class="choice-check"></span> Renovations</div>
+        <div class="choice" data-value="New Builds"><span class="choice-check"></span> New Builds</div>
+        <div class="choice" data-value="Subdivisions"><span class="choice-check"></span> Subdivisions</div>
+        <div class="choice" data-value="Commercial"><span class="choice-check"></span> Commercial</div>
+        <div class="choice" data-value="Multi-Residential"><span class="choice-check"></span> Multi-Residential</div>
+        <div class="choice" data-value="Retail"><span class="choice-check"></span> Retail</div>
+        <div class="choice" data-value="Industrial"><span class="choice-check"></span> Industrial</div>
+      </div>
+      <div>
+        <button class="btn" id="btn-projects">Submit &nbsp;→</button>
+      </div>
+      <p class="enter-hint">press <kbd>Enter ↵</kbd> to submit</p>
+    </div>
+  </div>
+
+  <!-- 7: Done -->
+  <div class="slide" id="slide-7">
+    <div class="slide-inner" style="text-align:center">
+      <div class="done-emoji">🎉</div>
+      <h1>You're all set.</h1>
+      <p class="done-sub">We'll send your login details shortly.</p>
+    </div>
+  </div>
+
+</div>
+
+<!-- Nav arrows -->
+<div id="nav-arrows">
+  <button class="nav-arrow" id="nav-prev" title="Previous" disabled>↑</button>
+  <button class="nav-arrow" id="nav-next" title="Next">↓</button>
+</div>
+
+<div id="toast"></div>
+
+<script>
+  // ── Config ────────────────────────────────────────────────────────────────
+  const SUPABASE_URL   = 'https://ieqbavwzydlxiaclzcjl.supabase.co';
+  // NOTE: Using service key — no ANON key found. Replace with anon key + RLS.
+  const SUPABASE_KEY   = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImllcWJhdnd6eWRseGlhY2x6Y2psIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3MzM4NDEwMCwiZXhwIjoyMDg4OTYwMTAwfQ.8FqHSTp-FxwIiiZWBpzAiYRkL5WdSNETn2ICAo-1DOE';
+  const TABLE          = 'client_onboarding_submissions';
+
+  // ── State ─────────────────────────────────────────────────────────────────
+  let currentStep = 0;
+  const TOTAL_STEPS = 8; // 0-7
+
+  const formData = {
+    email: new URLSearchParams(location.search).get('email') || '',
+    full_name: '',
+    company: '',
+    phone: '',
+    location: '',
+    industry: '',
+    project_types: []
+  };
+
+  // ── Progress bar ──────────────────────────────────────────────────────────
+  function updateProgress() {
+    const pct = currentStep === 0 ? 0
+              : currentStep === TOTAL_STEPS - 1 ? 100
+              : Math.round(((currentStep) / (TOTAL_STEPS - 1)) * 100);
+    document.getElementById('progress-bar').style.width = pct + '%';
+    document.getElementById('nav-prev').disabled = currentStep === 0;
+    document.getElementById('nav-next').disabled = currentStep >= TOTAL_STEPS - 1;
+  }
+
+  // ── Slide transitions ─────────────────────────────────────────────────────
+  function goTo(step) {
+    const prev = document.getElementById('slide-' + currentStep);
+    const next = document.getElementById('slide-' + step);
+    if (!next) return;
+
+    prev.classList.remove('active');
+    prev.classList.add('exit-up');
+    setTimeout(() => prev.classList.remove('exit-up'), 500);
+
+    next.classList.add('active');
+    currentStep = step;
+    updateProgress();
+
+    // Auto-focus inputs
+    const inp = next.querySelector('.text-input');
+    if (inp) setTimeout(() => inp.focus(), 100);
+  }
+
+  function next() { if (currentStep < TOTAL_STEPS - 1) goTo(currentStep + 1); }
+  function prev() { if (currentStep > 0) goTo(currentStep - 1); }
+
+  // ── Toast ─────────────────────────────────────────────────────────────────
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 3500);
+  }
+
+  // ── Single-choice handler ─────────────────────────────────────────────────
+  function setupSingleChoice(containerId, field, autoAdvance = true) {
+    const container = document.getElementById(containerId);
+    const keys = ['a','b','c','d','e','f','g'];
+    const items = container.querySelectorAll('.choice');
+
+    items.forEach((el, i) => {
+      el.addEventListener('click', () => {
+        items.forEach(x => x.classList.remove('selected'));
+        el.classList.add('selected');
+        formData[field] = el.dataset.value;
+        if (autoAdvance) setTimeout(() => next(), 300);
+      });
+    });
+
+    // Keyboard shortcuts stored per container
+    container._keyHandler = (e) => {
+      const idx = keys.indexOf(e.key.toLowerCase());
+      if (idx >= 0 && idx < items.length) {
+        items.forEach(x => x.classList.remove('selected'));
+        items[idx].classList.add('selected');
+        formData[field] = items[idx].dataset.value;
+        if (autoAdvance) setTimeout(() => next(), 300);
+      }
+    };
+  }
+
+  // ── Multi-choice handler ──────────────────────────────────────────────────
+  function setupMultiChoice(containerId, field) {
+    const container = document.getElementById(containerId);
+    const items = container.querySelectorAll('.choice');
+
+    items.forEach((el) => {
+      el.addEventListener('click', () => {
+        el.classList.toggle('selected');
+        const vals = Array.from(container.querySelectorAll('.choice.selected'))
+                         .map(x => x.dataset.value);
+        formData[field] = vals;
+      });
+    });
+  }
+
+  // ── Submit ────────────────────────────────────────────────────────────────
+  async function submitForm() {
+    if (formData.project_types.length === 0) {
+      showToast('Please select at least one project type.');
+      return;
+    }
+
+    const btn = document.getElementById('btn-projects');
+    btn.textContent = 'Submitting…';
+    btn.disabled = true;
+
+    try {
+      const res = await fetch(`${SUPABASE_URL}/rest/v1/${TABLE}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'apikey': SUPABASE_KEY,
+          'Authorization': 'Bearer ' + SUPABASE_KEY,
+          'Prefer': 'return=minimal'
+        },
+        body: JSON.stringify({
+          email:         formData.email || null,
+          full_name:     formData.full_name || null,
+          company:       formData.company || null,
+          phone:         formData.phone || null,
+          location:      formData.location || null,
+          industry:      formData.industry || null,
+          project_types: formData.project_types
+        })
+      });
+
+      if (!res.ok) {
+        const err = await res.text();
+        throw new Error(err);
+      }
+
+      next(); // → Done screen
+    } catch (err) {
+      console.error(err);
+      showToast('Submission failed. Please try again.');
+      btn.textContent = 'Submit →';
+      btn.disabled = false;
+    }
+  }
+
+  // ── Wire up buttons ───────────────────────────────────────────────────────
+  document.getElementById('welcome-btn').addEventListener('click', next);
+  document.getElementById('nav-prev').addEventListener('click', prev);
+  document.getElementById('nav-next').addEventListener('click', () => {
+    // Validate current step then advance
+    handleNext();
+  });
+
+  // Text field next buttons
+  document.getElementById('btn-name').addEventListener('click', () => {
+    formData.full_name = document.getElementById('input-name').value.trim();
+    if (!formData.full_name) { showToast('Please enter your name.'); return; }
+    next();
+  });
+
+  document.getElementById('btn-company').addEventListener('click', () => {
+    formData.company = document.getElementById('input-company').value.trim();
+    next(); // optional
+  });
+
+  document.getElementById('btn-phone').addEventListener('click', () => {
+    formData.phone = document.getElementById('input-phone').value.trim();
+    next(); // optional
+  });
+
+  document.getElementById('btn-projects').addEventListener('click', submitForm);
+
+  // ── Choice setup ──────────────────────────────────────────────────────────
+  setupSingleChoice('choices-location', 'location');
+  setupSingleChoice('choices-industry', 'industry');
+  setupMultiChoice('choices-projects', 'project_types');
+
+  // ── Keyboard navigation ───────────────────────────────────────────────────
+  function handleNext() {
+    switch (currentStep) {
+      case 0: next(); break;
+      case 1:
+        formData.full_name = document.getElementById('input-name').value.trim();
+        if (!formData.full_name) { showToast('Please enter your name.'); return; }
+        next(); break;
+      case 2:
+        formData.company = document.getElementById('input-company').value.trim();
+        next(); break;
+      case 3:
+        formData.phone = document.getElementById('input-phone').value.trim();
+        next(); break;
+      case 4:
+        if (!formData.location) { showToast('Please select a location.'); return; }
+        next(); break;
+      case 5:
+        if (!formData.industry) { showToast('Please select an industry.'); return; }
+        next(); break;
+      case 6:
+        submitForm(); break;
+    }
+  }
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      handleNext();
+    }
+    if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+      e.preventDefault();
+      // handled by nav arrows visually; Enter moves forward
+    }
+
+    // Single-choice keyboard shortcuts
+    if (currentStep === 4) {
+      const keys = ['a','b','c','d','e'];
+      const idx = keys.indexOf(e.key.toLowerCase());
+      if (idx >= 0) {
+        const items = document.querySelectorAll('#choices-location .choice');
+        if (items[idx]) {
+          items.forEach(x => x.classList.remove('selected'));
+          items[idx].classList.add('selected');
+          formData.location = items[idx].dataset.value;
+          setTimeout(() => handleNext(), 300);
+        }
+      }
+    }
+    if (currentStep === 5) {
+      const keys = ['a','b','c','d','e'];
+      const idx = keys.indexOf(e.key.toLowerCase());
+      if (idx >= 0) {
+        const items = document.querySelectorAll('#choices-industry .choice');
+        if (items[idx]) {
+          items.forEach(x => x.classList.remove('selected'));
+          items[idx].classList.add('selected');
+          formData.industry = items[idx].dataset.value;
+          setTimeout(() => handleNext(), 300);
+        }
+      }
+    }
+  });
+
+  // ── Init ──────────────────────────────────────────────────────────────────
+  updateProgress();
+</script>
+</body>
+</html>
