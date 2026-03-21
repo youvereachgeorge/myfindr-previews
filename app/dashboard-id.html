@@ -1013,25 +1013,22 @@ function renderNetwork(consultants, devs){
 
 async function loadExtractedArchitects(){
   try {
-    const { data, error } = await supabase
-      .from('da_submissions')
-      .select('extracted_architect')
-      .not('extracted_architect', 'is', null)
-      .neq('extracted_architect', 'null')
-      .limit(500);
+    const res = await fetch(`${SUPA}/rest/v1/da_submissions?select=extracted_architect&extracted_architect=not.is.null&extraction_status=eq.processed&limit=500`, {
+      headers: { apikey: KEY, Authorization: 'Bearer '+KEY }
+    });
+    const data = await res.json();
     const counts = {};
-    (data || []).forEach(r => {
-      const a = r.extracted_architect?.trim();
-      if (a && a.length > 1) counts[a] = (counts[a] || 0) + 1;
+    (Array.isArray(data)?data:[]).forEach(r => {
+      const a = (r.extracted_architect||'').trim();
+      if (a && a.length > 1 && a.toLowerCase() !== 'null') counts[a] = (counts[a] || 0) + 1;
     });
     const top5 = Object.entries(counts).sort((a,b) => b[1]-a[1]).slice(0,5);
     const el = document.getElementById('arch-list');
     if (!el) return;
     if (top5.length < 2) {
-      el.innerHTML = '<div style="color:var(--text3);font-size:.75rem;text-align:center;padding:.5rem 0">⏳ Processing... check back tomorrow<br><span style="font-size:.65rem">Phase 2 extraction running nightly</span></div>';
+      el.innerHTML = '<div style="color:var(--text3);font-size:.75rem;text-align:center;padding:.5rem 0">⏳ Data being extracted nightly<br><span style="font-size:.65rem">Check back tomorrow</span></div>';
       return;
     }
-    const max = top5[0][1];
     el.innerHTML = top5.map(([name, count], i) => `
       <div class="suburb-row">
         <div style="font-size:.65rem;font-weight:700;color:var(--text3);margin-right:6px">#${i+1}</div>
@@ -1040,22 +1037,20 @@ async function loadExtractedArchitects(){
       </div>`).join('');
   } catch(e) {
     const el = document.getElementById('arch-list');
-    if (el) el.innerHTML = '<div style="color:var(--text3);font-size:.75rem">Data loading...</div>';
+    if (el) el.innerHTML = '<div style="color:var(--text3);font-size:.75rem">⏳ Check back tomorrow</div>';
   }
 }
 
 async function loadExtractedDevelopers(fallbackDevs=[]){
   try {
-    const { data, error } = await supabase
-      .from('da_submissions')
-      .select('extracted_developer')
-      .not('extracted_developer', 'is', null)
-      .neq('extracted_developer', 'null')
-      .limit(500);
+    const res = await fetch(`${SUPA}/rest/v1/da_submissions?select=extracted_developer&extracted_developer=not.is.null&extraction_status=eq.processed&limit=500`, {
+      headers: { apikey: KEY, Authorization: 'Bearer '+KEY }
+    });
+    const data = await res.json();
     const counts = {};
-    (data || []).forEach(r => {
-      const d = r.extracted_developer?.trim();
-      if (d && d.length > 1) counts[d] = (counts[d] || 0) + 1;
+    (Array.isArray(data)?data:[]).forEach(r => {
+      const d = (r.extracted_developer||'').trim();
+      if (d && d.length > 1 && d.toLowerCase() !== 'null') counts[d] = (counts[d] || 0) + 1;
     });
     const top5 = Object.entries(counts).sort((a,b) => b[1]-a[1]).slice(0,5);
     const el = document.getElementById('dev-list');
