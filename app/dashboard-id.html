@@ -541,20 +541,18 @@
   <div class="section-label" style="margin-bottom:.75rem;margin-top:1.5rem">👥 Network</div>
   <div class="g3">
     <div class="card">
-      <div class="card-title"><span class="card-dot"></span>Top Developers</div>
-      <div class="section-label" style="margin-bottom:.75rem">Volume players with most active DA submissions</div>
+      <div class="card-title"><span class="card-dot"></span>Most Active Developers</div>
+      <div class="section-label" style="margin-bottom:.75rem">Past 6 months · Extracted from DA documents</div>
       <div id="dev-list">Loading...</div>
-      <div style="font-size:.6rem;color:var(--text3);margin-top:.75rem;text-align:center">Data grows as more DAs are processed • Updated nightly</div>
     </div>
     <div class="card">
-      <div class="card-title"><span class="card-dot"></span>Top Building Designers &amp; Architects</div>
-      <div class="section-label" style="margin-bottom:.75rem">Extracted from DA documents — these are the actual design firms, not town planners</div>
+      <div class="card-title"><span class="card-dot"></span>Most Active Building Designers &amp; Architects</div>
+      <div class="section-label" style="margin-bottom:.75rem">Past 6 months · Extracted from DA documents</div>
       <div id="arch-list">Loading...</div>
-      <div style="font-size:.6rem;color:var(--text3);margin-top:.75rem;text-align:center">Data grows as more DAs are processed • Updated nightly</div>
     </div>
     <div class="card">
-      <div class="card-title"><span class="card-dot"></span>Top Planning Consultants</div>
-      <div class="section-label" style="margin-bottom:.75rem">Town planning firms with most submissions — knowing these firms means knowing what's coming</div>
+      <div class="card-title"><span class="card-dot"></span>Most Active Planning Consultants</div>
+      <div class="section-label" style="margin-bottom:.75rem">Past 6 months · Town planning firms with most submissions</div>
       <div id="consultant-list">Loading...</div>
     </div>
   </div>
@@ -990,31 +988,27 @@ function renderRenoSuburbs(reno_data){
 }
 
 function renderNetwork(consultants, devs){
-  // Planning Consultants widget — consultant field IS accurate
-  const consultantHtml=consultants.slice(0,5).map((r,i)=>`
+  // Garbage words that indicate bad data (descriptions, not firm names)
+  const GARBAGE = /^(stormwater|earthworks|dual.occ|dual occ|single dwelling|multi.unit|operational|subdivision|reconfigure|compliance|landscap|retaining|drainage|carpark|pool|fence|shed|garage|patio|deck|resid|commerci|industri|planning|assessment|information|lodg)/i;
+  const isValidName = n => n && n.length > 3 && n.length < 80 && !GARBAGE.test(n.trim()) && !/^\d/.test(n.trim());
+
+  // Planning Consultants — filter garbage from consultant field
+  const cleanConsultants = (consultants||[]).filter(r => isValidName(r.consultant));
+  const consultantHtml = cleanConsultants.slice(0,5).map((r,i)=>`
     <div class="suburb-row">
       <div style="font-size:.65rem;font-weight:700;color:var(--text3);margin-right:6px">#${i+1}</div>
       <div class="sub-name">${r.consultant}</div>
       <div style="font-size:.65rem;color:var(--text2)">${r.project_count} projects</div>
       <div style="font-size:.62rem;color:var(--text3)">Last: ${r.last_seen?r.last_seen.split('T')[0]:'—'}</div>
     </div>`).join('');
-  document.getElementById('consultant-list').innerHTML=consultantHtml||'<div style="color:var(--text3);font-size:.75rem">No data yet</div>';
+  document.getElementById('consultant-list').innerHTML = consultantHtml || '<div style="color:var(--text3);font-size:.75rem">No data yet</div>';
 
-  // Top Developers — vw_active_developers uses primary_applicant (volume players / developers, not town planners)
-  const devHtml=devs.slice(0,5).map((r,i)=>`
-    <div class="suburb-row">
-      <div style="font-size:.65rem;font-weight:700;color:var(--text3);margin-right:6px">#${i+1}</div>
-      <div class="sub-name">${r.primary_applicant}</div>
-      <div style="font-size:.65rem;color:var(--text2)">${r.submission_count} total</div>
-      <span class="badge ${r.submissions_30d>0?'b-acc':'b-cold'}">${r.submissions_30d} this month</span>
-    </div>`).join('');
-  document.getElementById('dev-list').innerHTML=devHtml||'<div style="color:var(--text3);font-size:.75rem">No data yet</div>';
+  // Developers — show extracted_developer data (from Phase 2), fallback to filtered primary_applicant
+  // Load developers: try extracted first, fallback to filtered vw_active_developers
+  loadExtractedDevelopers((devs||[]).filter(r => isValidName(r.primary_applicant)));
 
-  // Top Architects — from extracted_architect (Phase 2 extraction)
+  // Load architects from Phase 2 extracted data
   loadExtractedArchitects();
-
-  // Kick off extracted developer load too (override dev-list if we have enough data)
-  loadExtractedDevelopers();
 }
 
 async function loadExtractedArchitects(){
@@ -1050,7 +1044,7 @@ async function loadExtractedArchitects(){
   }
 }
 
-async function loadExtractedDevelopers(){
+async function loadExtractedDevelopers(fallbackDevs=[]){
   try {
     const { data, error } = await supabase
       .from('da_submissions')
@@ -1064,18 +1058,29 @@ async function loadExtractedDevelopers(){
       if (d && d.length > 1) counts[d] = (counts[d] || 0) + 1;
     });
     const top5 = Object.entries(counts).sort((a,b) => b[1]-a[1]).slice(0,5);
-    // Only override dev-list if we have enough extracted data (≥3 entries)
-    if (top5.length < 3) return;
     const el = document.getElementById('dev-list');
     if (!el) return;
-    el.innerHTML = top5.map(([name, count], i) => `
-      <div class="suburb-row">
-        <div style="font-size:.65rem;font-weight:700;color:var(--text3);margin-right:6px">#${i+1}</div>
-        <div class="sub-name">${name}</div>
-        <div style="font-size:.65rem;color:var(--text2)">${count} DA${count>1?'s':''}</div>
-      </div>`).join('');
+    if (top5.length >= 3) {
+      // Enough extracted data — use it
+      el.innerHTML = top5.map(([name, count], i) => `
+        <div class="suburb-row">
+          <div style="font-size:.65rem;font-weight:700;color:var(--text3);margin-right:6px">#${i+1}</div>
+          <div class="sub-name">${name}</div>
+          <div style="font-size:.65rem;color:var(--text2)">${count} DA${count>1?'s':''}</div>
+        </div>`).join('');
+    } else if (fallbackDevs.length >= 3) {
+      // Fallback: filtered vw_active_developers (garbage already removed)
+      el.innerHTML = fallbackDevs.slice(0,5).map((r,i) => `
+        <div class="suburb-row">
+          <div style="font-size:.65rem;font-weight:700;color:var(--text3);margin-right:6px">#${i+1}</div>
+          <div class="sub-name">${r.primary_applicant}</div>
+          <div style="font-size:.65rem;color:var(--text2)">${r.submission_count} submissions</div>
+        </div>`).join('');
+    } else {
+      el.innerHTML = '<div style="color:var(--text3);font-size:.75rem;text-align:center;padding:.5rem 0">⏳ Processing... check back tomorrow<br><span style="font-size:.65rem">Extracted nightly from DA documents</span></div>';
+    }
   } catch(e) {
-    // silently fall back to vw_active_developers data already rendered
+    // silently fail
   }
 }
 
