@@ -539,16 +539,23 @@
 
   <!-- Network -->
   <div class="section-label" style="margin-bottom:.75rem;margin-top:1.5rem">👥 Network</div>
-  <div class="g2">
+  <div class="g3">
     <div class="card">
-      <div class="card-title"><span class="card-dot"></span>Top 5 Active Developers (Last 6 Months)</div>
-      <div class="section-label" style="margin-bottom:.75rem">Most active applicants — these are the volume players doing multiple projects</div>
+      <div class="card-title"><span class="card-dot"></span>Top Developers</div>
+      <div class="section-label" style="margin-bottom:.75rem">Volume players with most active DA submissions</div>
       <div id="dev-list">Loading...</div>
+      <div style="font-size:.6rem;color:var(--text3);margin-top:.75rem;text-align:center">Data grows as more DAs are processed • Updated nightly</div>
     </div>
     <div class="card">
-      <div class="card-title"><span class="card-dot"></span>Top 5 Architects & Designers Active on Projects</div>
-      <div class="section-label" style="margin-bottom:.75rem">Planning consultants with most submissions — knowing these firms means knowing what's coming</div>
+      <div class="card-title"><span class="card-dot"></span>Top Building Designers &amp; Architects</div>
+      <div class="section-label" style="margin-bottom:.75rem">Extracted from DA documents — these are the actual design firms, not town planners</div>
       <div id="arch-list">Loading...</div>
+      <div style="font-size:.6rem;color:var(--text3);margin-top:.75rem;text-align:center">Data grows as more DAs are processed • Updated nightly</div>
+    </div>
+    <div class="card">
+      <div class="card-title"><span class="card-dot"></span>Top Planning Consultants</div>
+      <div class="section-label" style="margin-bottom:.75rem">Town planning firms with most submissions — knowing these firms means knowing what's coming</div>
+      <div id="consultant-list">Loading...</div>
     </div>
   </div>
 </div>
@@ -983,23 +990,93 @@ function renderRenoSuburbs(reno_data){
 }
 
 function renderNetwork(consultants, devs){
-  const archHtml=consultants.slice(0,7).map((r,i)=>`
+  // Planning Consultants widget — consultant field IS accurate
+  const consultantHtml=consultants.slice(0,5).map((r,i)=>`
     <div class="suburb-row">
       <div style="font-size:.65rem;font-weight:700;color:var(--text3);margin-right:6px">#${i+1}</div>
       <div class="sub-name">${r.consultant}</div>
       <div style="font-size:.65rem;color:var(--text2)">${r.project_count} projects</div>
       <div style="font-size:.62rem;color:var(--text3)">Last: ${r.last_seen?r.last_seen.split('T')[0]:'—'}</div>
     </div>`).join('');
-  document.getElementById('arch-list').innerHTML=archHtml||'<div style="color:var(--text3);font-size:.75rem">Loading...</div>';
+  document.getElementById('consultant-list').innerHTML=consultantHtml||'<div style="color:var(--text3);font-size:.75rem">No data yet</div>';
 
-  const devHtml=devs.slice(0,7).map((r,i)=>`
+  // Top Developers — vw_active_developers uses primary_applicant (volume players / developers, not town planners)
+  const devHtml=devs.slice(0,5).map((r,i)=>`
     <div class="suburb-row">
       <div style="font-size:.65rem;font-weight:700;color:var(--text3);margin-right:6px">#${i+1}</div>
       <div class="sub-name">${r.primary_applicant}</div>
       <div style="font-size:.65rem;color:var(--text2)">${r.submission_count} total</div>
       <span class="badge ${r.submissions_30d>0?'b-acc':'b-cold'}">${r.submissions_30d} this month</span>
     </div>`).join('');
-  document.getElementById('dev-list').innerHTML=devHtml||'<div style="color:var(--text3);font-size:.75rem">Loading...</div>';
+  document.getElementById('dev-list').innerHTML=devHtml||'<div style="color:var(--text3);font-size:.75rem">No data yet</div>';
+
+  // Top Architects — from extracted_architect (Phase 2 extraction)
+  loadExtractedArchitects();
+
+  // Kick off extracted developer load too (override dev-list if we have enough data)
+  loadExtractedDevelopers();
+}
+
+async function loadExtractedArchitects(){
+  try {
+    const { data, error } = await supabase
+      .from('da_submissions')
+      .select('extracted_architect')
+      .not('extracted_architect', 'is', null)
+      .neq('extracted_architect', 'null')
+      .limit(500);
+    const counts = {};
+    (data || []).forEach(r => {
+      const a = r.extracted_architect?.trim();
+      if (a && a.length > 1) counts[a] = (counts[a] || 0) + 1;
+    });
+    const top5 = Object.entries(counts).sort((a,b) => b[1]-a[1]).slice(0,5);
+    const el = document.getElementById('arch-list');
+    if (!el) return;
+    if (top5.length < 2) {
+      el.innerHTML = '<div style="color:var(--text3);font-size:.75rem;text-align:center;padding:.5rem 0">⏳ Processing... check back tomorrow<br><span style="font-size:.65rem">Phase 2 extraction running nightly</span></div>';
+      return;
+    }
+    const max = top5[0][1];
+    el.innerHTML = top5.map(([name, count], i) => `
+      <div class="suburb-row">
+        <div style="font-size:.65rem;font-weight:700;color:var(--text3);margin-right:6px">#${i+1}</div>
+        <div class="sub-name">${name}</div>
+        <div style="font-size:.65rem;color:var(--text2)">${count} DA${count>1?'s':''}</div>
+      </div>`).join('');
+  } catch(e) {
+    const el = document.getElementById('arch-list');
+    if (el) el.innerHTML = '<div style="color:var(--text3);font-size:.75rem">Data loading...</div>';
+  }
+}
+
+async function loadExtractedDevelopers(){
+  try {
+    const { data, error } = await supabase
+      .from('da_submissions')
+      .select('extracted_developer')
+      .not('extracted_developer', 'is', null)
+      .neq('extracted_developer', 'null')
+      .limit(500);
+    const counts = {};
+    (data || []).forEach(r => {
+      const d = r.extracted_developer?.trim();
+      if (d && d.length > 1) counts[d] = (counts[d] || 0) + 1;
+    });
+    const top5 = Object.entries(counts).sort((a,b) => b[1]-a[1]).slice(0,5);
+    // Only override dev-list if we have enough extracted data (≥3 entries)
+    if (top5.length < 3) return;
+    const el = document.getElementById('dev-list');
+    if (!el) return;
+    el.innerHTML = top5.map(([name, count], i) => `
+      <div class="suburb-row">
+        <div style="font-size:.65rem;font-weight:700;color:var(--text3);margin-right:6px">#${i+1}</div>
+        <div class="sub-name">${name}</div>
+        <div style="font-size:.65rem;color:var(--text2)">${count} DA${count>1?'s':''}</div>
+      </div>`).join('');
+  } catch(e) {
+    // silently fall back to vw_active_developers data already rendered
+  }
 }
 
 let leadsAll=[];
